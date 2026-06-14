@@ -106,7 +106,8 @@ function genTradeNo() {
 }
 
 const GATEWAY = 'https://openapi-sandbox.dl.alipaydev.com/gateway.do';
-const SITE = 'https://ai-worker-proxy.13616007538.workers.dev';
+// SITE and KV will be set from env in fetch handler
+let SITE = '';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data, null, 2), {
@@ -123,14 +124,16 @@ function html(body, status = 200) {
 }
 
 // ======================== KV 操作 ========================
+// kvStore is set from env in fetch handler
+let kvStore = null;
 
 async function kvGet(k) {
-  try { return await X402_ORDERS.get(k, 'json'); }
+  try { return await kvStore.get(k, 'json'); }
   catch { return null; }
 }
 
 async function kvPut(k, v) {
-  await X402_ORDERS.put(k, JSON.stringify(v), { expirationTtl: 86400 });
+  await kvStore.put(k, JSON.stringify(v), { expirationTtl: 86400 });
 }
 
 // ======================== 支付宝 API ========================
@@ -309,7 +312,11 @@ async function handleNotify(request) {
 // ======================== fetch 入口 ========================
 
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
+    // Initialize globals from env
+    SITE = env.SITE || 'https://x402-alipay.dev';
+    kvStore = env.X402_ORDERS;
+
     const url = new URL(request.url);
     const { pathname, searchParams } = url;
 

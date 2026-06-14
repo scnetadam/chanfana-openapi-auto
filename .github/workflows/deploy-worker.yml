@@ -1,0 +1,59 @@
+name: Deploy Cloudflare Worker
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'worker/**'
+      - '.github/workflows/deploy-worker.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./worker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Node & Wrangler
+        run: |
+          npm install -g wrangler
+          wrangler --version
+
+      - name: Get or create KV namespace
+        id: kv
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          LIST=$(wrangler kv:namespace list 2>&1)
+          EXISTING=$(echo "$LIST" | jq -r '.[] | select(.title == "x402-alipay-x402-orders") | .id' | head -1)
+          if [ -z "$EXISTING" ]; then
+            echo "Creating KV namespace 'X402_ORDERS'..."
+            OUTPUT=$(wrangler kv:namespace create "X402_ORDERS" 2>&1)
+            echo "$OUTPUT"
+            ID=$(echo "$OUTPUT" | grep -oP '"id":\s*"\K[^"]+' | head -1)
+            echo "id=$ID" >> $GITHUB_OUTPUT
+          else
+            echo "Using existing KV namespace: $EXISTING"
+            echo "id=$EXISTING" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Write KV id to wrangler.toml
+        run: |
+          sed -i 's/id = ""/id = "${{ steps.kv.outputs.id }}"/' wrangler.toml
+          cat wrangler.toml
+
+      - name: Deploy Worker
+        run: wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+
+      - name: Set Worker Secrets
+        run: |
+          echo "${{ secrets.ALIPAY_APP_ID }}" | wrangler secret put ALIPAY_APP_ID
+          echo "${{ secrets.ALIPAY_APP_PRIVATE_KEY }}" | wrangler secret put ALIPAY_APP_PRIVATE_KEY
+          echo "${{ secrets.ALIPAY_PUBLIC_KEY }}" | wrangler secret put ALIPAY_PUBLIC_KEY
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}

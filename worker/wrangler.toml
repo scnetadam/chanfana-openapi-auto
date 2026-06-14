@@ -2,20 +2,19 @@ name = "x402-alipay"
 main = "src/worker.js"
 compatibility_date = "2025-03-01"
 
+# KV namespace is auto-created and bound via deploy workflow
 [[kv_namespaces]]
 binding = "X402_ORDERS"
 id = ""
 preview_id = ""
 
-[env.production]
-kv_namespaces = [
-  { binding = "X402_ORDERS", id = "" }
-]
+[vars]
+SITE = "https://x402-alipay.dev"
 
 [triggers]
 crons = []
 
-# Secrets (set via wrangler secret put or dashboard):
-# ALIPAY_APP_ID
-# ALIPAY_APP_PRIVATE_KEY
-# ALIPAY_PUBLIC_KEY
+# Secrets (set via wrangler secret put or GitHub Actions):
+# ALIPAY_APP_ID          - 支付宝沙箱 APPID
+# ALIPAY_APP_PRIVATE_KEY - 应用私钥 (PKCS8, \n 代替换行)
+# ALIPAY_PUBLIC_KEY      - 支付宝公钥

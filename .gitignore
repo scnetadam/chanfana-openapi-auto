@@ -27,6 +27,11 @@ Thumbs.db
 server.log
 server.err
 
+# CDP 调试脚本（含密码、local cookie）
+cf_login.py
+cf_login2.py
+cf_*.js
+
 # 支付宝私钥（单独文件）
 *.pem
 *.key
