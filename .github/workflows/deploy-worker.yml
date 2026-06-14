@@ -11,9 +11,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./worker
     steps:
       - uses: actions/checkout@v4
 
@@ -24,16 +21,25 @@ jobs:
 
       - name: Get or create KV namespace
         id: kv
+        working-directory: ./worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: |
-          LIST=$(wrangler kv:namespace list 2>&1)
+          # Wrangler outputs JSON on stdout for kv:namespace list
+          LIST=$(wrangler kv:namespace list 2>/dev/null)
+          echo "KV list result: $LIST"
           EXISTING=$(echo "$LIST" | jq -r '.[] | select(.title == "x402-alipay-x402-orders") | .id' | head -1)
-          if [ -z "$EXISTING" ]; then
-            echo "Creating KV namespace 'X402_ORDERS'..."
-            OUTPUT=$(wrangler kv:namespace create "X402_ORDERS" 2>&1)
-            echo "$OUTPUT"
-            ID=$(echo "$OUTPUT" | grep -oP '"id":\s*"\K[^"]+' | head -1)
+          if [ -z "$EXISTING" ] || [ "$EXISTING" = "null" ]; then
+            echo "Creating new KV namespace 'X402_ORDERS'..."
+            CREATE_OUTPUT=$(wrangler kv:namespace create "X402_ORDERS" 2>&1)
+            echo "$CREATE_OUTPUT"
+            # Parse: {"success":true,"result":{"id":"abc123","title":"x402-alipay-x402-orders"}}
+            ID=$(echo "$CREATE_OUTPUT" | grep -oP '"id":"\K[^"]+' | head -1)
+            if [ -z "$ID" ]; then
+              # Fallback: parse from human-readable output
+              ID=$(echo "$CREATE_OUTPUT" | grep -oP 'id: \K[^ ]+' | head -1)
+            fi
+            echo "Created KV id: $ID"
             echo "id=$ID" >> $GITHUB_OUTPUT
           else
             echo "Using existing KV namespace: $EXISTING"
@@ -41,19 +47,27 @@ jobs:
           fi
 
       - name: Write KV id to wrangler.toml
+        working-directory: ./worker
         run: |
-          sed -i 's/id = ""/id = "${{ steps.kv.outputs.id }}"/' wrangler.toml
+          # Match id = "" regardless of whitespace (not at line start for TOML sections)
+          sed -i "s/id = \"\"/id = \"${{ steps.kv.outputs.id }}\"/" wrangler.toml
+          echo "=== wrangler.toml ==="
           cat wrangler.toml
 
       - name: Deploy Worker
+        working-directory: ./worker
         run: wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
 
       - name: Set Worker Secrets
-        run: |
-          echo "${{ secrets.ALIPAY_APP_ID }}" | wrangler secret put ALIPAY_APP_ID
-          echo "${{ secrets.ALIPAY_APP_PRIVATE_KEY }}" | wrangler secret put ALIPAY_APP_PRIVATE_KEY
-          echo "${{ secrets.ALIPAY_PUBLIC_KEY }}" | wrangler secret put ALIPAY_PUBLIC_KEY
+        working-directory: ./worker
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          echo "Setting ALIPAY_APP_ID..."
+          echo "${{ secrets.ALIPAY_APP_ID }}" | wrangler secret put ALIPAY_APP_ID || echo "SKIP (no ALIPAY_APP_ID)"
+          echo "Setting ALIPAY_APP_PRIVATE_KEY..."
+          echo "${{ secrets.ALIPAY_APP_PRIVATE_KEY }}" | wrangler secret put ALIPAY_APP_PRIVATE_KEY || echo "SKIP (no ALIPAY_APP_PRIVATE_KEY)"
+          echo "Setting ALIPAY_PUBLIC_KEY..."
+          echo "${{ secrets.ALIPAY_PUBLIC_KEY }}" | wrangler secret put ALIPAY_PUBLIC_KEY || echo "SKIP (no ALIPAY_PUBLIC_KEY)"
