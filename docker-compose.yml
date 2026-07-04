@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          memory: 256M
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "3"
+
+  harmony-builder:
+    build:
+      context: .
+      dockerfile: Dockerfile.harmony
+    volumes:
+      - ./entry/build:/home/build/project/entry/build
+      - ./commandline-tools:/home/tools/commandline-tools:ro
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=2048
+      - JAVA_OPTS=-Xmx1536m -Xms512m
+    deploy:
+      resources:
+        limits:
+          memory: 6G

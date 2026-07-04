@@ -1,0 +1,25 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "indent": ["warn", 2, { "SwitchCase": 1 }],
+    "linebreak-style": ["warn", "unix"],
+    "quotes": ["warn", "single", { "avoidEscape": true }],
+    "semi": ["warn", "always"],
+    "comma-dangle": ["warn", "always-multiline"],
+    "no-trailing-spaces": "warn",
+    "eol-last": ["warn", "always"],
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-console": "off",
+    "prefer-const": "warn",
+    "no-var": "warn",
+    "eqeqeq": ["warn", "always"],
+    "curly": ["warn", "all"]
+  }
+}

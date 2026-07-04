@@ -34,18 +34,22 @@ class AlipayBackend(PaymentBackend):
         self.notify_url = notify_url
         self.return_url = return_url
 
-        # 加载私钥
+        # 加载私钥 — 自动识别 PKCS#1（RSA PRIVATE KEY）和 PKCS#8（PRIVATE KEY）
+        key_pem = app_private_key
+        if "-----BEGIN" not in key_pem:
+            key_pem = f"-----BEGIN PRIVATE KEY-----\n{key_pem}\n-----END PRIVATE KEY-----"
         self.private_key = serialization.load_pem_private_key(
-            app_private_key.encode() if "-----BEGIN" in app_private_key
-            else f"-----BEGIN RSA PRIVATE KEY-----\n{app_private_key}\n-----END RSA PRIVATE KEY-----".encode(),
+            key_pem.encode(),
             password=None,
             backend=default_backend(),
         )
 
-        # 加载支付宝公钥
+        # 加载支付宝公钥 — 自动包装
+        pub_pem = alipay_public_key
+        if "-----BEGIN" not in pub_pem:
+            pub_pem = f"-----BEGIN PUBLIC KEY-----\n{pub_pem}\n-----END PUBLIC KEY-----"
         self.alipay_public_key = serialization.load_pem_public_key(
-            alipay_public_key.encode() if "-----BEGIN" in alipay_public_key
-            else f"-----BEGIN PUBLIC KEY-----\n{alipay_public_key}\n-----END PUBLIC KEY-----".encode(),
+            pub_pem.encode(),
             backend=default_backend(),
         )
 

@@ -1,0 +1,8 @@
+{
+  "layered_image": [
+    {
+      "layer": "$media:foreground",
+      "mask": "$media:background"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_ROOT="${SCRIPT_DIR}"
+HVIGOR_WRAPPER="${PROJECT_ROOT}/hvigor/hvigor-wrapper.js"
+
+export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=2048}"
+
+if [ ! -f "${HVIGOR_WRAPPER}" ]; then
+  echo "ERROR: hvigor-wrapper.js not found at ${HVIGOR_WRAPPER}"
+  exit 1
+fi
+
+exec node "${HVIGOR_WRAPPER}" "$@"

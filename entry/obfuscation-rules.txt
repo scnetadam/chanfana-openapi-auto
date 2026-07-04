@@ -1,0 +1,2 @@
+# Obfuscation rules for release mode
+-keep-global-name

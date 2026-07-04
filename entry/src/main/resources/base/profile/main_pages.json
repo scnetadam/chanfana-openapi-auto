@@ -1,0 +1,12 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/activities/ActivitiesPage",
+    "pages/activitydetail/ActivityDetailPage",
+    "pages/publish/PublishPage",
+    "pages/dashboard/DashboardPage",
+    "pages/share/SharePage",
+    "pages/booking/BookingPage",
+    "pages/wallet/WalletPage"
+  ]
+}

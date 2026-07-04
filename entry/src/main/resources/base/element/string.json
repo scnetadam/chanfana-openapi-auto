@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "Module_Entry_label",
+      "value": "X402推广平台"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "X402推广平台"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "汽车推广试驾平台"
+    },
+    {
+      "name": "Module_Entry_desc",
+      "value": "X402汽车推广试驾平台入口"
+    }
+  ]
+}

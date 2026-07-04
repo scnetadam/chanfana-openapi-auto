@@ -1,0 +1,104 @@
+FROM openeuler/openeuler:22.03
+
+ENV TZ=Asia/Shanghai \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8
+
+# 使用华为云镜像源加速 dnf
+RUN sed -i 's|https://repo.openeuler.org|https://repo.huaweicloud.com/openeuler|g' /etc/yum.repos.d/openEuler.repo 2>/dev/null || true && \
+    cat /etc/resolv.conf
+
+RUN dnf install -y glibc-locale-source && \
+    localedef -i en_US -f UTF-8 en_US.UTF-8 || true && \
+    dnf install -y --setopt=timeout=60 --setopt=max_parallel_downloads=3 \
+      curl wget git unzip java-17-openjdk-headless python3 \
+      tar which findutils procps-ng xz && \
+    dnf clean all && \
+    rm -rf /var/cache/dnf /tmp/*
+
+RUN JAVA_HOME_REAL=$(ls -d /usr/lib/jvm/java-17-openjdk-* 2>/dev/null | head -1) && \
+    if [ -z "$JAVA_HOME_REAL" ]; then \
+      JAVA_HOME_REAL="/usr/lib/jvm/java-17-openjdk"; \
+    fi && \
+    echo "JAVA_HOME=${JAVA_HOME_REAL}" && \
+    ln -sf "${JAVA_HOME_REAL}" /usr/lib/jvm/java-17-current && \
+    echo "export JAVA_HOME=/usr/lib/jvm/java-17-current" >> /etc/profile
+
+ENV JAVA_HOME=/usr/lib/jvm/java-17-current
+
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
+      NODE_ARCH=arm64; \
+    else \
+      NODE_ARCH=x64; \
+    fi && \
+    echo "Installing Node.js 18 for ${ARCH} (${NODE_ARCH})" && \
+    NODE_VER="v18.20.4" && \
+    NODE_URL="${NODE_VER}/node-${NODE_VER}-linux-${NODE_ARCH}.tar.xz" && \
+    curl -fsSL --retry 5 --retry-delay 10 --connect-timeout 30 \
+      "https://nodejs.org/dist/${NODE_URL}" \
+      -o /tmp/node.tar.xz || \
+    curl -fsSL --retry 5 --retry-delay 10 --connect-timeout 30 \
+      "https://npmmirror.com/mirrors/node/${NODE_URL}" \
+      -o /tmp/node.tar.xz && \
+    mkdir -p /usr/local/node && \
+    tar -xJf /tmp/node.tar.xz -C /usr/local/node --strip-components=1 && \
+    rm -f /tmp/node.tar.xz && \
+    ln -sf /usr/local/node/bin/node /usr/bin/node && \
+    ln -sf /usr/local/node/bin/npm /usr/bin/npm && \
+    ln -sf /usr/local/node/bin/npx /usr/bin/npx && \
+    echo "Node.js installed: $(node --version)"
+
+ENV PATH="/usr/local/node/bin:${PATH}" \
+    NODEJS_HOME=/usr/local/node
+
+ARG CLT_ZIP=""
+
+RUN mkdir -p /home/tools/commandline-tools/sdk/openharmony/ni/toolchain && \
+    echo "CLT_ZIP build arg: [${CLT_ZIP}]"
+
+RUN if [ -z "$CLT_ZIP" ]; then \
+      echo "No CLT_ZIP provided, expecting runtime mount at /home/tools/commandline-tools"; \
+    else \
+      echo "CLT_ZIP specified as: ${CLT_ZIP}"; \
+      echo "NOTE: Use docker-build.sh with --build-arg CLT_ZIP=<filename> and ensure file is in build context"; \
+    fi
+
+RUN TOOLCHAIN_ARCH_DIR=$(ls -d /home/tools/commandline-tools/sdk/openharmony/ni/toolchain/linux-* 2>/dev/null | head -1) && \
+    if [ -n "$TOOLCHAIN_ARCH_DIR" ]; then \
+      ln -sf "${TOOLCHAIN_ARCH_DIR}" /home/tools/commandline-tools/sdk/openharmony/ni/toolchain/linux-arch && \
+      echo "Toolchain symlink: ${TOOLCHAIN_ARCH_DIR} -> linux-arch"; \
+    else \
+      echo "No arch-specific toolchain found, will resolve at runtime"; \
+    fi
+
+ENV OHOS_SDK_HOME=/home/tools/commandline-tools/sdk \
+    OHOS_BASE_SDK_HOME=/home/tools/commandline-tools/sdk/openharmony \
+    PATH="/home/tools/commandline-tools/bin:/home/tools/commandline-tools/sdk/openharmony/ni/toolchain/linux:/home/tools/commandline-tools/sdk/openharmony/ni/toolchain/linux-arch:/home/tools/commandline-tools/sdk/openharmony/native/build-tools/cmake/bin:${PATH}" \
+    NODE_OPTIONS="--max-old-space-size=2048"
+
+COPY scripts/docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+WORKDIR /home/build/project
+
+COPY .npmrc ./
+COPY oh-package.json5 ./
+COPY package.json ./
+
+RUN npm config set @ohos:registry https://repo.harmonyos.com/npm/ && \
+    npm config set registry https://repo.huaweicloud.com/repository/npm/ && \
+    npm config set strict-ssl false && \
+    npm install --legacy-peer-deps 2>&1 && \
+    echo "npm install completed" || \
+    (echo "WARN: npm install partially failed, retrying..." && \
+     npm install --registry=https://repo.harmonyos.com/npm/ --legacy-peer-deps 2>&1 || \
+     npm install --registry=https://repo.huaweicloud.com/repository/npm/ --legacy-peer-deps 2>&1 || \
+     { echo "WARN: npm install partially failed, continuing..."; exit 0; })
+
+COPY . .
+
+RUN chmod +x hvigorw build-cloud.sh docker-build.sh 2>/dev/null || true
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["bash"]

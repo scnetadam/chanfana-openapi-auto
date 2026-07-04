@@ -35,7 +35,7 @@ def _load_pem_key(val):
         return val
     val = val.replace("\\n", "\n")
     if "-----BEGIN" not in val:
-        val = f"-----BEGIN RSA PRIVATE KEY-----\n{val}\n-----END RSA PRIVATE KEY-----"
+        val = f"-----BEGIN PRIVATE KEY-----\n{val}\n-----END PRIVATE KEY-----"
     return val
 
 ALIPAY_APP_PRIVATE_KEY = _load_pem_key(os.getenv("ALIPAY_APP_PRIVATE_KEY", ""))

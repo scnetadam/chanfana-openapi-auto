@@ -1,0 +1,13 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "X402汽车推广试驾平台",
+  "main": "",
+  "author": "",
+  "license": "",
+  "modelVersion": "6.0.2",
+  "devDependencies": {
+    "@ohos/hvigor-ohos-plugin": "6.26.1",
+    "@ohos/hvigor": "6.26.1"
+  }
+}

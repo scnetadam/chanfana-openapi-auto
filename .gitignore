@@ -1,6 +1,22 @@
-# x402-alipay .gitignore
+# X402-DEVECO .gitignore
 
-# Python
+# ======== HarmonyOS / DevEco ========
+.hvigor/
+.hvigor/cache/
+.hvigor/outputs/
+hvigor/
+hvigor/hvigor-wrapper.js
+build/
+oh_modules/
+*.har
+
+# ======== Node.js ========
+node_modules/
+src/node_modules/
+*.log
+npm-debug.log*
+
+# ======== Python ========
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -8,30 +24,27 @@ dist/
 build/
 .eggs/
 
-# 环境配置（含密钥）
+# ======== 环境配置（含密钥） ========
 .env
 !env.example
 
-# IDE
+# ======== IDE ========
 .idea/
 .vscode/
 *.swp
 *.swo
 
-# OS
+# ======== OS ========
 .DS_Store
 Thumbs.db
 
-# 日志
-*.log
-server.log
-server.err
-
-# CDP 调试脚本（含密码、local cookie）
+# ======== 调试/密钥 ========
 cf_login.py
 cf_login2.py
 cf_*.js
-
-# 支付宝私钥（单独文件）
 *.pem
 *.key
+
+# ======== 构建产物 ========
+*.local.properties
+build-profile.json5.local
