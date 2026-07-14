@@ -28,32 +28,32 @@
       {
         "pagePath": "pages/activity/index",
         "text": "活动",
-        "iconPath": "src/static/images/tab-activity.png",
-        "selectedIconPath": "src/static/images/tab-activity-active.png"
+        "iconPath": "static/images/tab-activity.png",
+        "selectedIconPath": "static/images/tab-activity-active.png"
       },
       {
         "pagePath": "pages/koltask/index",
         "text": "任务",
-        "iconPath": "src/static/images/tab-koltask.png",
-        "selectedIconPath": "src/static/images/tab-koltask-active.png"
+        "iconPath": "static/images/tab-koltask.png",
+        "selectedIconPath": "static/images/tab-koltask-active.png"
       },
       {
         "pagePath": "pages/aidashboard/index",
         "text": "AI评估",
-        "iconPath": "src/static/images/tab-aidashboard.png",
-        "selectedIconPath": "src/static/images/tab-aidashboard-active.png"
+        "iconPath": "static/images/tab-aidashboard.png",
+        "selectedIconPath": "static/images/tab-aidashboard-active.png"
       },
       {
         "pagePath": "pages/settlement/index",
         "text": "结算",
-        "iconPath": "src/static/images/tab-settlement.png",
-        "selectedIconPath": "src/static/images/tab-settlement-active.png"
+        "iconPath": "static/images/tab-settlement.png",
+        "selectedIconPath": "static/images/tab-settlement-active.png"
       },
       {
         "pagePath": "pages/wallet/index",
         "text": "我的",
-        "iconPath": "src/static/images/tab-wallet.png",
-        "selectedIconPath": "src/static/images/tab-wallet-active.png"
+        "iconPath": "static/images/tab-wallet.png",
+        "selectedIconPath": "static/images/tab-wallet-active.png"
       }
     ]
   }
