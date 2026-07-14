@@ -30,7 +30,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt -i ${PIP_INDEX}
 
 # 复制项目文件
-COPY .env .
+COPY .env.example ./.env
 COPY server.py .
 COPY payment_backends/ ./payment_backends/
 

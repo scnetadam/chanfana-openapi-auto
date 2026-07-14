@@ -22,3 +22,9 @@ cf_*.py
 cf_*.js
 *.pem
 *.key
+frontend/node_modules/
+frontend/dist/
+mp-alipay/
+uploads/
+*.md
+!README.md
