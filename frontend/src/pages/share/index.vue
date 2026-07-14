@@ -3,7 +3,6 @@ import { ref, computed } from 'vue';
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
 import { contentApi, bookingApi, aiApi } from '@/api';
 import { useUserStore } from '@/stores';
-import { copyToClipboard } from '@/utils/wechat';
 
 const userStore = useUserStore();
 
@@ -167,9 +166,8 @@ async function submitBooking() {
 function onShare() { showShareSheet.value = true; }
 
 function copyLink() {
-  copyToClipboard(shareUrl.value);
+  uni.setClipboardData({ data: shareUrl.value, showToast: true });
   showShareSheet.value = false;
-  uni.showToast({ title: '链接已复制', icon: 'success' });
 }
 </script>
 

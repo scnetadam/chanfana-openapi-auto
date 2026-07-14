@@ -1,24 +1,28 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useUserStore } from '@/stores';
+import { getLoginCode, getUserProfile } from '@/utils/auth';
+import { isAlipay } from '@/utils/alipay';
 
 const userStore = useUserStore();
 const loading = ref(false);
 const nickName = ref('');
+const platformName = isAlipay() ? '支付宝' : '微信';
 
 async function handleLogin() {
   if (loading.value) return;
-  
-  if (!nickName.value.trim()) {
-    uni.showToast({ title: '请输入昵称', icon: 'none' });
-    return;
-  }
-  
   loading.value = true;
   try {
-    // 直接使用昵称登录，不依赖支付宝授权
-    const mockCode = 'alipay_' + Date.now();
-    await userStore.login(mockCode, nickName.value.trim(), '', 'alipay');
+    const code = await getLoginCode();
+    let name = nickName.value.trim();
+    let avatar = '';
+    try {
+      const profile = await getUserProfile();
+      if (!name) name = profile.nickName;
+      avatar = profile.avatarUrl;
+    } catch {}
+    if (!name) name = '用户' + Date.now().toString().slice(-4);
+    await userStore.login(code, name, avatar, isAlipay() ? 'alipay' : 'wechat');
     uni.showToast({ title: '登录成功', icon: 'success' });
     setTimeout(() => uni.switchTab({ url: '/pages/activity/index' }), 500);
   } catch (err: any) {
@@ -66,7 +70,7 @@ async function handleLogin() {
         <input
           v-model="nickName"
           class="nickname-input"
-          placeholder="请输入昵称"
+          placeholder="昵称（可选，默认使用平台昵称）"
           maxlength="20"
         />
         <button
@@ -75,7 +79,7 @@ async function handleLogin() {
           :disabled="loading"
           @tap="handleLogin"
         >
-          登录
+          {{ platformName }}授权登录
         </button>
       </view>
 

@@ -3,8 +3,10 @@ import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { walletApi } from '@/api';
 import { useUserStore } from '@/stores';
+import { usePayStore } from '@/stores/pay';
 
 const userStore = useUserStore();
+const payStore = usePayStore();
 
 const balance = ref(0);
 const reputationScore = ref(0);
@@ -34,11 +36,8 @@ async function loadWallet() {
       txList.value = txRes.data.list;
     }
   } catch (e) {
-    balance.value = 4.51;
-    txList.value = [
-      { amount: 0.01, desc: '阅读收益 · 小米SU7', createdAt: new Date(Date.now() - 86400000).toISOString() },
-      { amount: 5.00, desc: '试驾预约分成 · 小米SU7', createdAt: new Date(Date.now() - 3600000).toISOString() },
-    ];
+    balance.value = 0;
+    txList.value = [];
   } finally {
     loading.value = false;
   }
@@ -55,6 +54,13 @@ function handleWithdraw() {
     confirmText: '知道了',
     showCancel: false,
   });
+}
+
+async function tryX402Pay() {
+  const result = await payStore.requestPaidContent();
+  if (result) {
+    uni.showModal({ title: '支付已确认', content: JSON.stringify(result), showCancel: false });
+  }
 }
 </script>
 
@@ -82,6 +88,18 @@ function handleWithdraw() {
       </view>
       <button class="withdraw-btn" @tap="handleWithdraw">
         <text>提现</text>
+      </button>
+    </view>
+
+    <!-- x402 微支付 -->
+    <view class="x402-section">
+      <view class="x402-header">
+        <text class="x402-title">x402 微支付</text>
+        <text class="x402-badge">NEW</text>
+      </view>
+      <text class="x402-desc">按次付费访问内容，0.01元/次</text>
+      <button class="x402-pay-btn" :loading="payStore.paying" :disabled="payStore.paying" @tap="tryX402Pay">
+        <text>试一次微支付 (¥0.01)</text>
       </button>
     </view>
 
@@ -237,6 +255,58 @@ function handleWithdraw() {
   backdrop-filter: blur(4px);
 
   &::after { border: none; }
+}
+
+/* x402 Section */
+.x402-section {
+  padding: 28rpx;
+  background: #f0f4ff;
+  border: 2rpx solid #dbeafe;
+  border-radius: 20rpx;
+  margin-bottom: 24rpx;
+}
+
+.x402-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 8rpx;
+}
+
+.x402-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+.x402-badge {
+  padding: 2rpx 12rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border-radius: 8rpx;
+}
+
+.x402-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-bottom: 16rpx;
+}
+
+.x402-pay-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border-radius: 40rpx;
+
+  &::after { border: none; }
+  &[disabled] { opacity: 0.5; }
 }
 
 /* Summary */

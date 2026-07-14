@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
 import { useUserStore } from '@/stores';
+import { aiApi } from '@/api';
 
 const userStore = useUserStore();
 
@@ -11,6 +12,8 @@ const kolScore = ref(0);
 const spreadScore = ref(0);
 const qualityScore = ref(0);
 const conversionScore = ref(0);
+const totalEarned = ref(0);
+const contentCount = ref(0);
 const loading = ref(true);
 
 onShow(async () => {
@@ -21,23 +24,23 @@ onShow(async () => {
 async function loadDashboard() {
   loading.value = true;
   try {
-    const res = await uni.request({
-      url: '/kol-task/kol/' + userStore.userId + '/earnings',
-      method: 'GET',
-    });
-    const data = (res.data as any)?.data;
-    if (data) {
-      overallScore.value = 72 + Math.floor(Math.random() * 20);
-      kolScore.value = 60 + Math.floor(Math.random() * 30);
-      spreadScore.value = 50 + Math.floor(Math.random() * 40);
-      qualityScore.value = 70 + Math.floor(Math.random() * 25);
-      conversionScore.value = 40 + Math.floor(Math.random() * 50);
+    const res = await aiApi.valueDashboard(userStore.userId);
+    if (res.success && res.data) {
+      const d = res.data;
+      overallScore.value = d.kolScore || 0;
+      kolScore.value = d.kolScore || 0;
+      totalEarned.value = d.totalEarned || 0;
+      contentCount.value = d.contentCount || 0;
+      const b = d.breakdown || {};
+      qualityScore.value = b.quality || 0;
+      spreadScore.value = b.spread || 0;
+      conversionScore.value = b.conversion || 0;
     }
     insights.value = [
-      { title: '内容质量', desc: '近期内容质量评分趋势良好，建议保持原创比例', score: qualityScore.value, icon: 'Q', color: '#10b981' },
-      { title: '传播力', desc: '互动率较上周提升12%，继续保持高频发布', score: spreadScore.value, icon: 'S', color: '#2563eb' },
-      { title: 'KOL影响力', desc: '粉丝活跃度稳定，建议增加直播频次', score: kolScore.value, icon: 'K', color: '#f59e0b' },
-      { title: '转化率', desc: '带货转化率行业排名前30%，表现优秀', score: conversionScore.value, icon: 'C', color: '#ef4444' },
+      { title: '内容质量', desc: qualityScore.value > 0 ? `质量加权分 ${qualityScore.value}，保持原创提升评分` : '暂无数据，完成任务后将生成AI评估报告', score: qualityScore.value, icon: 'Q', color: '#10b981' },
+      { title: '传播力', desc: spreadScore.value > 0 ? `传播加权分 ${spreadScore.value}，互动率越高乘数越大` : '暂无数据', score: spreadScore.value, icon: 'S', color: '#2563eb' },
+      { title: 'KOL影响力', desc: kolScore.value > 0 ? `KOL评分 ${kolScore.value}，影响推广金乘数` : '暂无数据', score: kolScore.value, icon: 'K', color: '#f59e0b' },
+      { title: '转化率', desc: conversionScore.value > 0 ? `转化加权分 ${conversionScore.value}，试驾预约带动收益` : '暂无数据', score: conversionScore.value, icon: 'C', color: '#ef4444' },
     ];
   } catch (e: any) {
     console.error('[AiDashboard] load error:', e.message);
@@ -69,6 +72,21 @@ function getScoreColor(score: number): string {
     <view v-if="loading" class="loading"><text>分析中...</text></view>
 
     <view v-else>
+      <view class="quick-stats">
+        <view class="qs-item">
+          <text class="qs-val gold">¥{{ totalEarned.toFixed(2) }}</text>
+          <text class="qs-lbl">累计收益</text>
+        </view>
+        <view class="qs-item">
+          <text class="qs-val">{{ contentCount }}</text>
+          <text class="qs-lbl">内容数</text>
+        </view>
+        <view class="qs-item">
+          <text class="qs-val accent">{{ kolScore }}</text>
+          <text class="qs-lbl">KOL评分</text>
+        </view>
+      </view>
+
       <view class="score-ring">
         <text class="score-val" :style="{ color: getScoreColor(overallScore) }">{{ overallScore }}</text>
         <text class="score-lbl">综合评分</text>
@@ -118,6 +136,11 @@ function getScoreColor(score: number): string {
 .header-sub { font-size: 24rpx; color: #9ca3af; margin-top: 4rpx; display: block; }
 
 .loading { display: flex; justify-content: center; padding: 120rpx 0; color: #9ca3af; }
+
+.quick-stats { display: flex; padding: 0 24rpx; margin-bottom: 16rpx; gap: 12rpx; }
+.qs-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 24rpx 0; background: #fff; border-radius: 16rpx; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.02); }
+.qs-val { font-size: 34rpx; font-weight: 700; color: #1f2937; &.gold { color: #d97706; } &.accent { color: #2563eb; } }
+.qs-lbl { font-size: 22rpx; color: #9ca3af; margin-top: 4rpx; }
 
 .score-ring { display: flex; flex-direction: column; align-items: center; padding: 48rpx 0; margin: 0 24rpx; background: #fff; border-radius: 20rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.03); }
 .score-val { font-size: 96rpx; font-weight: 800; }

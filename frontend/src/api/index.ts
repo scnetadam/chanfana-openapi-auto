@@ -540,4 +540,75 @@ export interface TxItem {
   createdAt: string;
 }
 
+export const x402PayApi = {
+  async requestAccess(tradeNo?: string): Promise<{ paid: boolean; data?: any; paymentRequired?: { tradeNo: string; amount: string; payUrl: string } }> {
+    const token = getToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(tradeNo ? { 'x402-trade-no': tradeNo } : {}),
+    };
+
+    try {
+      const res = await new Promise<any>((resolve, reject) => {
+        uni.request({
+          url: `${BASE_URL}/api/data`,
+          method: 'GET',
+          header: headers,
+          timeout: 15000,
+          success: (resp: any) => resolve(resp),
+          fail: (err: any) => reject(err),
+        });
+      });
+
+      if (res.statusCode === 200) {
+        return { paid: true, data: res.data };
+      }
+
+      if (res.statusCode === 402) {
+        const body = res.data;
+        return {
+          paid: false,
+          paymentRequired: {
+            tradeNo: body.trade_no || res.header['x402-trade-no'] || '',
+            amount: body.amount || res.header['x402-amount'] || '0.01',
+            payUrl: body.pay_url || res.header['x402-pay-url'] || '',
+          },
+        };
+      }
+
+      return { paid: false };
+    } catch (e) {
+      return { paid: false };
+    }
+  },
+
+  async checkPayment(tradeNo: string): Promise<{ status: string }> {
+    try {
+      const res = await new Promise<any>((resolve, reject) => {
+        uni.request({
+          url: `${BASE_URL}/orders/${tradeNo}/status`,
+          method: 'GET',
+          timeout: 10000,
+          success: (resp: any) => resolve(resp),
+          fail: (err: any) => reject(err),
+        });
+      });
+      return res.data || { status: 'pending' };
+    } catch (e) {
+      return { status: 'pending' };
+    }
+  },
+
+  getPaymentPageUrl(tradeNo: string): string {
+    return `${BASE_URL}/pay/${tradeNo}`;
+  },
+
+  getDemoPayUrl(tradeNo: string): string {
+    return `${BASE_URL}/pay/demo/${tradeNo}`;
+  },
+};
+
+export const apiResult = ApiResult;
+
 export default request;
