@@ -1,0 +1,58 @@
+name: Deploy to CloudBase
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'entry/**'
+      - 'frontend/**'
+      - 'mp-alipay/**'
+      - 'worker/**'
+      - '*.md'
+  workflow_dispatch:
+
+env:
+  ENV_ID: d1g9iojop685ea11a
+  SERVICE_NAME: guiniu-xin
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install CloudBase CLI
+        run: |
+          npm install -g @cloudbase/cli@latest
+          tcb --version
+
+      - name: Login CloudBase
+        run: |
+          echo "${{ secrets.TCB_API_KEY }}" > /tmp/tcb-key.json
+          tcb login --keyFile /tmp/tcb-key.json
+
+      - name: Build & Deploy Service
+        run: |
+          tcb framework deploy \
+            --envId ${{ env.ENV_ID }} \
+            --serviceName ${{ env.SERVICE_NAME }}
+        env:
+          TCB_ENV_ID: ${{ env.ENV_ID }}
+
+      - name: Set Env Variables
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          tcb functions:code:update \
+            --envId ${{ env.ENV_ID }} \
+            --serviceName ${{ env.SERVICE_NAME }} \
+            --envVars ALIPAY_APP_ID=${{ secrets.ALIPAY_APP_ID }},ALIPAY_APP_PRIVATE_KEY=${{ secrets.ALIPAY_APP_PRIVATE_KEY }},ALIPAY_PUBLIC_KEY=${{ secrets.ALIPAY_PUBLIC_KEY }},AGENT_PAY_API_KEY=${{ secrets.AGENT_PAY_API_KEY }}
+        continue-on-error: true
+
+      - name: Cleanup
+        if: always()
+        run: rm -f /tmp/tcb-key.json
