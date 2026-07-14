@@ -291,14 +291,16 @@ async def order_status(trade_no: str):
 
 # ---------- start ----------
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", "80"))
     print("=" * 50)
     print("  x402-Alipay Demo")
     print("  " + "-" * 46)
     print(f"  mode: {PAY_MODE}")
     print(f"  amount: {PAYMENT_AMOUNT} CNY")
+    print(f"  port: {port}")
     print(f"  endpoints:")
-    print(f"    http://localhost:8000/api/data  (protected, needs payment)")
-    print(f"    http://localhost:8000           (docs)")
+    print(f"    http://localhost:{port}/api/data  (protected, needs payment)")
+    print(f"    http://localhost:{port}           (docs)")
     print("=" * 50)
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=port)

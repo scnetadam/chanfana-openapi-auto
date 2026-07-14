@@ -35,7 +35,9 @@ COPY server.py .
 COPY payment_backends/ ./payment_backends/
 
 # 暴露端口
-EXPOSE 8000
+EXPOSE 80
 
-# 启动服务
+HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
+  CMD curl -f http://localhost:80/ || exit 1
+
 CMD ["python", "server.py"]
