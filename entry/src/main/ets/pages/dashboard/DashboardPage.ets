@@ -1,26 +1,32 @@
 import { HttpClient, ApiResponse } from '../../common/HttpClient';
 import { ContentItem, ContentItemList } from '../../model/DataModels';
-import { APP_CONFIG } from '../../common/Constants';
 import { router } from '@kit.ArkUI';
 
 @Component
 export struct DashboardPage {
   @State contents: ContentItem[] = [];
   @State loading: boolean = true;
-  private userId: string = APP_CONFIG.DEFAULT_USER_ID;
+  @State refreshing: boolean = false;
+  @StorageProp('userId') userId: string = '';
 
   aboutToAppear() {
     this.loadContents();
   }
 
   private async loadContents() {
-    const resp: ApiResponse<ContentItem[]> = await HttpClient.get<ContentItem[]>('/api/content/user/' + this.userId, (data: Record<string, Object>): ContentItem[] => {
+    const uid: string = this.userId;
+    if (uid.length === 0) {
+      this.loading = false;
+      return;
+    }
+    const resp: ApiResponse<ContentItem[]> = await HttpClient.get<ContentItem[]>('/api/content/user/' + uid, (data: Record<string, Object>): ContentItem[] => {
       return ContentItemList.fromJson(data).list;
     });
     if (resp.success && resp.data !== null) {
       this.contents = resp.data;
     }
     this.loading = false;
+    this.refreshing = false;
   }
 
   build() {
@@ -61,20 +67,25 @@ export struct DashboardPage {
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
       } else {
-        List({ space: 12 }) {
-          ForEach(this.contents, (item: ContentItem) => {
-            ListItem() {
-              this.ContentCard(item)
-            }
-            .onClick(() => {
-              const routeParams: Record<string, Object> = { 'contentId': item.id };
-              router.pushUrl({ url: 'pages/share/SharePage', params: routeParams });
-            })
-          }, (item: ContentItem) => item.id)
+        Refresh({ refreshing: $refreshing }) {
+          List({ space: 12 }) {
+            ForEach(this.contents, (item: ContentItem) => {
+              ListItem() {
+                this.ContentCard(item)
+              }
+              .onClick(() => {
+                const routeParams: Record<string, Object> = { 'contentId': item.id };
+                router.pushUrl({ url: 'pages/share/SharePage', params: routeParams });
+              })
+            }, (item: ContentItem) => item.id)
+          }
+          .width('100%')
+          .layoutWeight(1)
+          .padding({ left: 16, right: 16, top: 4 })
         }
-        .width('100%')
-        .layoutWeight(1)
-        .padding({ left: 16, right: 16, top: 4 })
+        .onRefreshing(() => {
+          this.loadContents();
+        })
       }
     }
     .width('100%')

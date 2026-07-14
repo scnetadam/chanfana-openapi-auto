@@ -1,0 +1,67 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/activity/index",
+    "pages/activity/detail",
+    "pages/koltask/index",
+    "pages/aidashboard/index",
+    "pages/settlement/index",
+    "pages/bizcert/index",
+    "pages/publish/index",
+    "pages/dashboard/index",
+    "pages/share/index",
+    "pages/booking/result",
+    "pages/wallet/index"
+  ],
+  "window": {
+    "defaultTitle": "龟钮印信",
+    "navigationBarFrontColor": "black",
+    "titleBarColor": "#ffffff",
+    "backgroundColor": "#f0f2f5"
+  },
+  "tabBar": {
+    "textColor": "#9ca3af",
+    "selectedColor": "#10b981",
+    "backgroundColor": "#ffffff",
+    "items": [
+      {
+        "pagePath": "pages/activity/index",
+        "name": "活动",
+        "icon": "src/static/images/tab-activity.png",
+        "activeIcon": "src/static/images/tab-activity-active.png"
+      },
+      {
+        "pagePath": "pages/koltask/index",
+        "name": "任务",
+        "icon": "src/static/images/tab-koltask.png",
+        "activeIcon": "src/static/images/tab-koltask-active.png"
+      },
+      {
+        "pagePath": "pages/aidashboard/index",
+        "name": "AI评估",
+        "icon": "src/static/images/tab-aidashboard.png",
+        "activeIcon": "src/static/images/tab-aidashboard-active.png"
+      },
+      {
+        "pagePath": "pages/settlement/index",
+        "name": "结算",
+        "icon": "src/static/images/tab-settlement.png",
+        "activeIcon": "src/static/images/tab-settlement-active.png"
+      },
+      {
+        "pagePath": "pages/wallet/index",
+        "name": "我的",
+        "icon": "src/static/images/tab-wallet.png",
+        "activeIcon": "src/static/images/tab-wallet-active.png"
+      }
+    ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "connectSocket": 10000,
+    "uploadFile": 60000,
+    "downloadFile": 60000
+  },
+  "subPackageBuildType": "shared",
+  "usingComponents": {}
+}

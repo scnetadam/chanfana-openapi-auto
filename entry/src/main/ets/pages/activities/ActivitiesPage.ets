@@ -6,6 +6,8 @@ import { router } from '@kit.ArkUI';
 export struct ActivitiesPage {
   @State activities: ActivityItem[] = [];
   @State loading: boolean = true;
+  @State refreshing: boolean = false;
+  @StorageProp('userId') userId: string = '';
 
   aboutToAppear() {
     this.loadActivities();
@@ -19,6 +21,7 @@ export struct ActivitiesPage {
       this.activities = resp.data;
     }
     this.loading = false;
+    this.refreshing = false;
   }
 
   build() {
@@ -56,20 +59,25 @@ export struct ActivitiesPage {
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
       } else {
-        List({ space: 12 }) {
-          ForEach(this.activities, (item: ActivityItem) => {
-            ListItem() {
-              this.ActivityCard(item)
-            }
-            .onClick(() => {
-              const routeParams: Record<string, Object> = { 'id': item.id };
-              router.pushUrl({ url: 'pages/activitydetail/ActivityDetailPage', params: routeParams });
-            })
-          }, (item: ActivityItem) => item.id)
+        Refresh({ refreshing: $refreshing }) {
+          List({ space: 12 }) {
+            ForEach(this.activities, (item: ActivityItem) => {
+              ListItem() {
+                this.ActivityCard(item)
+              }
+              .onClick(() => {
+                const routeParams: Record<string, Object> = { 'id': item.id };
+                router.pushUrl({ url: 'pages/activitydetail/ActivityDetailPage', params: routeParams });
+              })
+            }, (item: ActivityItem) => item.id)
+          }
+          .width('100%')
+          .layoutWeight(1)
+          .padding({ left: 16, right: 16, top: 4 })
         }
-        .width('100%')
-        .layoutWeight(1)
-        .padding({ left: 16, right: 16, top: 4 })
+        .onRefreshing(() => {
+          this.loadActivities();
+        })
       }
     }
     .width('100%')

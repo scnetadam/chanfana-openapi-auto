@@ -35,12 +35,27 @@ function getErrorMessage(err: Object): string {
 }
 
 export class HttpClient {
+  static getUserId(): string {
+    const uid: string | undefined = AppStorage.get<string>('userId');
+    return uid !== null && uid !== undefined ? uid : '';
+  }
+
+  static getToken(): string {
+    const tk: string | undefined = AppStorage.get<string>('token');
+    return tk !== null && tk !== undefined ? tk : '';
+  }
+
   static async get<T>(path: string, fromJson: (data: Record<string, Object>) => T): Promise<ApiResponse<T>> {
     try {
       const req: http.HttpRequest = http.createHttp();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const token: string = HttpClient.getToken();
+      if (token.length > 0) {
+        headers['Authorization'] = 'Bearer ' + token;
+      }
       const resp: http.HttpResponse = await req.request(BASE_URL + path, {
         method: http.RequestMethod.GET,
-        header: { 'Content-Type': 'application/json' } as Record<string, string>,
+        header: headers,
         connectTimeout: 10000,
         readTimeout: 10000,
       });
@@ -67,15 +82,55 @@ export class HttpClient {
   static async post<T>(path: string, body: Record<string, Object>, fromJson: (data: Record<string, Object>) => T): Promise<ApiResponse<T>> {
     try {
       const req: http.HttpRequest = http.createHttp();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const token: string = HttpClient.getToken();
+      if (token.length > 0) {
+        headers['Authorization'] = 'Bearer ' + token;
+      }
       const resp: http.HttpResponse = await req.request(BASE_URL + path, {
         method: http.RequestMethod.POST,
-        header: { 'Content-Type': 'application/json' } as Record<string, string>,
+        header: headers,
         extraData: JSON.stringify(body),
         connectTimeout: 10000,
         readTimeout: 10000,
       });
       req.destroy();
       if (resp.responseCode === 200 || resp.responseCode === 201) {
+        const jsonStr: string = resp.result.toString();
+        const record: Record<string, Object> = parseJsonToRecord(jsonStr);
+        const successVal: Object | undefined = safeGetFromRecord(record, 'success');
+        const success: boolean = successVal !== null && successVal !== undefined && successVal === true;
+        const errorVal: Object | undefined = safeGetFromRecord(record, 'error');
+        const errorStr: string = errorVal !== null && errorVal !== undefined ? String(errorVal) : '';
+        const dataObj: Object | undefined = safeGetFromRecord(record, 'data');
+        const data: T | null = dataObj !== null && dataObj !== undefined && dataObj !== '' ?
+          fromJson(dataObj as Record<string, Object>) : null;
+        return new ApiResponse<T>(success, data, errorStr);
+      }
+      return new ApiResponse<T>(false, null, 'HTTP ' + resp.responseCode.toString());
+    } catch (err) {
+      const errMsg: string = getErrorMessage(err);
+      return new ApiResponse<T>(false, null, 'Network error: ' + errMsg);
+    }
+  }
+
+  static async put<T>(path: string, body: Record<string, Object>, fromJson: (data: Record<string, Object>) => T): Promise<ApiResponse<T>> {
+    try {
+      const req: http.HttpRequest = http.createHttp();
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      const token: string = HttpClient.getToken();
+      if (token.length > 0) {
+        headers['Authorization'] = 'Bearer ' + token;
+      }
+      const resp: http.HttpResponse = await req.request(BASE_URL + path, {
+        method: http.RequestMethod.PUT,
+        header: headers,
+        extraData: JSON.stringify(body),
+        connectTimeout: 10000,
+        readTimeout: 10000,
+      });
+      req.destroy();
+      if (resp.responseCode === 200) {
         const jsonStr: string = resp.result.toString();
         const record: Record<string, Object> = parseJsonToRecord(jsonStr);
         const successVal: Object | undefined = safeGetFromRecord(record, 'success');

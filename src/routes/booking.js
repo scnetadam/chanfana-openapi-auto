@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const { bookingStore, contentStore, userStore, walletStore, activityStore } = require('../models/dataStore');
-const attributionEngine = require('../attributionEngine');
+const aiValueEngine = require('../aiValueEngine');
 
-/** 提交试驾预约 */
-router.post('/submit', (req, res) => {
+/** 提交试驾预约 — AI实时加权计算价值 */
+router.post('/submit', async (req, res) => {
   try {
     const { contentId, userId, name, phone, city, dealerName, refChain } = req.body;
     if (!contentId || !name || !phone) {
       return res.status(400).json({ success: false, error: 'contentId, name, phone required' });
     }
 
-    // 创建预约
     const booking = bookingStore.create({
       contentId,
       userId: userId || '',
@@ -22,41 +21,38 @@ router.post('/submit', (req, res) => {
       refChain: refChain || [],
     });
 
-    // 更新内容统计
     contentStore.updateStats(contentId, { bookings: 1 });
 
-    // BOOKING 归因 → 给发起人加 ¥5
     const content = contentStore.getById(contentId);
     if (content) {
-      const earnings = attributionEngine.CONVERSION_VALUES.BOOKING; // 5
-      // 计算归因分配（如果有传播链）
-      const attribution = attributionEngine.calculate(content, 'BOOKING');
+      const attribution = await aiValueEngine.calculate(content, 'BOOKING');
+      const totalEarnings = attribution.totalPool;
 
-      // 给追踪链上各角色分账
-      for (const node of attribution.chain) {
-        if (node.amount > 0) {
-          walletStore.addPromotion(
-            node.userId,
-            node.amount,
-            `试驾预约分成 · ${content.carModel} (${node.role})`,
-            contentId,
-          );
+      const activity = activityStore.getById(content.activityId);
+      if (activity && activity.totalBudget > 0 && (activity.usedBudget + totalEarnings) > activity.totalBudget) {
+        const remaining = Math.max(0, activity.totalBudget - activity.usedBudget);
+        if (remaining > 0) {
+          const ratio = remaining / totalEarnings;
+          for (const node of attribution.chain) {
+            const adjAmount = +(node.amount * ratio).toFixed(4);
+            if (adjAmount > 0) {
+              walletStore.addPromotion(node.userId, adjAmount, `试驾预约分成 · ${content.carModel} (${node.role})`, contentId);
+            }
+          }
+          activityStore.useBudget(content.activityId, remaining);
+          contentStore.updateStats(contentId, { earnings: remaining });
         }
+        res.json({ success: true, data: { bookingId: booking.id, earnings: remaining || 0, attribution: attribution.chain, budgetExhausted: true } });
+      } else {
+        for (const node of attribution.chain) {
+          if (node.amount > 0) {
+            walletStore.addPromotion(node.userId, node.amount, `试驾预约分成 · ${content.carModel} (${node.role})`, contentId);
+          }
+        }
+        contentStore.updateStats(contentId, { earnings: totalEarnings });
+        activityStore.useBudget(content.activityId, totalEarnings);
+        res.json({ success: true, data: { bookingId: booking.id, earnings: totalEarnings, attribution: attribution.chain } });
       }
-
-      // 更新内容预估收益
-      contentStore.updateStats(contentId, { earnings });
-      // 更新活动预算
-      activityStore.useBudget(content.activityId, earnings);
-
-      res.json({
-        success: true,
-        data: {
-          bookingId: booking.id,
-          earnings,
-          attribution: attribution.chain,
-        },
-      });
     } else {
       res.json({ success: true, data: { bookingId: booking.id } });
     }
@@ -78,8 +74,13 @@ router.post('/checkin', (req, res) => {
 
 /** 查询预约状态 */
 router.get('/:id', (req, res) => {
-  // 简化：返回用户所有预约
   res.json({ success: true, data: bookingStore.getByContent(req.params.id) });
+});
+
+/** 查询用户预约列表 */
+router.get('/user/:userId', (req, res) => {
+  const list = bookingStore.getByUser(req.params.userId);
+  res.json({ success: true, data: { list, total: list.length } });
 });
 
 module.exports = router;

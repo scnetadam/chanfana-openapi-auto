@@ -1,0 +1,60 @@
+{
+  "pages": [
+    {"path": "pages/login/index", "style": {"navigationStyle": "custom", "navigationBarTitleText": "登录"}},
+    {"path": "pages/activity/index", "style": {"navigationBarTitleText": "推广活动"}},
+    {"path": "pages/activity/detail", "style": {"navigationBarTitleText": "活动详情"}},
+    {"path": "pages/koltask/index", "style": {"navigationBarTitleText": "KOL任务"}},
+    {"path": "pages/aidashboard/index", "style": {"navigationBarTitleText": "AI评估"}},
+    {"path": "pages/settlement/index", "style": {"navigationBarTitleText": "结算中心"}},
+    {"path": "pages/bizcert/index", "style": {"navigationBarTitleText": "商家认证"}},
+    {"path": "pages/publish/index", "style": {"navigationBarTitleText": "发布内容"}},
+    {"path": "pages/dashboard/index", "style": {"navigationBarTitleText": "我的内容"}},
+    {"path": "pages/share/index", "style": {"navigationBarTitleText": "内容详情"}},
+    {"path": "pages/booking/result", "style": {"navigationBarTitleText": "预约成功"}},
+    {"path": "pages/wallet/index", "style": {"navigationBarTitleText": "我的钱包"}}
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "龟钮印信",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f0f2f5"
+  },
+  "tabBar": {
+    "color": "#9ca3af",
+    "selectedColor": "#10b981",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/activity/index",
+        "text": "活动",
+        "iconPath": "src/static/images/tab-activity.png",
+        "selectedIconPath": "src/static/images/tab-activity-active.png"
+      },
+      {
+        "pagePath": "pages/koltask/index",
+        "text": "任务",
+        "iconPath": "src/static/images/tab-koltask.png",
+        "selectedIconPath": "src/static/images/tab-koltask-active.png"
+      },
+      {
+        "pagePath": "pages/aidashboard/index",
+        "text": "AI评估",
+        "iconPath": "src/static/images/tab-aidashboard.png",
+        "selectedIconPath": "src/static/images/tab-aidashboard-active.png"
+      },
+      {
+        "pagePath": "pages/settlement/index",
+        "text": "结算",
+        "iconPath": "src/static/images/tab-settlement.png",
+        "selectedIconPath": "src/static/images/tab-settlement-active.png"
+      },
+      {
+        "pagePath": "pages/wallet/index",
+        "text": "我的",
+        "iconPath": "src/static/images/tab-wallet.png",
+        "selectedIconPath": "src/static/images/tab-wallet-active.png"
+      }
+    ]
+  }
+}

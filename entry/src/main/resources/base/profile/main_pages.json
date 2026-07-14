@@ -1,12 +1,27 @@
 {
   "src": [
     "pages/Index",
+    "pages/login/LoginPage",
     "pages/activities/ActivitiesPage",
     "pages/activitydetail/ActivityDetailPage",
     "pages/publish/PublishPage",
     "pages/dashboard/DashboardPage",
     "pages/share/SharePage",
     "pages/booking/BookingPage",
-    "pages/wallet/WalletPage"
+    "pages/wallet/WalletPage",
+    "pages/notifications/NotificationsPage",
+    "pages/profile/ProfilePage",
+    "pages/koltask/KolTaskPage",
+    "pages/bizcert/BizCertPage",
+    "pages/aidashboard/AiDashboardPage",
+    "pages/settlement/SettlementPage",
+    "pages/kolaudit/KolAuditPage",
+    "pages/opcsupport/OpcSupportPage",
+    "pages/aitools/AiToolsPage",
+    "pages/hash/HashPage",
+    "pages/cfsstorage/CfsStoragePage",
+    "pages/maasplaza/MaasPlazaPage",
+    "pages/videostream/VideoStreamPage",
+    "pages/stereodisplay/StereoDisplayPage"
   ]
 }

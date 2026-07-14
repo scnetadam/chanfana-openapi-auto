@@ -1,8 +1,8 @@
 import { HttpClient, ApiResponse, toPostBody } from '../../common/HttpClient';
 import { ContentItem, BookingResult } from '../../model/DataModels';
 import { RouterParams } from '../../model/RouterParams';
-import { APP_CONFIG } from '../../common/Constants';
 import { router, promptAction } from '@kit.ArkUI';
+import { pasteboard } from '@kit.BasicServicesKit';
 
 @Entry
 @Component
@@ -13,6 +13,8 @@ struct SharePage {
   @State bookPhone: string = '';
   @State bookCity: string = '';
   @State submitting: boolean = false;
+  @StorageProp('userId') userId: string = '';
+  @StorageProp('nickName') nickName: string = '';
   private contentId: string = '';
 
   aboutToAppear() {
@@ -39,8 +41,8 @@ struct SharePage {
   private async trackView() {
     const body: Record<string, Object> = {};
     body['contentId'] = this.contentId;
-    body['spreadUserId'] = APP_CONFIG.DEFAULT_USER_ID;
-    body['spreadNickName'] = APP_CONFIG.DEFAULT_NICK_NAME;
+    body['spreadUserId'] = this.userId;
+    body['spreadNickName'] = this.nickName;
     await HttpClient.post<Object>('/api/content/track/view', toPostBody(body), (data: Record<string, Object>): Object => {
       return data;
     });
@@ -58,7 +60,7 @@ struct SharePage {
     this.submitting = true;
     const body: Record<string, Object> = {};
     body['contentId'] = this.contentId;
-    body['userId'] = APP_CONFIG.DEFAULT_USER_ID;
+    body['userId'] = this.userId;
     body['name'] = this.bookName;
     body['phone'] = this.bookPhone;
     body['city'] = this.bookCity;
@@ -97,7 +99,27 @@ struct SharePage {
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
 
-        Row().width(40)
+        Row() {
+          SymbolGlyph($r('sys.symbol.share'))
+            .fontSize(20)
+            .fontColor([$r('app.color.primary_color')])
+        }
+        .width(40)
+        .height(40)
+        .justifyContent(FlexAlign.Center)
+        .onClick(() => {
+          const url: string = this.content !== null ? this.content.shareUrl : '';
+          if (url.length > 0) {
+            try {
+              const pasteData: pasteboard.PasteData = pasteboard.createData(pasteboard.MIMETYPE_TEXT_PLAIN, url);
+              const sysPasteboard: pasteboard.SystemPasteboard = pasteboard.getSystemPasteboard();
+              sysPasteboard.setData(pasteData);
+              promptAction.showToast({ message: '链接已复制' });
+            } catch (e) {
+              promptAction.showToast({ message: '复制失败' });
+            }
+          }
+        })
       }
       .width('100%')
       .height(56)

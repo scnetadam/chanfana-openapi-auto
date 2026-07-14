@@ -1,0 +1,32 @@
+{
+  "appid": "2021007168648699",
+  "component2": true,
+  "enableAppxNg": true,
+  "axmlStrictCheck": false,
+  "enableDistFileMinify": false,
+  "enableParallelLoader": false,
+  "enableNodeModuleBabelTransform": true,
+  "format": 2,
+  "pluginResolution": {},
+  "developOptions": {
+    "parallel": false,
+    "minify": false
+  },
+  "compileOptions": {
+    "component2": true,
+    "transpile": {
+      "script": {
+        "ignore": []
+      }
+    }
+  },
+  "uploadExclude": [],
+  "assetsInclude": [],
+  "projectname": "龟钮印信",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  }
+}

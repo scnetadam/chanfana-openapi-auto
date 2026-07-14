@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API连接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-item h3 {
+            margin: 0 0 10px 0;
+            color: #666;
+        }
+        button {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #40a9ff;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            background: #f6ffed;
+            border: 1px solid #b7eb8f;
+            color: #52c41a;
+        }
+        .error {
+            background: #fff2f0;
+            border: 1px solid #ffccc7;
+            color: #ff4d4f;
+        }
+        .loading {
+            color: #faad14;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>龟钮印信 API 连接测试</h1>
+        
+        <div class="test-item">
+            <h3>测试1: 健康检查 (Health Check)</h3>
+            <button onclick="testHealth()">测试</button>
+            <div id="health-result" class="result"></div>
+        </div>
+
+        <div class="test-item">
+            <h3>测试2: 登录接口 (Login API)</h3>
+            <button onclick="testLogin()">测试</button>
+            <div id="login-result" class="result"></div>
+        </div>
+
+        <div class="test-item">
+            <h3>测试3: 活动列表 (Activity List)</h3>
+            <button onclick="testActivity()">测试</button>
+            <div id="activity-result" class="result"></div>
+        </div>
+
+        <div class="test-item">
+            <h3>测试4: MAAS大模型列表</h3>
+            <button onclick="testMaas()">测试</button>
+            <div id="maas-result" class="result"></div>
+        </div>
+
+        <div class="test-item" style="background: #e6f7ff; border-color: #91d5ff;">
+            <h3 style="color: #1890ff;">说明</h3>
+            <p>如果所有测试都成功，说明API服务正常运行。</p>
+            <p>如果测试失败，请检查：</p>
+            <ul>
+                <li>后端服务是否启动（端口3000）</li>
+                <li>防火墙是否阻止连接</li>
+                <li>API地址是否正确</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000';
+
+        async function testHealth() {
+            const result = document.getElementById('health-result');
+            result.className = 'result loading';
+            result.textContent = '测试中...';
+
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                result.className = 'result success';
+                result.textContent = '✅ 成功\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ 失败\n' + error.message;
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('login-result');
+            result.className = 'result loading';
+            result.textContent = '测试中...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nickName: '测试用户',
+                        platform: 'alipay'
+                    })
+                });
+                const data = await response.json();
+                result.className = 'result success';
+                result.textContent = '✅ 成功\n' + JSON.stringify(data, null, 2);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ 失败\n' + error.message;
+            }
+        }
+
+        async function testActivity() {
+            const result = document.getElementById('activity-result');
+            result.className = 'result loading';
+            result.textContent = '测试中...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/activity/list`);
+                const data = await response.json();
+                result.className = 'result success';
+                result.textContent = '✅ 成功\n活动数量: ' + (data.data && data.data.list ? data.data.list.length : 0) + '\n' + JSON.stringify(data, null, 2).substring(0, 500);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ 失败\n' + error.message;
+            }
+        }
+
+        async function testMaas() {
+            const result = document.getElementById('maas-result');
+            result.className = 'result loading';
+            result.textContent = '测试中...';
+
+            try {
+                // 先登录获取token
+                const loginRes = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        nickName: '测试用户',
+                        platform: 'alipay'
+                    })
+                });
+                const loginData = await loginRes.json();
+                const token = loginData.data.token;
+
+                // 测试MAAS接口
+                const response = await fetch(`${API_BASE}/api/maas/models`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const data = await response.json();
+                result.className = 'result success';
+                result.textContent = '✅ 成功\n模型数量: ' + (data.data && data.data.models ? data.data.models.length : 0) + '\n' + JSON.stringify(data, null, 2).substring(0, 500);
+            } catch (error) {
+                result.className = 'result error';
+                result.textContent = '❌ 失败\n' + error.message;
+            }
+        }
+
+        // 页面加载时自动测试
+        window.onload = () => {
+            setTimeout(testHealth, 500);
+        };
+    </script>
+</body>
+</html>

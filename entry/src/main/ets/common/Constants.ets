@@ -1,8 +1,6 @@
 export class AppConfig {
   API_BASE: string = 'http://10.0.2.2:3000';
   SHARE_BASE_URL: string = 'https://x402.app/s';
-  DEFAULT_USER_ID: string = 'u_demo001';
-  DEFAULT_NICK_NAME: string = '推广达人';
 }
 
 export const APP_CONFIG: AppConfig = new AppConfig();
