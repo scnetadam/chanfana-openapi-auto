@@ -14,6 +14,7 @@ on:
 env:
   ENV_ID: d1g9iojop685ea11a
   SERVICE_NAME: guiniu-xin
+  IMAGE_NAME: guiniu-xin
 
 jobs:
   deploy:
@@ -21,38 +22,66 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
+
+      - name: Login Tencent Cloud Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ccr.ccs.tencentyun.com
+          username: ${{ secrets.TCR_USERNAME }}
+          password: ${{ secrets.TCR_PASSWORD }}
+
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.cloudbase
+          push: true
+          tags: |
+            ccr.ccs.tencentyun.com/${{ secrets.TCR_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
+            ccr.ccs.tencentyun.com/${{ secrets.TCR_NAMESPACE }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Install CloudBase CLI
         run: |
-          npm install -g @cloudbase/cli@latest
-          tcb --version
+          npm install -g @cloudbase/cli@2.9.0
+          tcb --version || echo "WARN: tcb version check failed"
 
       - name: Login CloudBase
         run: |
           echo "${{ secrets.TCB_API_KEY }}" > /tmp/tcb-key.json
           tcb login --keyFile /tmp/tcb-key.json
 
-      - name: Build & Deploy Service
+      - name: Deploy CloudBase Service
         run: |
-          tcb framework deploy \
-            --envId ${{ env.ENV_ID }} \
-            --serviceName ${{ env.SERVICE_NAME }}
-        env:
-          TCB_ENV_ID: ${{ env.ENV_ID }}
-
-      - name: Set Env Variables
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          tcb functions:code:update \
+          tcb code:deploy \
             --envId ${{ env.ENV_ID }} \
             --serviceName ${{ env.SERVICE_NAME }} \
-            --envVars ALIPAY_APP_ID=${{ secrets.ALIPAY_APP_ID }},ALIPAY_APP_PRIVATE_KEY=${{ secrets.ALIPAY_APP_PRIVATE_KEY }},ALIPAY_PUBLIC_KEY=${{ secrets.ALIPAY_PUBLIC_KEY }},AGENT_PAY_API_KEY=${{ secrets.AGENT_PAY_API_KEY }}
+            --image ccr.ccs.tencentyun.com/${{ secrets.TCR_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest
         continue-on-error: true
+
+      - name: Deploy via CloudBase API (fallback)
+        if: failure()
+        run: |
+          curl -X POST "https://tcb-api.tencentcloudapi.com/web?envId=${{ env.ENV_ID }}&action=Auth.Login" \
+            -H "Content-Type: application/json" \
+            -d "{\"refresh_token\":\"${{ secrets.TCB_REFRESH_TOKEN }}\"}" \
+            -o /tmp/tcb-auth.json
+          ACCESS_TOKEN=$(cat /tmp/tcb-auth.json | jq -r '.access_token')
+          
+          curl -X POST "https://tcb-api.tencentcloudapi.com/web?envId=${{ env.ENV_ID }}&action=RunContainerVersionCreate" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer ${ACCESS_TOKEN}" \
+            -d "{
+              \"ServiceName\": \"${{ env.SERVICE_NAME }}\",
+              \"ImageName\": \"ccr.ccs.tencentyun.com/${{ secrets.TCR_NAMESPACE }}/${{ env.IMAGE_NAME }}:latest\",
+              \"ContainerPort\": 80,
+              \"Cpu\": 1,
+              \"Mem\": 1
+            }"
 
       - name: Cleanup
         if: always()
-        run: rm -f /tmp/tcb-key.json
+        run: rm -f /tmp/tcb-key.json /tmp/tcb-auth.json
