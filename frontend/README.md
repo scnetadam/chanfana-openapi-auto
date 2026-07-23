@@ -17,7 +17,17 @@ src/
 │   ├── publish/  # 内容发布页
 │   ├── dashboard/# 数据看板
 │   ├── wallet/   # 钱包
-│   └── share/    # 内容详情/分享
+│   ├── share/    # 内容详情/分享
+│   ├── opc/      # OPC创业广场 ⭐ 新增
+│   │   ├── index.vue      # 创业广场首页
+│   │   ├── city.vue       # 城市详情
+│   │   ├── policy.vue     # 政策详情
+│   │   ├── subsidy.vue    # 补贴申请
+│   │   ├── project.vue    # 项目展示
+│   │   └── apply.vue      # 申请入驻
+│   ├── biz/      # B端商家
+│   ├── ai/       # AI应用
+│   └── ...       # 其他页面
 ├── stores/       # Pinia 状态
 ├── utils/        # 工具函数
 └── static/       # 静态资源

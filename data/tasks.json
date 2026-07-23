@@ -1,0 +1,68 @@
+[
+  {
+    "id": "task_001",
+    "agentId": "agent_001",
+    "type": "review",
+    "title": "7月新能源车深度评测",
+    "budget": 8000,
+    "status": "completed",
+    "assignedAt": "2026-07-01",
+    "completedAt": "2026-07-03",
+    "kolTrack": "B"
+  },
+  {
+    "id": "task_002",
+    "agentId": "agent_003",
+    "type": "review",
+    "title": "特斯拉Model 3试驾体验",
+    "budget": 5000,
+    "status": "completed",
+    "assignedAt": "2026-07-02",
+    "completedAt": "2026-07-04",
+    "kolTrack": "B"
+  },
+  {
+    "id": "task_003",
+    "agentId": "agent_002",
+    "type": "promotion",
+    "title": "7月KOC种草活动",
+    "budget": 12000,
+    "status": "completed",
+    "assignedAt": "2026-07-03",
+    "completedAt": "2026-07-10",
+    "kolTrack": "C"
+  },
+  {
+    "id": "task_004",
+    "agentId": "agent_004",
+    "type": "ai_eval",
+    "title": "AI驾驶辅助系统评测",
+    "budget": 6000,
+    "status": "completed",
+    "assignedAt": "2026-07-10",
+    "completedAt": "2026-07-15",
+    "kolTrack": "B"
+  },
+  {
+    "id": "task_005",
+    "agentId": "agent_001",
+    "type": "review",
+    "title": "季度深度评测合作（7-9月）",
+    "budget": 15000,
+    "status": "pending",
+    "assignedAt": "2026-07-20",
+    "completedAt": null,
+    "kolTrack": "B"
+  },
+  {
+    "id": "task_006",
+    "agentId": "agent_003",
+    "type": "review",
+    "title": "新能源车试驾评测",
+    "budget": 3500,
+    "status": "completed",
+    "assignedAt": "2026-07-15",
+    "completedAt": "2026-07-18",
+    "kolTrack": "B"
+  }
+]

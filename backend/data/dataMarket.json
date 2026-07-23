@@ -1,0 +1,74 @@
+[
+  {
+    "id": "d001",
+    "title": "汽车KOL行为数据（华南）",
+    "category": "KOL行为",
+    "desc": "覆盖华南地区50+汽车KOL的发布频次、互动率、转化数据，含抖音/快手/小红书多平台",
+    "price": 2999,
+    "unit": "月",
+    "provider": "龟钮数据",
+    "sample": true,
+    "hashAnchor": true,
+    "status": "listed"
+  },
+  {
+    "id": "d002",
+    "title": "新能源车意向用户画像",
+    "category": "用户画像",
+    "desc": "基于2000+真实购车用户行为数据，含品牌偏好、预算区间、决策周期等维度",
+    "price": 4999,
+    "unit": "份",
+    "provider": "龟钮数据",
+    "sample": true,
+    "hashAnchor": true,
+    "status": "listed"
+  },
+  {
+    "id": "d003",
+    "title": "4S店短视频运营数据",
+    "category": "运营数据",
+    "desc": "全国200+4S店抖音/视频号运营数据，含播放量、粉丝增长、线索转化率",
+    "price": 1999,
+    "unit": "月",
+    "provider": "龟钮数据",
+    "sample": false,
+    "hashAnchor": false,
+    "status": "listed"
+  },
+  {
+    "id": "d004",
+    "title": "KOL权重评分数据集",
+    "category": "KOL权重",
+    "desc": "汽车垂类KOL权重评分模型训练数据，含粉丝质量、内容质量、商业价值三大维度评分",
+    "price": 8999,
+    "unit": "份",
+    "provider": "龟钮数据",
+    "sample": true,
+    "hashAnchor": true,
+    "status": "listed"
+  },
+  {
+    "id": "d005",
+    "title": "汽车内容消费趋势",
+    "category": "行业报告",
+    "desc": "2026上半年汽车内容消费趋势报告，含平台分布、内容形式偏好、转化漏斗分析",
+    "price": 1599,
+    "unit": "份",
+    "provider": "龟钮研究院",
+    "sample": true,
+    "hashAnchor": false,
+    "status": "listed"
+  },
+  {
+    "id": "d006",
+    "title": "KOL数据资产入表模板",
+    "category": "工具",
+    "desc": "KOL数据资产入表标准化模板，含Hash指纹、权重评分、财务报表模板，适配广数交所挂牌",
+    "price": 999,
+    "unit": "套",
+    "provider": "龟钮数据",
+    "sample": false,
+    "hashAnchor": true,
+    "status": "listed"
+  }
+]

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "sa_mrwrgcxw37d5ff",
+    "title": "Test",
+    "content": "",
+    "source": "unknown",
+    "author": "",
+    "url": "",
+    "publishedAt": "2026-07-23T00:16:03.716Z",
+    "sentiment": {
+      "label": "neutral",
+      "score": 0.5,
+      "confidence": 0.3,
+      "hits": []
+    },
+    "topics": [],
+    "brandMentions": [],
+    "analyzedAt": "2026-07-23T00:16:03.716Z",
+    "createdAt": "2026-07-23T00:16:03.716Z"
+  }
+]

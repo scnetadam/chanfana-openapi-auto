@@ -9,35 +9,35 @@ export default class EntryAbility extends UIAbility {
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     } catch (err) {
-      hilog.error(DOMAIN, 'X402', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
+      hilog.error(DOMAIN, 'GuiniuZiyu', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
     }
-    hilog.info(DOMAIN, 'X402', '%{public}s', 'Ability onCreate');
+    hilog.info(DOMAIN, 'GuiniuZiyu', '%{public}s', 'Ability onCreate');
   }
 
   onDestroy(): void {
-    hilog.info(DOMAIN, 'X402', '%{public}s', 'Ability onDestroy');
+    hilog.info(DOMAIN, 'GuiniuZiyu', '%{public}s', 'Ability onDestroy');
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
-    hilog.info(DOMAIN, 'X402', '%{public}s', 'Ability onWindowStageCreate');
+    hilog.info(DOMAIN, 'GuiniuZiyu', '%{public}s', 'Ability onWindowStageCreate');
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
-        hilog.error(DOMAIN, 'X402', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
+        hilog.error(DOMAIN, 'GuiniuZiyu', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
         return;
       }
-      hilog.info(DOMAIN, 'X402', 'Succeeded in loading the content.');
+      hilog.info(DOMAIN, 'GuiniuZiyu', 'Succeeded in loading the content.');
     });
   }
 
   onWindowStageDestroy(): void {
-    hilog.info(DOMAIN, 'X402', '%{public}s', 'Ability onWindowStageDestroy');
+    hilog.info(DOMAIN, 'GuiniuZiyu', '%{public}s', 'Ability onWindowStageDestroy');
   }
 
   onForeground(): void {
-    hilog.info(DOMAIN, 'X402', '%{public}s', 'Ability onForeground');
+    hilog.info(DOMAIN, 'GuiniuZiyu', '%{public}s', 'Ability onForeground');
   }
 
   onBackground(): void {
-    hilog.info(DOMAIN, 'X402', '%{public}s', 'Ability onBackground');
+    hilog.info(DOMAIN, 'GuiniuZiyu', '%{public}s', 'Ability onBackground');
   }
 }

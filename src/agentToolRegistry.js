@@ -209,7 +209,7 @@ function _buildAgentPrompt(toolId, params) {
   const builder = PROMPT_BUILDERS[toolId];
   if (builder) return builder(p);
   return [
-    { role: 'system', content: '你是龟钮印信Agent助手，为汽车资讯KOL提供专业支持。' },
+    { role: 'system', content: '你是龟钮自驭Agent助手，为汽车资讯KOL提供专业支持。' },
     { role: 'user', content: p.text || p.query || '请执行任务' },
   ];
 }

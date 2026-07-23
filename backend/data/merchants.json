@@ -1,0 +1,24 @@
+[
+  {
+    "id": "mch_mrwux803479157",
+    "userId": "u_1784771589233_hparzk",
+    "companyName": "TestCo",
+    "contactName": "",
+    "contactPhone": "13800138000",
+    "contactEmail": "",
+    "industry": "汽车",
+    "businessLicense": "",
+    "address": "",
+    "description": "",
+    "status": "pending",
+    "verifiedAt": null,
+    "kycLevel": "none",
+    "commissionRate": 0.3,
+    "totalSpent": 0,
+    "totalLeads": 0,
+    "totalConversions": 0,
+    "rating": 0,
+    "createdAt": "2026-07-23T01:53:09.315Z",
+    "updatedAt": "2026-07-23T01:53:09.315Z"
+  }
+]

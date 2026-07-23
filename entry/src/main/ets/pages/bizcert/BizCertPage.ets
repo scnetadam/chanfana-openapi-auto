@@ -148,11 +148,11 @@ struct BizCertPage {
                 AppStorage.SetOrCreate<number>('tabIndex', 1);
                 router.back();
               })
-              Divider().color('#1A182431')
+              Divider().color($r('app.color.divider_color'))
               this.MenuRow('商家产品管理', () => {
                 promptAction.showToast({ message: '即将开放' });
               })
-              Divider().color('#1A182431')
+              Divider().color($r('app.color.divider_color'))
               this.MenuRow('结算中心', () => {
                 AppStorage.SetOrCreate<number>('tabIndex', 3);
                 router.back();

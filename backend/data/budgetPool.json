@@ -1,0 +1,32 @@
+[
+  {
+    "id": "budget-guiniu-zy",
+    "project": "guiniu-zy",
+    "projectName": "龟钮自驭",
+    "totalBudget": 50000,
+    "usedBudget": 0,
+    "status": "active",
+    "alertThreshold": 5000,
+    "createdAt": "2026-07-20T15:57:23.652Z"
+  },
+  {
+    "id": "budget-guiniu-yx",
+    "project": "guiniu-yx",
+    "projectName": "龟钮自驭",
+    "totalBudget": 80000,
+    "usedBudget": 0,
+    "status": "active",
+    "alertThreshold": 8000,
+    "createdAt": "2026-07-20T15:57:23.652Z"
+  },
+  {
+    "id": "budget-guiniu-yz",
+    "project": "guiniu-yz",
+    "projectName": "龟钮自驭",
+    "totalBudget": 60000,
+    "usedBudget": 0,
+    "status": "active",
+    "alertThreshold": 6000,
+    "createdAt": "2026-07-20T15:57:23.652Z"
+  }
+]

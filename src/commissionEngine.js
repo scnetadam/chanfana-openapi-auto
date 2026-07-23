@@ -10,6 +10,46 @@ const COMMISSION_TYPES = {
   BIZ_OVERRIDE: { key: 'biz_override', label: 'B端自定义分佣', rate: null },
 };
 
+const THREE_WAY_SPLIT = {
+  KOL_RATE: 0.60,
+  KOC_RATE: 0.30,
+  PLATFORM_RATE: 0.10,
+  MIN_KOL_RATE: 0.40,
+  MIN_KOC_RATE: 0.15,
+  MAX_PLATFORM_RATE: 0.20,
+};
+
+function calculateThreeWaySplit(totalReward, options = {}) {
+  const { kolRate, kocRate, platformRate, isKol = true, chainDepth = 0 } = options;
+
+  let kr = kolRate || THREE_WAY_SPLIT.KOL_RATE;
+  let kor = kocRate || THREE_WAY_SPLIT.KOC_RATE;
+  let pr = platformRate || THREE_WAY_SPLIT.PLATFORM_RATE;
+
+  kr = Math.max(THREE_WAY_SPLIT.MIN_KOL_RATE, kr);
+  kor = Math.max(THREE_WAY_SPLIT.MIN_KOC_RATE, kor);
+  pr = Math.min(THREE_WAY_SPLIT.MAX_PLATFORM_RATE, pr);
+
+  const total = kr + kor + pr;
+  kr = kr / total;
+  kor = kor / total;
+  pr = pr / total;
+
+  const kolShare = +(totalReward * kr).toFixed(4);
+  const kocShare = +(totalReward * kor).toFixed(4);
+  const platformShare = +(totalReward * pr).toFixed(4);
+
+  return {
+    totalReward: +totalReward.toFixed(4),
+    kol: { rate: +(kr * 100).toFixed(1), amount: kolShare, role: 'KOL' },
+    koc: { rate: +(kor * 100).toFixed(1), amount: kocShare, role: 'KOC' },
+    platform: { rate: +(pr * 100).toFixed(1), amount: platformShare, role: 'PLATFORM' },
+    isKol,
+    chainDepth,
+    noSubordinate: chainDepth === 0,
+  };
+}
+
 async function calculateCommission(task, submission, options = {}) {
   const { commissionType = 'task_reward', bizOverrideRate } = options;
   const rule = COMMISSION_TYPES[commissionType.toUpperCase()];
@@ -120,5 +160,7 @@ async function settleCommission(kolUserId, amount, description, refId) {
 module.exports = {
   calculateCommission,
   settleCommission,
+  calculateThreeWaySplit,
   COMMISSION_TYPES,
+  THREE_WAY_SPLIT,
 };

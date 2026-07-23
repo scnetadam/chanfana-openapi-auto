@@ -1,0 +1,165 @@
+[
+  {
+    "id": "u_1784603450073_00c70fba",
+    "phone": "13900139001",
+    "realName": null,
+    "idNumber": null,
+    "openId": "open_9001_6d21c3",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "role": "kol",
+    "platform": "alipay",
+    "balance": 0,
+    "kycLevel": "none",
+    "complianceWeight": 0.3,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ2MDM0NTAwNzNfMDBjNzBmYmEiLCJvcGVuSWQiOiJvcGVuXzkwMDFfNmQyMWMzIiwicm9sZSI6ImtvbCIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LWRldmVjbyIsImlhdCI6MTc4NDYwMzQ1MDA3NCwiZXhwIjoxNzg1MjA4MjUwMDc0LCJhdWQiOiJzZWFsIiwic2NvcGUiOiJzc28ifQ.zzjYCpf3onaM01dHAfQFKuPk65DmCF_Rti77odBHjhM",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ2MDM0NTAwNzNfMDBjNzBmYmEiLCJvcGVuSWQiOiJvcGVuXzkwMDFfNmQyMWMzIiwicm9sZSI6ImtvbCIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LWRldmVjbyIsImlhdCI6MTc4NDYwMzQ1MDA3NCwiZXhwIjoxNzg1MjA4MjUwMDc0LCJhdWQiOiJkZXZlY28iLCJzY29wZSI6InNzbyJ9.e0OZZFZOaGRSc9k0VNp25nLdH4GETrf41FXCNQmZ6Do",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ2MDM0NTAwNzNfMDBjNzBmYmEiLCJvcGVuSWQiOiJvcGVuXzkwMDFfNmQyMWMzIiwicm9sZSI6ImtvbCIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LWRldmVjbyIsImlhdCI6MTc4NDYwMzQ1MDA3NCwiZXhwIjoxNzg1MjA4MjUwMDc0LCJhdWQiOiJ2ZXJpZnkiLCJzY29wZSI6InNzbyJ9.X-64Hq_uQIRM9dKcPdeosgRnJg0BnzFGV14C6qPsOmI",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ2MDM0NTAwNzNfMDBjNzBmYmEiLCJvcGVuSWQiOiJvcGVuXzkwMDFfNmQyMWMzIiwicm9sZSI6ImtvbCIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LWRldmVjbyIsImlhdCI6MTc4NDYwMzQ1MDA3NCwiZXhwIjoxNzg1MjA4MjUwMDc0LCJhdWQiOiJndWluaXUiLCJzY29wZSI6InNzbyJ9.eqa0RyJZbbfbYGO8ScQ41X4f-6vUN99-tBD75tWdiCo"
+    },
+    "createdAt": "2026-07-21T03:10:50.073Z"
+  },
+  [],
+  {
+    "id": "u_1784763430107_wm9eqc",
+    "openId": "open_final_e2e_te",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "user",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMDdfd205ZXFjIiwib3BlbklkIjoib3Blbl9maW5hbF9lMmVfdGUiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM0MzAxMDcsImV4cCI6MTc4NTM2ODIzMDEwNywiYXVkIjoic2VhbCIsInNjb3BlIjoic3NvIn0.wJY-WT3cTOsnkCXdt3PxcK_27JlW0IvsWJCEmGdgfEw",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMDdfd205ZXFjIiwib3BlbklkIjoib3Blbl9maW5hbF9lMmVfdGUiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM0MzAxMDcsImV4cCI6MTc4NTM2ODIzMDEwNywiYXVkIjoiZGV2ZWNvIiwic2NvcGUiOiJzc28ifQ.IjhYuUCvbmbfzEg2rkwFiuC6JEyZM_0Tj7KxOS_ZT6U",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMDdfd205ZXFjIiwib3BlbklkIjoib3Blbl9maW5hbF9lMmVfdGUiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM0MzAxMDcsImV4cCI6MTc4NTM2ODIzMDEwNywiYXVkIjoidmVyaWZ5Iiwic2NvcGUiOiJzc28ifQ.U-P1t6D7C87ItMxnIYSse1rZCFOk992ECCO2U--EcTU",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMDdfd205ZXFjIiwib3BlbklkIjoib3Blbl9maW5hbF9lMmVfdGUiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM0MzAxMDcsImV4cCI6MTc4NTM2ODIzMDEwNywiYXVkIjoiZ3Vpbml1Iiwic2NvcGUiOiJzc28ifQ.XHhHaFPCoaeiuwDUL_S4RujPoGPpqY-YwUUIeUO3qtY"
+    },
+    "createdAt": "2026-07-22T23:37:10.107Z"
+  },
+  {
+    "id": "u_1784763430135_7g4rp8",
+    "openId": "open_transfer_tar",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "user",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMzVfN2c0cnA4Iiwib3BlbklkIjoib3Blbl90cmFuc2Zlcl90YXIiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzOTksImV4cCI6MTc4NTM2ODM3MjM5OSwiYXVkIjoic2VhbCIsInNjb3BlIjoic3NvIn0.8o9RfxxS00Xk8I6DT6VI1kuMuuzIqtEh5Np8zNmVF-U",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMzVfN2c0cnA4Iiwib3BlbklkIjoib3Blbl90cmFuc2Zlcl90YXIiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzOTksImV4cCI6MTc4NTM2ODM3MjM5OSwiYXVkIjoiZGV2ZWNvIiwic2NvcGUiOiJzc28ifQ.v_SjxQFtDX7oe8sEXuUX7nCvd-21jvbcgin5MXAzhRg",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMzVfN2c0cnA4Iiwib3BlbklkIjoib3Blbl90cmFuc2Zlcl90YXIiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzOTksImV4cCI6MTc4NTM2ODM3MjM5OSwiYXVkIjoidmVyaWZ5Iiwic2NvcGUiOiJzc28ifQ.rI_ZEZRg-tR6KacXbeuJbQSMZJ7DmcOUDzxIRzmnEak",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM0MzAxMzVfN2c0cnA4Iiwib3BlbklkIjoib3Blbl90cmFuc2Zlcl90YXIiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzOTksImV4cCI6MTc4NTM2ODM3MjM5OSwiYXVkIjoiZ3Vpbml1Iiwic2NvcGUiOiJzc28ifQ.fym6JeWvWbcoknYq3WK4T4sto4Uf2pe3jSki8ewuO80"
+    },
+    "createdAt": "2026-07-22T23:37:10.135Z"
+  },
+  {
+    "id": "u_1784763572368_alsko4",
+    "openId": "open_final_test_u",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "kol",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM1NzIzNjhfYWxza280Iiwib3BlbklkIjoib3Blbl9maW5hbF90ZXN0X3UiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzNjgsImV4cCI6MTc4NTM2ODM3MjM2OCwiYXVkIjoic2VhbCIsInNjb3BlIjoic3NvIn0.jtqXcueO7xjlti8_6rWxcqMxFeaLTDwtWMwtqMg4T5I",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM1NzIzNjhfYWxza280Iiwib3BlbklkIjoib3Blbl9maW5hbF90ZXN0X3UiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzNjgsImV4cCI6MTc4NTM2ODM3MjM2OCwiYXVkIjoiZGV2ZWNvIiwic2NvcGUiOiJzc28ifQ.3-KDuf8n-NIL5NLdg_KTw1Te55JQ9jEt0GoYpcRVVgM",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM1NzIzNjhfYWxza280Iiwib3BlbklkIjoib3Blbl9maW5hbF90ZXN0X3UiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzNjgsImV4cCI6MTc4NTM2ODM3MjM2OCwiYXVkIjoidmVyaWZ5Iiwic2NvcGUiOiJzc28ifQ.7gw18AWVTsF4VS_RiCKQbUyEV8UvxKtm6UK9AtqMSMg",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM1NzIzNjhfYWxza280Iiwib3BlbklkIjoib3Blbl9maW5hbF90ZXN0X3UiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM1NzIzNjgsImV4cCI6MTc4NTM2ODM3MjM2OCwiYXVkIjoiZ3Vpbml1Iiwic2NvcGUiOiJzc28ifQ.wBBdvH-LQDodXDnJBLGMABXCVgOBkoRURz4RK4e8P6w"
+    },
+    "createdAt": "2026-07-22T23:39:32.368Z",
+    "kolId": "kol_mrwq5e59f54502",
+    "updatedAt": "2026-07-22T23:39:32.446Z",
+    "_v": 1
+  },
+  {
+    "id": "u_1784763604745_d0lxv5",
+    "openId": "open_debug_brand_",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "user",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM2MDQ3NDVfZDBseHY1Iiwib3BlbklkIjoib3Blbl9kZWJ1Z19icmFuZF8iLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM2MDQ3NDUsImV4cCI6MTc4NTM2ODQwNDc0NSwiYXVkIjoic2VhbCIsInNjb3BlIjoic3NvIn0.rKEmN7Fiy-KNVap_Wtdj3B2NB3zP1_KSlzvI1hskk4Y",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM2MDQ3NDVfZDBseHY1Iiwib3BlbklkIjoib3Blbl9kZWJ1Z19icmFuZF8iLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM2MDQ3NDUsImV4cCI6MTc4NTM2ODQwNDc0NSwiYXVkIjoiZGV2ZWNvIiwic2NvcGUiOiJzc28ifQ.y1uA08fj7ml9Cvk_xkQLCYsz6srTeT97p9vp3vKu33Y",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM2MDQ3NDVfZDBseHY1Iiwib3BlbklkIjoib3Blbl9kZWJ1Z19icmFuZF8iLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM2MDQ3NDUsImV4cCI6MTc4NTM2ODQwNDc0NSwiYXVkIjoidmVyaWZ5Iiwic2NvcGUiOiJzc28ifQ.8CyvSjHPJiWkSZ96pASLUhUXGSWCjhLJxyJC2sjidJE",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjM2MDQ3NDVfZDBseHY1Iiwib3BlbklkIjoib3Blbl9kZWJ1Z19icmFuZF8iLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjM2MDQ3NDUsImV4cCI6MTc4NTM2ODQwNDc0NSwiYXVkIjoiZ3Vpbml1Iiwic2NvcGUiOiJzc28ifQ.AzMR5f3ifvB8a4CSkQVlGJ0lSL6MQvuB7L3LcEM413k"
+    },
+    "createdAt": "2026-07-22T23:40:04.745Z"
+  },
+  {
+    "id": "u_1784765763387_raab1x",
+    "openId": "open_smoke_test_f",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "kol",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3NjMzODdfcmFhYjF4Iiwib3BlbklkIjoib3Blbl9zbW9rZV90ZXN0X2YiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3NjMzODgsImV4cCI6MTc4NTM3MDU2MzM4OCwiYXVkIjoic2VhbCIsInNjb3BlIjoic3NvIn0.ynfO2TN8eTbbsutRsmf1-kfh3DGhnZeAwdwBmtQbrxg",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3NjMzODdfcmFhYjF4Iiwib3BlbklkIjoib3Blbl9zbW9rZV90ZXN0X2YiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3NjMzODgsImV4cCI6MTc4NTM3MDU2MzM4OCwiYXVkIjoiZGV2ZWNvIiwic2NvcGUiOiJzc28ifQ.EOLotLL66UsYTEHxBkHsz2Wyv1162NqDJDJLDSk5MlU",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3NjMzODdfcmFhYjF4Iiwib3BlbklkIjoib3Blbl9zbW9rZV90ZXN0X2YiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3NjMzODgsImV4cCI6MTc4NTM3MDU2MzM4OCwiYXVkIjoidmVyaWZ5Iiwic2NvcGUiOiJzc28ifQ.hkUNrvRfuXk0Te9XZABzwvfMdBjkcmzVcnIiFgfQN_Y",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3NjMzODdfcmFhYjF4Iiwib3BlbklkIjoib3Blbl9zbW9rZV90ZXN0X2YiLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3NjMzODgsImV4cCI6MTc4NTM3MDU2MzM4OCwiYXVkIjoiZ3Vpbml1Iiwic2NvcGUiOiJzc28ifQ.FtKhn-dM-3idCT5qDzXLg-SarivVrYNWeSEUh2i1Mn8"
+    },
+    "createdAt": "2026-07-23T00:16:03.387Z",
+    "kolId": "kol_mrwrgcxs9785e1",
+    "updatedAt": "2026-07-23T00:16:03.712Z",
+    "_v": 1
+  },
+  {
+    "id": "u_1784765787847_hiwlre",
+    "openId": "open_wallet_debug",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "user",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3ODc4NDdfaGl3bHJlIiwib3BlbklkIjoib3Blbl93YWxsZXRfZGVidWciLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3ODc4NDgsImV4cCI6MTc4NTM3MDU4Nzg0OCwiYXVkIjoic2VhbCIsInNjb3BlIjoic3NvIn0.bE4rpy1BaoqK1HNGBLHISHoRCyT8OMavnx98HheqABw",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3ODc4NDdfaGl3bHJlIiwib3BlbklkIjoib3Blbl93YWxsZXRfZGVidWciLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3ODc4NDgsImV4cCI6MTc4NTM3MDU4Nzg0OCwiYXVkIjoiZGV2ZWNvIiwic2NvcGUiOiJzc28ifQ.pCMC0vaw9zW14KlrYvR5_bZzidmMYz1udhEtM6OczXw",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3ODc4NDdfaGl3bHJlIiwib3BlbklkIjoib3Blbl93YWxsZXRfZGVidWciLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3ODc4NDgsImV4cCI6MTc4NTM3MDU4Nzg0OCwiYXVkIjoidmVyaWZ5Iiwic2NvcGUiOiJzc28ifQ.k75nh8pnpWIQ0M28qHqL-jF5dblOE4cHFVIO41yMQIw",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NjU3ODc4NDdfaGl3bHJlIiwib3BlbklkIjoib3Blbl93YWxsZXRfZGVidWciLCJyb2xlIjoidXNlciIsInBsYXRmb3JtIjoiYWxpcGF5IiwiaXNzIjoiZ3Vpbml1LXNlYWwiLCJpYXQiOjE3ODQ3NjU3ODc4NDgsImV4cCI6MTc4NTM3MDU4Nzg0OCwiYXVkIjoiZ3Vpbml1Iiwic2NvcGUiOiJzc28ifQ.NnAf1SewnTq8cBTVb-vTEnclT6kYck8IKdbHIre8eO8"
+    },
+    "createdAt": "2026-07-23T00:16:27.847Z"
+  },
+  {
+    "id": "u_1784770772463_7j1rhx",
+    "openId": "open_deveco_test",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "kol",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzA3NzI0NjNfN2oxcmh4Iiwib3BlbklkIjoib3Blbl9kZXZlY29fdGVzdCIsInJvbGUiOiJrb2wiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcwODQ3NjcxLCJleHAiOjE3ODUzNzU2NDc2NzEsImF1ZCI6InNlYWwiLCJzY29wZSI6InNzbyJ9.jkUoRs5V1-yf3Y8hd0h8KIEcuBWfWSTeAiLnCjSI3RE",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzA3NzI0NjNfN2oxcmh4Iiwib3BlbklkIjoib3Blbl9kZXZlY29fdGVzdCIsInJvbGUiOiJrb2wiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcwODQ3NjcxLCJleHAiOjE3ODUzNzU2NDc2NzEsImF1ZCI6ImRldmVjbyIsInNjb3BlIjoic3NvIn0.rNrrxf4eyGlTFwSsXcHyteLEsLpqtZ5RkdcZwVnVicE",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzA3NzI0NjNfN2oxcmh4Iiwib3BlbklkIjoib3Blbl9kZXZlY29fdGVzdCIsInJvbGUiOiJrb2wiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcwODQ3NjcxLCJleHAiOjE3ODUzNzU2NDc2NzEsImF1ZCI6InZlcmlmeSIsInNjb3BlIjoic3NvIn0.gcMCLPMVodZQwAEIygY77dg-Fb4GxZMKaqLHTHSDRn4",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzA3NzI0NjNfN2oxcmh4Iiwib3BlbklkIjoib3Blbl9kZXZlY29fdGVzdCIsInJvbGUiOiJrb2wiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcwODQ3NjcxLCJleHAiOjE3ODUzNzU2NDc2NzEsImF1ZCI6Imd1aW5pdSIsInNjb3BlIjoic3NvIn0.J_wN_nM1mVKwDpTD_GzLqDuc93CwvjYSVR9r3ZMw6gc"
+    },
+    "createdAt": "2026-07-23T01:39:32.463Z",
+    "kolId": "kol_mrwufprb680825",
+    "updatedAt": "2026-07-23T01:39:32.519Z",
+    "_v": 1
+  },
+  {
+    "id": "u_1784771589233_hparzk",
+    "openId": "open_test",
+    "nickName": "用户",
+    "avatarUrl": "",
+    "platform": "alipay",
+    "role": "merchant",
+    "balance": 0,
+    "ssoTokens": {
+      "seal": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzE1ODkyMzNfaHBhcnprIiwib3BlbklkIjoib3Blbl90ZXN0Iiwicm9sZSI6InVzZXIiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcxNTg5MjMzLCJleHAiOjE3ODUzNzYzODkyMzMsImF1ZCI6InNlYWwiLCJzY29wZSI6InNzbyJ9.NY6eJ_jr5K0dsKg7gv1L0L171alqKW8X1Zb9g6jJW20",
+      "deveco": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzE1ODkyMzNfaHBhcnprIiwib3BlbklkIjoib3Blbl90ZXN0Iiwicm9sZSI6InVzZXIiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcxNTg5MjMzLCJleHAiOjE3ODUzNzYzODkyMzMsImF1ZCI6ImRldmVjbyIsInNjb3BlIjoic3NvIn0.ERUymMCp--klIw-GzvLwrhj5baEnBahbfuaUwJZAv5w",
+      "verify": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzE1ODkyMzNfaHBhcnprIiwib3BlbklkIjoib3Blbl90ZXN0Iiwicm9sZSI6InVzZXIiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcxNTg5MjMzLCJleHAiOjE3ODUzNzYzODkyMzMsImF1ZCI6InZlcmlmeSIsInNjb3BlIjoic3NvIn0.xFvj6yPAVAx6Vr-2ClI1qQTsAvOvN2SQgm5Bt78MWKM",
+      "guiniu": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImlzcyI6Imd1aW5pdS1zZWFsIn0.eyJzdWIiOiJ1XzE3ODQ3NzE1ODkyMzNfaHBhcnprIiwib3BlbklkIjoib3Blbl90ZXN0Iiwicm9sZSI6InVzZXIiLCJwbGF0Zm9ybSI6ImFsaXBheSIsImlzcyI6Imd1aW5pdS1zZWFsIiwiaWF0IjoxNzg0NzcxNTg5MjMzLCJleHAiOjE3ODUzNzYzODkyMzMsImF1ZCI6Imd1aW5pdSIsInNjb3BlIjoic3NvIn0.aaM04dJ5nG-sWDJEqxzzIDrmFT3ZgffTtuE9ykTxnqA"
+    },
+    "createdAt": "2026-07-23T01:53:09.233Z",
+    "kolId": "kol_mrwux7zu43095e",
+    "updatedAt": "2026-07-23T01:53:09.315Z",
+    "_v": 2,
+    "merchantId": "mch_mrwux803479157"
+  }
+]

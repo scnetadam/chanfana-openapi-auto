@@ -1,5 +1,5 @@
 {
-  "appid": "2021007168648699",
+  "appid": "2021006176615040",
   "component2": true,
   "enableAppxNg": true,
   "axmlStrictCheck": false,
@@ -22,7 +22,7 @@
   },
   "uploadExclude": [],
   "assetsInclude": [],
-  "projectname": "龟钮印信",
+  "projectname": "龟钮自驭",
   "setting": {
     "urlCheck": false,
     "es6": true,

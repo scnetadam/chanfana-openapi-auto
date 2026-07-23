@@ -3,6 +3,7 @@ export class RouterParams {
   activityId: string = '';
   contentId: string = '';
   bookingId: string = '';
+  taskId: string = '';
   message: string = '';
   status: string = '';
 
@@ -23,6 +24,10 @@ export class RouterParams {
     const bookingIdVal: Object | undefined = data['bookingId'];
     if (bookingIdVal !== null && bookingIdVal !== undefined) {
       p.bookingId = String(bookingIdVal);
+    }
+    const taskIdVal: Object | undefined = data['taskId'];
+    if (taskIdVal !== null && taskIdVal !== undefined) {
+      p.taskId = String(taskIdVal);
     }
     const messageVal: Object | undefined = data['message'];
     if (messageVal !== null && messageVal !== undefined) {

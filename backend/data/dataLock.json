@@ -1,0 +1,37 @@
+[
+  {
+    "id": "DL-1784765763415-GIT_",
+    "source": "git_repo",
+    "sourceLabel": "GIT仓库数据",
+    "lockLevel": "snapshot",
+    "lockLevelLabel": "快照锁定",
+    "customDescription": "开源项目仓库 Stars/Forks/Commits 等快照",
+    "userId": "u_1784765763387_raab1x",
+    "dataHash": "cc9ca42883afbbdbb27feaa3c4a38cc25c22c95fe26f0e179b5e094d339f3d70",
+    "dataCount": 1,
+    "dataPreview": [
+      {
+        "id": "repo-guiniu-seal",
+        "name": "guiniu-seal",
+        "stars": 0,
+        "forks": 0,
+        "watchers": 0,
+        "openIssues": 0,
+        "pullRequests": 0,
+        "commits": 0,
+        "contributors": 0,
+        "releaseCount": 0,
+        "lastSyncAt": null
+      }
+    ],
+    "hashAlgo": "sha256",
+    "timestamp": "2026-07-23T00:16:03.415Z",
+    "expiryDate": null,
+    "notarized": false,
+    "notaryId": null,
+    "notaryHash": null,
+    "notarizedAt": null,
+    "status": "locked",
+    "createdAt": "2026-07-23T00:16:03.415Z"
+  }
+]

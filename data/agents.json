@@ -1,0 +1,62 @@
+[
+  {
+    "id": "agent_001",
+    "userId": "user_001",
+    "nickName": "车评人老王",
+    "role": "kol",
+    "weightScore": 0.85,
+    "followerCount": 125000,
+    "engagementRate": 0.12,
+    "taxTrack": "B",
+    "industry": "汽车评测",
+    "status": "active"
+  },
+  {
+    "id": "agent_002",
+    "userId": "user_004",
+    "nickName": "KOC联盟",
+    "role": "koc",
+    "weightScore": 0.72,
+    "followerCount": 35000,
+    "engagementRate": 0.28,
+    "taxTrack": "C",
+    "industry": "汽车推广",
+    "status": "active"
+  },
+  {
+    "id": "agent_003",
+    "userId": "user_005",
+    "nickName": "新能源车评",
+    "role": "kol",
+    "weightScore": 0.91,
+    "followerCount": 98000,
+    "engagementRate": 0.15,
+    "taxTrack": "B",
+    "industry": "新能源汽车",
+    "status": "active"
+  },
+  {
+    "id": "agent_004",
+    "userId": "user_008",
+    "nickName": "AI评测师",
+    "role": "kol",
+    "weightScore": 0.78,
+    "followerCount": 52000,
+    "engagementRate": 0.09,
+    "taxTrack": "B",
+    "industry": "AI技术",
+    "status": "active"
+  },
+  {
+    "id": "agent_005",
+    "userId": "user_002",
+    "nickName": "4S店旗舰店",
+    "role": "biz",
+    "weightScore": 0.95,
+    "followerCount": 5000,
+    "engagementRate": 0.05,
+    "taxTrack": "A",
+    "industry": "汽车销售",
+    "status": "active"
+  }
+]

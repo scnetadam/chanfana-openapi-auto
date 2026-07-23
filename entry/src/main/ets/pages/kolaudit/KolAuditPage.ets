@@ -241,11 +241,11 @@ struct KolAuditPage {
               this.MenuRow('OPC创业支持', () => {
                 router.pushUrl({ url: 'pages/opcsupport/OpcSupportPage' });
               })
-              Divider().color('#1A182431')
+              Divider().color($r('app.color.divider_color'))
               this.MenuRow('AI工具市场', () => {
                 router.pushUrl({ url: 'pages/aitools/AiToolsPage' });
               })
-              Divider().color('#1A182431')
+              Divider().color($r('app.color.divider_color'))
               this.MenuRow('结算中心', () => {
                 AppStorage.SetOrCreate<number>('tabIndex', 3);
                 router.back();

@@ -1,4 +1,4 @@
-// 龟钮印信 DEVEVO — 快速初始化种子数据（纯 dataStore）
+// 龟钮自驭 DEVECO — 快速初始化种子数据（纯 dataStore）
 const path = require('path');
 const store = require('./src/models/dataStore');
 
@@ -48,7 +48,7 @@ try {
   if (!existingContent || existingContent.length === 0) {
     const c = store.contentStore.create({
       userId: 'demo_user', activityId: createdActivities[0].id,
-      images: [], text: '自动生成的测试内容，体验龟钮印信推广流程', carModel: 'Model Y',
+      images: [], text: '自动生成的测试内容，体验龟钮自驭推广流程', carModel: 'Model Y',
       nickName: '演示用户',
     });
     console.log(`  ✅ 内容: ${c.id}`);

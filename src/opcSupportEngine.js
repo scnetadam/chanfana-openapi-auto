@@ -138,7 +138,7 @@ function _buildToolPrompt(toolId, params) {
     ];
   }
   return [
-    { role: 'system', content: '你是龟钮印信AI助手，为汽车资讯KOL提供专业支持。' },
+    { role: 'system', content: '你是龟钮自驭AI助手，为汽车资讯KOL提供专业支持。' },
     { role: 'user', content: params?.text || '你好' },
   ];
 }

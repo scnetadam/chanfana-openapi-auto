@@ -7,6 +7,7 @@ import { isAlipay } from '@/utils/alipay';
 const userStore = useUserStore();
 const loading = ref(false);
 const nickName = ref('');
+const inviteCode = ref('');
 const platformName = isAlipay() ? '支付宝' : '微信';
 
 async function handleLogin() {
@@ -22,6 +23,12 @@ async function handleLogin() {
       avatar = profile.avatarUrl;
     } catch {}
     if (!name) name = '用户' + Date.now().toString().slice(-4);
+    
+    const loginData: any = { code, nickName: name, avatarUrl: avatar, platform: isAlipay() ? 'alipay' : 'wechat' };
+    if (inviteCode.value.trim()) {
+      loginData.inviteCode = inviteCode.value.trim();
+    }
+    
     await userStore.login(code, name, avatar, isAlipay() ? 'alipay' : 'wechat');
     uni.showToast({ title: '登录成功', icon: 'success' });
     setTimeout(() => uni.switchTab({ url: '/pages/activity/index' }), 500);
@@ -41,8 +48,8 @@ async function handleLogin() {
     <view class="login-card">
       <view class="logo-section">
         <image class="logo-image" src="/src/static/images/logo.jpg" mode="aspectFit"></image>
-        <text class="app-name">龟钮印信</text>
-        <text class="slogan">汽车资讯 · KOL评估 · 微交易</text>
+        <text class="app-name">龟钮自驭</text>
+        <text class="slogan">汽车资讯 AI · 自主价值引擎</text>
       </view>
 
       <view class="feature-list">
@@ -71,6 +78,12 @@ async function handleLogin() {
           v-model="nickName"
           class="nickname-input"
           placeholder="昵称（可选，默认使用平台昵称）"
+          maxlength="20"
+        />
+        <input
+          v-model="inviteCode"
+          class="nickname-input"
+          placeholder="邀请码（可选）"
           maxlength="20"
         />
         <button
@@ -109,7 +122,7 @@ async function handleLogin() {
   left: -100rpx;
   right: -100rpx;
   height: 520rpx;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, #0A1628, #1A2D4A);
   border-radius: 0 0 50% 50%;
   opacity: 0.95;
 }
@@ -206,15 +219,15 @@ async function handleLogin() {
   font-size: 34rpx;
   font-weight: 600;
   border-radius: 50rpx;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #ffffff;
-  box-shadow: 0 4rpx 16rpx rgba(37, 99, 235, 0.3);
+  background: linear-gradient(135deg, #0A1628, #1A2D4A);
+  color: #C9A84C;
+  box-shadow: 0 4rpx 16rpx rgba(10, 22, 40, 0.4);
   &::after { border: none; }
 }
 
 .agreement {
   font-size: 24rpx;
   color: #d1d5db;
-  .link { color: #2563eb; }
+  .link { color: #C9A84C; }
 }
 </style>

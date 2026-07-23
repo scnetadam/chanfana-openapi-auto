@@ -2,31 +2,107 @@
   "color": [
     {
       "name": "start_window_background",
-      "value": "#FFFFFF"
+      "value": "#0A0E1A"
     },
     {
       "name": "page_background_color",
-      "value": "#F1F3F5"
+      "value": "#0A0E1A"
     },
     {
       "name": "primary_color",
-      "value": "#007DFF"
+      "value": "#00E5A0"
     },
     {
       "name": "text_primary",
-      "value": "#182431"
+      "value": "#E8ECF1"
     },
     {
       "name": "text_secondary",
-      "value": "#99182431"
+      "value": "#8899AA"
     },
     {
       "name": "card_background",
-      "value": "#FFFFFF"
+      "value": "#131929"
     },
     {
       "name": "price_color",
-      "value": "#E84026"
+      "value": "#FF3D71"
+    },
+    {
+      "name": "success_color",
+      "value": "#00E5A0"
+    },
+    {
+      "name": "warning_color",
+      "value": "#F0B90B"
+    },
+    {
+      "name": "danger_color",
+      "value": "#FF3D71"
+    },
+    {
+      "name": "purple_color",
+      "value": "#8B5CF6"
+    },
+    {
+      "name": "gold_color",
+      "value": "#F0B90B"
+    },
+    {
+      "name": "neon_blue_color",
+      "value": "#00D4FF"
+    },
+    {
+      "name": "secondary_color",
+      "value": "#00B4D8"
+    },
+    {
+      "name": "surface_color",
+      "value": "#1E2A4A"
+    },
+    {
+      "name": "success_bg_color",
+      "value": "#0D2D22"
+    },
+    {
+      "name": "warning_bg_color",
+      "value": "#2D2A0D"
+    },
+    {
+      "name": "danger_bg_color",
+      "value": "#2D0D16"
+    },
+    {
+      "name": "purple_bg_color",
+      "value": "#1D0D2D"
+    },
+    {
+      "name": "primary_bg_color",
+      "value": "#0D2D22"
+    },
+    {
+      "name": "neon_blue_bg_color",
+      "value": "#0D1A2D"
+    },
+    {
+      "name": "secondary_bg_color",
+      "value": "#0D2D2D"
+    },
+    {
+      "name": "divider_color",
+      "value": "#1C2E4A"
+    },
+    {
+      "name": "card_glow_green",
+      "value": "#00E5A033"
+    },
+    {
+      "name": "card_glow_blue",
+      "value": "#00D4FF22"
+    },
+    {
+      "name": "card_glow_purple",
+      "value": "#8B5CF622"
     }
   ]
 }

@@ -4,7 +4,7 @@ const API_HOST = '192.168.0.100';
 const API_PORT = 3000;
 
 console.log('========================================');
-console.log('龟钮印信 API 连接测试');
+console.log('龟钮自驭 API 连接测试');
 console.log('========================================\n');
 
 function testAPI(path, method, data) {

@@ -37,7 +37,7 @@ async function main() {
   const actId = actData?.data?.[0]?.id;
   if (actId) {
     const pub = await req('POST', '/api/content/publish', {
-      text: '自动生成的测试内容，龟钮印信推广流程体验',
+      text: '自动生成的测试内容，龟钮自驭推广流程体验',
       images: [], activityId: actId, userId,
     });
     console.log(`  ℹ️  发布内容: ${pub.status} — ${pub.body.slice(0, 100)}`);

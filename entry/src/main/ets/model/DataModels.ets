@@ -38,6 +38,14 @@ function safeGetRecord(data: Record<string, Object>, key: string): Record<string
   return null;
 }
 
+function safeGetBool(data: Record<string, Object>, key: string, defaultVal: boolean = false): boolean {
+  const val: Object | undefined = data[key];
+  if (val !== null && val !== undefined) {
+    return val === true || val === 1 || String(val) === 'true';
+  }
+  return defaultVal;
+}
+
 export class ActivityItem {
   id: string = '';
   brand: string = '';
@@ -860,6 +868,16 @@ export class HashRecord {
   dataType: string = '';
   metadata: Record<string, Object> = {};
   source: string = '';
+  chainTxId: string = '';
+  chainTimestamp: string = '';
+  chainBlock: string = '';
+  chainExplorer: string = '';
+  chainSource: string = '';
+  notaryId: string = '';
+  notaryUrl: string = '';
+  notaryTimestamp: string = '';
+  notarySource: string = '';
+  notaryPrice: number = 0;
   createdAt: string = '';
 
   static fromJson(data: Record<string, Object>): HashRecord {
@@ -870,6 +888,16 @@ export class HashRecord {
     item.dataDigest = safeGetString(data, 'dataDigest');
     item.dataType = safeGetString(data, 'dataType');
     item.source = safeGetString(data, 'source');
+    item.chainTxId = safeGetString(data, 'chainTxId');
+    item.chainTimestamp = safeGetString(data, 'chainTimestamp');
+    item.chainBlock = safeGetString(data, 'chainBlock');
+    item.chainExplorer = safeGetString(data, 'chainExplorer');
+    item.chainSource = safeGetString(data, 'chainSource');
+    item.notaryId = safeGetString(data, 'notaryId');
+    item.notaryUrl = safeGetString(data, 'notaryUrl');
+    item.notaryTimestamp = safeGetString(data, 'notaryTimestamp');
+    item.notarySource = safeGetString(data, 'notarySource');
+    item.notaryPrice = safeGetNumber(data, 'notaryPrice');
     item.createdAt = safeGetString(data, 'createdAt');
     const metaObj: Record<string, Object> | null = safeGetRecord(data, 'metadata');
     if (metaObj !== null) {
@@ -901,10 +929,14 @@ export class HashRecordList {
 export class HashStats {
   total: number = 0;
   byType: Record<string, Object> = {};
+  chainCount: number = 0;
+  notaryCount: number = 0;
 
   static fromJson(data: Record<string, Object>): HashStats {
     const item: HashStats = new HashStats();
     item.total = safeGetNumber(data, 'total');
+    item.chainCount = safeGetNumber(data, 'chainCount');
+    item.notaryCount = safeGetNumber(data, 'notaryCount');
     const byTypeObj: Record<string, Object> | null = safeGetRecord(data, 'byType');
     if (byTypeObj !== null) {
       item.byType = byTypeObj;
@@ -1119,6 +1151,1500 @@ export class StereoModel {
     item.fileSize = safeGetString(data, 'fileSize');
     item.status = safeGetString(data, 'status');
     item.modelUrl = safeGetString(data, 'modelUrl');
+    return item;
+  }
+}
+
+export class CosStorage {
+  id: string = '';
+  userId: string = '';
+  mode: string = 'platform';
+  region: string = '';
+  bucketName: string = '';
+  cloudPath: string = '';
+  roleArn: string = '';
+  freeSpace: string = '50GB';
+  usedSpace: string = '0B';
+  fileCount: number = 0;
+  status: string = '';
+  provider: string = 'tencent-cos';
+  storageClass: string = 'STANDARD';
+  createdAt: string = '';
+
+  static fromJson(data: Record<string, Object>): CosStorage {
+    const item: CosStorage = new CosStorage();
+    item.id = safeGetString(data, 'id');
+    item.userId = safeGetString(data, 'userId');
+    item.mode = safeGetString(data, 'mode');
+    item.region = safeGetString(data, 'region');
+    item.bucketName = safeGetString(data, 'bucketName');
+    item.cloudPath = safeGetString(data, 'cloudPath');
+    item.roleArn = safeGetString(data, 'roleArn');
+    item.freeSpace = safeGetString(data, 'freeSpace');
+    item.usedSpace = safeGetString(data, 'usedSpace');
+    item.fileCount = safeGetNumber(data, 'fileCount');
+    item.status = safeGetString(data, 'status');
+    item.provider = safeGetString(data, 'provider');
+    item.storageClass = safeGetString(data, 'storageClass');
+    item.createdAt = safeGetString(data, 'createdAt');
+    return item;
+  }
+}
+
+export class CamRoleGuide {
+  id: string = '';
+  userId: string = '';
+  roleArn: string = '';
+  roleName: string = '';
+  status: string = '';
+  createdAt: string = '';
+
+  static fromJson(data: Record<string, Object>): CamRoleGuide {
+    const item: CamRoleGuide = new CamRoleGuide();
+    item.id = safeGetString(data, 'id');
+    item.userId = safeGetString(data, 'userId');
+    item.roleArn = safeGetString(data, 'roleArn');
+    item.roleName = safeGetString(data, 'roleName');
+    item.status = safeGetString(data, 'status');
+    item.createdAt = safeGetString(data, 'createdAt');
+    return item;
+  }
+}
+
+export class CamGuideStep {
+  step: number = 0;
+  title: string = '';
+  description: string = '';
+  action: string = '';
+
+  static fromJson(data: Record<string, Object>): CamGuideStep {
+    const item: CamGuideStep = new CamGuideStep();
+    item.step = safeGetNumber(data, 'step');
+    item.title = safeGetString(data, 'title');
+    item.description = safeGetString(data, 'description');
+    item.action = safeGetString(data, 'action');
+    return item;
+  }
+}
+
+export class ContentAuditRecord {
+  id: string = '';
+  contentId: string = '';
+  userId: string = '';
+  status: string = '';
+  score: number = 0;
+  violations: Record<string, Object>[] = [];
+  reason: string = '';
+  needsTencentModeration: boolean = false;
+  tencentModerated: boolean = false;
+  createdAt: string = '';
+
+  static fromJson(data: Record<string, Object>): ContentAuditRecord {
+    const item: ContentAuditRecord = new ContentAuditRecord();
+    item.id = safeGetString(data, 'id');
+    item.contentId = safeGetString(data, 'contentId');
+    item.userId = safeGetString(data, 'userId');
+    item.status = safeGetString(data, 'status');
+    item.score = safeGetNumber(data, 'score');
+    item.reason = safeGetString(data, 'reason');
+    item.needsTencentModeration = safeGetBool(data, 'needsTencentModeration');
+    item.tencentModerated = safeGetBool(data, 'tencentModerated');
+    item.createdAt = safeGetString(data, 'createdAt');
+    const violationsArr: Record<string, Object>[] = safeGetRecordArray(data, 'violations');
+    item.violations = violationsArr;
+    return item;
+  }
+}
+
+export class ContentAuditStats {
+  total: number = 0;
+  pass: number = 0;
+  pending: number = 0;
+  reject: number = 0;
+  tencentModerated: number = 0;
+
+  static fromJson(data: Record<string, Object>): ContentAuditStats {
+    const item: ContentAuditStats = new ContentAuditStats();
+    item.total = safeGetNumber(data, 'total');
+    item.pass = safeGetNumber(data, 'pass');
+    item.pending = safeGetNumber(data, 'pending');
+    item.reject = safeGetNumber(data, 'reject');
+    item.tencentModerated = safeGetNumber(data, 'tencentModerated');
+    return item;
+  }
+}
+
+export class OpcCitySubsidy {
+  id: string = '';
+  city: string = '';
+  province: string = '';
+  cityLevel: string = '';
+  promoSubsidyRate: number = 0;
+  promoSubsidyCap: number = 0;
+  aiInvestSubsidyRate: number = 0;
+  aiInvestSubsidyCap: number = 0;
+  tokenBonusRate: number = 0;
+  tokenBonusCap: number = 0;
+  opcCount: number = 0;
+  activePolicies: number = 0;
+  totalSubsidyIssued: number = 0;
+  status: string = '';
+  startDate: string = '';
+  endDate: string = '';
+  description: string = '';
+  highlights: string[] = [];
+
+  static fromJson(data: Record<string, Object>): OpcCitySubsidy {
+    const item: OpcCitySubsidy = new OpcCitySubsidy();
+    item.id = safeGetString(data, 'id');
+    item.city = safeGetString(data, 'city');
+    item.province = safeGetString(data, 'province');
+    item.cityLevel = safeGetString(data, 'cityLevel');
+    item.promoSubsidyRate = safeGetNumber(data, 'promoSubsidyRate');
+    item.promoSubsidyCap = safeGetNumber(data, 'promoSubsidyCap');
+    item.aiInvestSubsidyRate = safeGetNumber(data, 'aiInvestSubsidyRate');
+    item.aiInvestSubsidyCap = safeGetNumber(data, 'aiInvestSubsidyCap');
+    item.tokenBonusRate = safeGetNumber(data, 'tokenBonusRate');
+    item.tokenBonusCap = safeGetNumber(data, 'tokenBonusCap');
+    item.opcCount = safeGetNumber(data, 'opcCount');
+    item.activePolicies = safeGetNumber(data, 'activePolicies');
+    item.totalSubsidyIssued = safeGetNumber(data, 'totalSubsidyIssued');
+    item.status = safeGetString(data, 'status');
+    item.startDate = safeGetString(data, 'startDate');
+    item.endDate = safeGetString(data, 'endDate');
+    item.description = safeGetString(data, 'description');
+    const hlArr: Record<string, Object>[] = safeGetRecordArray(data, 'highlights');
+    const hlResult: string[] = [];
+    for (let i = 0; i < hlArr.length; i++) {
+      hlResult.push(String(hlArr[i]));
+    }
+    item.highlights = hlResult;
+    return item;
+  }
+}
+
+export class OpcCitySubsidyList {
+  list: OpcCitySubsidy[] = [];
+  total: number = 0;
+
+  static fromJson(data: Record<string, Object>): OpcCitySubsidyList {
+    const item: OpcCitySubsidyList = new OpcCitySubsidyList();
+    const arr: Record<string, Object>[] = safeGetRecordArray(data, 'list');
+    for (let i = 0; i < arr.length; i++) {
+      item.list.push(OpcCitySubsidy.fromJson(arr[i]));
+    }
+    item.total = safeGetNumber(data, 'total');
+    return item;
+  }
+}
+
+export class OpcSubsidyRecord {
+  id: string = '';
+  userId: string = '';
+  subsidyType: string = '';
+  city: string = '';
+  amount: number = 0;
+  tokenAmount: number = 0;
+  bizSource: string = '';
+  status: string = '';
+  auditNote: string = '';
+  createdAt: string = '';
+
+  static fromJson(data: Record<string, Object>): OpcSubsidyRecord {
+    const item: OpcSubsidyRecord = new OpcSubsidyRecord();
+    item.id = safeGetString(data, 'id');
+    item.userId = safeGetString(data, 'userId');
+    item.subsidyType = safeGetString(data, 'subsidyType');
+    item.city = safeGetString(data, 'city');
+    item.amount = safeGetNumber(data, 'amount');
+    item.tokenAmount = safeGetNumber(data, 'tokenAmount');
+    item.bizSource = safeGetString(data, 'bizSource');
+    item.status = safeGetString(data, 'status');
+    item.auditNote = safeGetString(data, 'auditNote');
+    item.createdAt = safeGetString(data, 'createdAt');
+    return item;
+  }
+}
+
+export class OpcSubsidyRecordList {
+  list: OpcSubsidyRecord[] = [];
+  total: number = 0;
+
+  static fromJson(data: Record<string, Object>): OpcSubsidyRecordList {
+    const item: OpcSubsidyRecordList = new OpcSubsidyRecordList();
+    const arr: Record<string, Object>[] = safeGetRecordArray(data, 'list');
+    for (let i = 0; i < arr.length; i++) {
+      item.list.push(OpcSubsidyRecord.fromJson(arr[i]));
+    }
+    item.total = safeGetNumber(data, 'total');
+    return item;
+  }
+}
+
+export class OpcTokenAccount {
+  userId: string = '';
+  totalTokens: number = 0;
+  availableTokens: number = 0;
+  lockedTokens: number = 0;
+  earnedTokens: number = 0;
+  spentTokens: number = 0;
+  subsidyTokens: number = 0;
+  exchangeRate: number = 0;
+  lastUpdated: string = '';
+
+  static fromJson(data: Record<string, Object>): OpcTokenAccount {
+    const item: OpcTokenAccount = new OpcTokenAccount();
+    item.userId = safeGetString(data, 'userId');
+    item.totalTokens = safeGetNumber(data, 'totalTokens');
+    item.availableTokens = safeGetNumber(data, 'availableTokens');
+    item.lockedTokens = safeGetNumber(data, 'lockedTokens');
+    item.earnedTokens = safeGetNumber(data, 'earnedTokens');
+    item.spentTokens = safeGetNumber(data, 'spentTokens');
+    item.subsidyTokens = safeGetNumber(data, 'subsidyTokens');
+    item.exchangeRate = safeGetNumber(data, 'exchangeRate');
+    item.lastUpdated = safeGetString(data, 'lastUpdated');
+    return item;
+  }
+}
+
+export class OpcAiInvestProject {
+  id: string = '';
+  userId: string = '';
+  projectName: string = '';
+  aiModelType: string = '';
+  investAmount: number = 0;
+  subsidyRate: number = 0;
+  subsidyAmount: number = 0;
+  actualReturn: number = 0;
+  status: string = '';
+  city: string = '';
+  startDate: string = '';
+  endDate: string = '';
+  createdAt: string = '';
+
+  static fromJson(data: Record<string, Object>): OpcAiInvestProject {
+    const item: OpcAiInvestProject = new OpcAiInvestProject();
+    item.id = safeGetString(data, 'id');
+    item.userId = safeGetString(data, 'userId');
+    item.projectName = safeGetString(data, 'projectName');
+    item.aiModelType = safeGetString(data, 'aiModelType');
+    item.investAmount = safeGetNumber(data, 'investAmount');
+    item.subsidyRate = safeGetNumber(data, 'subsidyRate');
+    item.subsidyAmount = safeGetNumber(data, 'subsidyAmount');
+    item.actualReturn = safeGetNumber(data, 'actualReturn');
+    item.status = safeGetString(data, 'status');
+    item.city = safeGetString(data, 'city');
+    item.startDate = safeGetString(data, 'startDate');
+    item.endDate = safeGetString(data, 'endDate');
+    item.createdAt = safeGetString(data, 'createdAt');
+    return item;
+  }
+}
+
+export class OpcAiInvestList {
+  list: OpcAiInvestProject[] = [];
+  total: number = 0;
+
+  static fromJson(data: Record<string, Object>): OpcAiInvestList {
+    const item: OpcAiInvestList = new OpcAiInvestList();
+    const arr: Record<string, Object>[] = safeGetRecordArray(data, 'list');
+    for (let i = 0; i < arr.length; i++) {
+      item.list.push(OpcAiInvestProject.fromJson(arr[i]));
+    }
+    item.total = safeGetNumber(data, 'total');
+    return item;
+  }
+}
+
+export class KolAcceptedTask {
+  id: string = '';
+  taskId: string = '';
+  kolUserId: string = '';
+  kolNickName: string = '';
+  taskTitle: string = '';
+  taskType: string = '';
+  typeName: string = '';
+  rewardPerUnit: number = 0;
+  status: string = '';
+  acceptedAt: string = '';
+  deadline: string = '';
+  description: string = '';
+  bizUserId: string = '';
+  bizNickName: string = '';
+  submissionCount: number = 0;
+  maxSubmissions: number = 0;
+  earnedReward: number = 0;
+  activityId: string = '';
+
+  static fromJson(data: Record<string, Object>): KolAcceptedTask {
+    const item: KolAcceptedTask = new KolAcceptedTask();
+    item.id = safeGetString(data, 'id');
+    item.taskId = safeGetString(data, 'taskId');
+    item.kolUserId = safeGetString(data, 'kolUserId');
+    item.kolNickName = safeGetString(data, 'kolNickName');
+    item.taskTitle = safeGetString(data, 'taskTitle');
+    item.taskType = safeGetString(data, 'taskType');
+    item.typeName = safeGetString(data, 'typeName');
+    item.rewardPerUnit = safeGetNumber(data, 'rewardPerUnit');
+    item.status = safeGetString(data, 'status');
+    item.acceptedAt = safeGetString(data, 'acceptedAt');
+    item.deadline = safeGetString(data, 'deadline');
+    item.description = safeGetString(data, 'description');
+    item.bizUserId = safeGetString(data, 'bizUserId');
+    item.bizNickName = safeGetString(data, 'bizNickName');
+    item.submissionCount = safeGetNumber(data, 'submissionCount');
+    item.maxSubmissions = safeGetNumber(data, 'maxSubmissions');
+    item.earnedReward = safeGetNumber(data, 'earnedReward');
+    item.activityId = safeGetString(data, 'activityId');
+    return item;
+  }
+}
+
+export class KolAcceptedTaskList {
+  list: KolAcceptedTask[] = [];
+  total: number = 0;
+
+  static fromJson(data: Record<string, Object>): KolAcceptedTaskList {
+    const item: KolAcceptedTaskList = new KolAcceptedTaskList();
+    const arr: Record<string, Object>[] = safeGetRecordArray(data, 'list');
+    for (let i = 0; i < arr.length; i++) {
+      item.list.push(KolAcceptedTask.fromJson(arr[i]));
+    }
+    item.total = safeGetNumber(data, 'total');
+    return item;
+  }
+}
+
+export class KolTaskSubmissionRecord {
+  id: string = '';
+  acceptanceId: string = '';
+  taskId: string = '';
+  kolUserId: string = '';
+  proofType: string = '';
+  proofUrl: string = '';
+  proofText: string = '';
+  reward: number = 0;
+  aiScore: AiScoreData | null = null;
+  status: string = '';
+  reviewNote: string = '';
+  submittedAt: string = '';
+
+  static fromJson(data: Record<string, Object>): KolTaskSubmissionRecord {
+    const item: KolTaskSubmissionRecord = new KolTaskSubmissionRecord();
+    item.id = safeGetString(data, 'id');
+    item.acceptanceId = safeGetString(data, 'acceptanceId');
+    item.taskId = safeGetString(data, 'taskId');
+    item.kolUserId = safeGetString(data, 'kolUserId');
+    item.proofType = safeGetString(data, 'proofType');
+    item.proofUrl = safeGetString(data, 'proofUrl');
+    item.proofText = safeGetString(data, 'proofText');
+    item.reward = safeGetNumber(data, 'reward');
+    const scoreObj: Record<string, Object> | null = safeGetRecord(data, 'aiScore');
+    if (scoreObj !== null) {
+      item.aiScore = AiScoreData.fromJson(scoreObj);
+    }
+    item.status = safeGetString(data, 'status');
+    item.reviewNote = safeGetString(data, 'reviewNote');
+    item.submittedAt = safeGetString(data, 'submittedAt');
+    return item;
+  }
+}
+
+export class KolTaskSubmissionList {
+  list: KolTaskSubmissionRecord[] = [];
+  total: number = 0;
+
+  static fromJson(data: Record<string, Object>): KolTaskSubmissionList {
+    const item: KolTaskSubmissionList = new KolTaskSubmissionList();
+    const arr: Record<string, Object>[] = safeGetRecordArray(data, 'list');
+    for (let i = 0; i < arr.length; i++) {
+      item.list.push(KolTaskSubmissionRecord.fromJson(arr[i]));
+    }
+    item.total = safeGetNumber(data, 'total');
+    return item;
+  }
+}
+
+export class KolTaskDetail {
+  task: KolTaskItem = new KolTaskItem();
+  acceptance: KolAcceptedTask | null = null;
+  submissions: KolTaskSubmissionRecord[] = [];
+  bizNickName: string = '';
+  activityTitle: string = '';
+  canAccept: boolean = false;
+  canSubmit: boolean = false;
+  remainSlots: number = 0;
+
+  static fromJson(data: Record<string, Object>): KolTaskDetail {
+    const item: KolTaskDetail = new KolTaskDetail();
+    const taskObj: Record<string, Object> | null = safeGetRecord(data, 'task');
+    if (taskObj !== null) {
+      item.task = KolTaskItem.fromJson(taskObj);
+    }
+    const accObj: Record<string, Object> | null = safeGetRecord(data, 'acceptance');
+    if (accObj !== null) {
+      item.acceptance = KolAcceptedTask.fromJson(accObj);
+    }
+    const subArr: Record<string, Object>[] = safeGetRecordArray(data, 'submissions');
+    for (let i = 0; i < subArr.length; i++) {
+      item.submissions.push(KolTaskSubmissionRecord.fromJson(subArr[i]));
+    }
+    item.bizNickName = safeGetString(data, 'bizNickName');
+    item.activityTitle = safeGetString(data, 'activityTitle');
+    const canAccVal: number = safeGetNumber(data, 'canAccept');
+    item.canAccept = canAccVal === 1 || data['canAccept'] === true;
+    const canSubVal: number = safeGetNumber(data, 'canSubmit');
+    item.canSubmit = canSubVal === 1 || data['canSubmit'] === true;
+    item.remainSlots = safeGetNumber(data, 'remainSlots');
+    return item;
+  }
+}
+
+export class OpcPlazaStats {
+  totalCities: number = 0;
+  activeCities: number = 0;
+  totalOpcUsers: number = 0;
+  totalSubsidyPool: number = 0;
+  totalSubsidyIssued: number = 0;
+  totalAiInvest: number = 0;
+  totalAiSubsidy: number = 0;
+  totalTokenIssued: number = 0;
+  myPromoSubsidy: number = 0;
+  myAiSubsidy: number = 0;
+  myTokenSubsidy: number = 0;
+  myCity: string = '';
+  myOpcStatus: string = '';
+
+  static fromJson(data: Record<string, Object>): OpcPlazaStats {
+    const item: OpcPlazaStats = new OpcPlazaStats();
+    item.totalCities = safeGetNumber(data, 'totalCities');
+    item.activeCities = safeGetNumber(data, 'activeCities');
+    item.totalOpcUsers = safeGetNumber(data, 'totalOpcUsers');
+    item.totalSubsidyPool = safeGetNumber(data, 'totalSubsidyPool');
+    item.totalSubsidyIssued = safeGetNumber(data, 'totalSubsidyIssued');
+    item.totalAiInvest = safeGetNumber(data, 'totalAiInvest');
+    item.totalAiSubsidy = safeGetNumber(data, 'totalAiSubsidy');
+    item.totalTokenIssued = safeGetNumber(data, 'totalTokenIssued');
+    item.myPromoSubsidy = safeGetNumber(data, 'myPromoSubsidy');
+    item.myAiSubsidy = safeGetNumber(data, 'myAiSubsidy');
+    item.myTokenSubsidy = safeGetNumber(data, 'myTokenSubsidy');
+    item.myCity = safeGetString(data, 'myCity');
+    item.myOpcStatus = safeGetString(data, 'myOpcStatus');
+    return item;
+  }
+}
+
+export class AiChatMessage {
+  id: string = '';
+  role: string = '';
+  content: string = '';
+  voiceText: string = '';
+  intent: string = '';
+  timestamp: string = '';
+  isPlaying: boolean = false;
+
+  static fromJson(data: Record<string, Object>): AiChatMessage {
+    const item: AiChatMessage = new AiChatMessage();
+    item.id = safeGetString(data, 'id');
+    item.role = safeGetString(data, 'role');
+    item.content = safeGetString(data, 'content');
+    item.voiceText = safeGetString(data, 'voiceText');
+    item.intent = safeGetString(data, 'intent');
+    item.timestamp = safeGetString(data, 'timestamp');
+    item.isPlaying = safeGetBool(data, 'isPlaying');
+    return item;
+  }
+}
+
+export class AiIntentResult {
+  intent: string = '';
+  entities: Record<string, string> = {};
+  responseText: string = '';
+  actionRoute: string = '';
+  actionParams: Record<string, Object> = {};
+  confidence: number = 0;
+
+  static fromJson(data: Record<string, Object>): AiIntentResult {
+    const item: AiIntentResult = new AiIntentResult();
+    item.intent = safeGetString(data, 'intent');
+    const entVal: Record<string, Object> | null = safeGetRecord(data, 'entities');
+    if (entVal !== null) {
+      const keys: string[] = Object.keys(entVal);
+      const entMap: Record<string, string> = {};
+      for (let i = 0; i < keys.length; i++) {
+        const v: Object | undefined = entVal[keys[i]];
+        if (v !== null && v !== undefined) {
+          entMap[keys[i]] = String(v);
+        }
+      }
+      item.entities = entMap;
+    }
+    item.responseText = safeGetString(data, 'responseText');
+    item.actionRoute = safeGetString(data, 'actionRoute');
+    const paramsVal: Record<string, Object> | null = safeGetRecord(data, 'actionParams');
+    if (paramsVal !== null) {
+      item.actionParams = paramsVal;
+    }
+    item.confidence = safeGetNumber(data, 'confidence');
+    return item;
+  }
+}
+
+export class AiIntentDef {
+  static readonly QUERY_BALANCE: string = 'query_balance';
+  static readonly QUERY_EARNINGS: string = 'query_earnings';
+  static readonly QUERY_TASKS: string = 'query_tasks';
+  static readonly ACCEPT_TASK: string = 'accept_task';
+  static readonly SUBMIT_PROOF: string = 'submit_proof';
+  static readonly QUERY_SETTLEMENT: string = 'query_settlement';
+  static readonly CHECK_CERT: string = 'check_cert';
+  static readonly CHECK_AUDIT: string = 'check_audit';
+  static readonly BOOK_TEST_DRIVE: string = 'book_test_drive';
+  static readonly NAVIGATE: string = 'navigate';
+  static readonly HELP: string = 'help';
+  static readonly UNKNOWN: string = 'unknown';
+}
+
+export class AiCopyAlternative {
+  style: string = '';
+  text: string = '';
+  characterCount: number = 0;
+
+  static fromJson(data: Record<string, Object>): AiCopyAlternative {
+    const item: AiCopyAlternative = new AiCopyAlternative();
+    item.style = safeGetString(data, 'style');
+    item.text = safeGetString(data, 'text');
+    item.characterCount = safeGetNumber(data, 'characterCount');
+    return item;
+  }
+}
+
+export class AiCopyOptimizeResult {
+  originalText: string = '';
+  optimizedCopy: string = '';
+  style: string = '';
+  alternatives: AiCopyAlternative[] = [];
+  tags: string[] = [];
+  fingerprint: string = '';
+
+  static fromJson(data: Record<string, Object>): AiCopyOptimizeResult {
+    const item: AiCopyOptimizeResult = new AiCopyOptimizeResult();
+    item.originalText = safeGetString(data, 'originalText');
+    item.optimizedCopy = safeGetString(data, 'optimizedCopy');
+    item.style = safeGetString(data, 'style');
+    const altArr: Record<string, Object>[] = safeGetRecordArray(data, 'alternatives');
+    for (let i = 0; i < altArr.length; i++) {
+      item.alternatives.push(AiCopyAlternative.fromJson(altArr[i]));
+    }
+    const tagsArr: Record<string, Object>[] = safeGetRecordArray(data, 'tags');
+    const tagList: string[] = [];
+    for (let i = 0; i < tagsArr.length; i++) {
+      tagList.push(String(tagsArr[i]));
+    }
+    if (tagList.length > 0) {
+      item.tags = tagList;
+    }
+    item.fingerprint = safeGetString(data, 'fingerprint');
+    return item;
+  }
+}
+
+export class AiGeneratedCopy {
+  text: string = '';
+  style: string = '';
+  sourceType: string = '';
+  tags: string[] = [];
+  fingerprint: string = '';
+
+  static fromJson(data: Record<string, Object>): AiGeneratedCopy {
+    const item: AiGeneratedCopy = new AiGeneratedCopy();
+    item.text = safeGetString(data, 'text');
+    item.style = safeGetString(data, 'style');
+    item.sourceType = safeGetString(data, 'sourceType');
+    const tagsArr: Record<string, Object>[] = safeGetRecordArray(data, 'tags');
+    const tagList: string[] = [];
+    for (let i = 0; i < tagsArr.length; i++) {
+      tagList.push(String(tagsArr[i]));
+    }
+    if (tagList.length > 0) {
+      item.tags = tagList;
+    }
+    item.fingerprint = safeGetString(data, 'fingerprint');
+    return item;
+  }
+}
+
+export class AiTopicRecommendation {
+  id: string = '';
+  title: string = '';
+  summary: string = '';
+  hotScore: number = 0;
+  category: string = '';
+  resourcePackUrl: string = '';
+  suggestedAngles: string[] = [];
+  carModels: string[] = [];
+  isOriginal: boolean = false;
+  publishDeadline: string = '';
+
+  static fromJson(data: Record<string, Object>): AiTopicRecommendation {
+    const item: AiTopicRecommendation = new AiTopicRecommendation();
+    item.id = safeGetString(data, 'id');
+    item.title = safeGetString(data, 'title');
+    item.summary = safeGetString(data, 'summary');
+    item.hotScore = safeGetNumber(data, 'hotScore');
+    item.category = safeGetString(data, 'category');
+    item.resourcePackUrl = safeGetString(data, 'resourcePackUrl');
+    const anglesArr: Record<string, Object>[] = safeGetRecordArray(data, 'suggestedAngles');
+    const angleList: string[] = [];
+    for (let i = 0; i < anglesArr.length; i++) {
+      angleList.push(String(anglesArr[i]));
+    }
+    if (angleList.length > 0) {
+      item.suggestedAngles = angleList;
+    }
+    const modelsArr: Record<string, Object>[] = safeGetRecordArray(data, 'carModels');
+    const modelList: string[] = [];
+    for (let i = 0; i < modelsArr.length; i++) {
+      modelList.push(String(modelsArr[i]));
+    }
+    if (modelList.length > 0) {
+      item.carModels = modelList;
+    }
+    item.isOriginal = safeGetBool(data, 'isOriginal');
+    item.publishDeadline = safeGetString(data, 'publishDeadline');
+    return item;
+  }
+}
+
+export class AiCarMatchItem {
+  brand: string = '';
+  model: string = '';
+  matchScore: number = 0;
+  priceRange: string = '';
+  highlights: string[] = [];
+  imageTag: string = '';
+
+  static fromJson(data: Record<string, Object>): AiCarMatchItem {
+    const item: AiCarMatchItem = new AiCarMatchItem();
+    item.brand = safeGetString(data, 'brand');
+    item.model = safeGetString(data, 'model');
+    item.matchScore = safeGetNumber(data, 'matchScore');
+    item.priceRange = safeGetString(data, 'priceRange');
+    const hlArr: Record<string, Object>[] = safeGetRecordArray(data, 'highlights');
+    const hlList: string[] = [];
+    for (let i = 0; i < hlArr.length; i++) {
+      hlList.push(String(hlArr[i]));
+    }
+    if (hlList.length > 0) {
+      item.highlights = hlList;
+    }
+    item.imageTag = safeGetString(data, 'imageTag');
+    return item;
+  }
+}
+
+export class AiCarMatchResult {
+  matchedModels: AiCarMatchItem[] = [];
+  interestTags: string[] = [];
+  recommendedActivities: string[] = [];
+
+  static fromJson(data: Record<string, Object>): AiCarMatchResult {
+    const item: AiCarMatchResult = new AiCarMatchResult();
+    const modelArr: Record<string, Object>[] = safeGetRecordArray(data, 'matchedModels');
+    for (let i = 0; i < modelArr.length; i++) {
+      item.matchedModels.push(AiCarMatchItem.fromJson(modelArr[i]));
+    }
+    const tagArr: Record<string, Object>[] = safeGetRecordArray(data, 'interestTags');
+    const tagList: string[] = [];
+    for (let i = 0; i < tagArr.length; i++) {
+      tagList.push(String(tagArr[i]));
+    }
+    if (tagList.length > 0) {
+      item.interestTags = tagList;
+    }
+    const actArr: Record<string, Object>[] = safeGetRecordArray(data, 'recommendedActivities');
+    const actList: string[] = [];
+    for (let i = 0; i < actArr.length; i++) {
+      actList.push(String(actArr[i]));
+    }
+    if (actList.length > 0) {
+      item.recommendedActivities = actList;
+    }
+    return item;
+  }
+}
+
+export class AiBookingSuggestion {
+  bestTimeSlot: string = '';
+  recommendedDealer: string = '';
+  reminderScript: string = '';
+  preparationTips: string[] = [];
+  voiceReminderEnabled: boolean = true;
+
+  static fromJson(data: Record<string, Object>): AiBookingSuggestion {
+    const item: AiBookingSuggestion = new AiBookingSuggestion();
+    item.bestTimeSlot = safeGetString(data, 'bestTimeSlot');
+    item.recommendedDealer = safeGetString(data, 'recommendedDealer');
+    item.reminderScript = safeGetString(data, 'reminderScript');
+    const tipsArr: Record<string, Object>[] = safeGetRecordArray(data, 'preparationTips');
+    const tipsList: string[] = [];
+    for (let i = 0; i < tipsArr.length; i++) {
+      tipsList.push(String(tipsArr[i]));
+    }
+    if (tipsList.length > 0) {
+      item.preparationTips = tipsList;
+    }
+    item.voiceReminderEnabled = safeGetBool(data, 'voiceReminderEnabled', true);
+    return item;
+  }
+}
+
+export class AiKnowledgeQA {
+  id: string = '';
+  question: string = '';
+  answer: string = '';
+  category: string = '';
+  carBrand: string = '';
+  carModel: string = '';
+  viewCount: number = 0;
+  helpfulCount: number = 0;
+  sourceType: string = '';
+  fingerprint: string = '';
+  hashTxId: string = '';
+
+  static fromJson(data: Record<string, Object>): AiKnowledgeQA {
+    const item: AiKnowledgeQA = new AiKnowledgeQA();
+    item.id = safeGetString(data, 'id');
+    item.question = safeGetString(data, 'question');
+    item.answer = safeGetString(data, 'answer');
+    item.category = safeGetString(data, 'category');
+    item.carBrand = safeGetString(data, 'carBrand');
+    item.carModel = safeGetString(data, 'carModel');
+    item.viewCount = safeGetNumber(data, 'viewCount');
+    item.helpfulCount = safeGetNumber(data, 'helpfulCount');
+    item.sourceType = safeGetString(data, 'sourceType');
+    item.fingerprint = safeGetString(data, 'fingerprint');
+    item.hashTxId = safeGetString(data, 'hashTxId');
+    return item;
+  }
+}
+
+export class AiKnowledgeAnswer {
+  question: string = '';
+  answer: string = '';
+  relatedQA: AiKnowledgeQA[] = [];
+  confidence: number = 0;
+  sourceReferences: string[] = [];
+
+  static fromJson(data: Record<string, Object>): AiKnowledgeAnswer {
+    const item: AiKnowledgeAnswer = new AiKnowledgeAnswer();
+    item.question = safeGetString(data, 'question');
+    item.answer = safeGetString(data, 'answer');
+    const relArr: Record<string, Object>[] = safeGetRecordArray(data, 'relatedQA');
+    for (let i = 0; i < relArr.length; i++) {
+      item.relatedQA.push(AiKnowledgeQA.fromJson(relArr[i]));
+    }
+    item.confidence = safeGetNumber(data, 'confidence');
+    const refArr: Record<string, Object>[] = safeGetRecordArray(data, 'sourceReferences');
+    const refList: string[] = [];
+    for (let i = 0; i < refArr.length; i++) {
+      refList.push(String(refArr[i]));
+    }
+    if (refList.length > 0) {
+      item.sourceReferences = refList;
+    }
+    return item;
+  }
+}
+
+export class AiSecurityLabel {
+  type: string = '';
+  level: string = '';
+  description: string = '';
+  autoApplied: boolean = false;
+
+  static fromJson(data: Record<string, Object>): AiSecurityLabel {
+    const item: AiSecurityLabel = new AiSecurityLabel();
+    item.type = safeGetString(data, 'type');
+    item.level = safeGetString(data, 'level');
+    item.description = safeGetString(data, 'description');
+    item.autoApplied = safeGetBool(data, 'autoApplied');
+    return item;
+  }
+}
+
+export class AiComplianceResult {
+  contentId: string = '';
+  compliant: boolean = true;
+  labels: AiSecurityLabel[] = [];
+  riskScore: number = 0;
+  downloadable: boolean = true;
+  shareableExternally: boolean = true;
+  fingerprint: string = '';
+  hashTxId: string = '';
+
+  static fromJson(data: Record<string, Object>): AiComplianceResult {
+    const item: AiComplianceResult = new AiComplianceResult();
+    item.contentId = safeGetString(data, 'contentId');
+    item.compliant = safeGetBool(data, 'compliant', true);
+    const lblArr: Record<string, Object>[] = safeGetRecordArray(data, 'labels');
+    for (let i = 0; i < lblArr.length; i++) {
+      item.labels.push(AiSecurityLabel.fromJson(lblArr[i]));
+    }
+    item.riskScore = safeGetNumber(data, 'riskScore');
+    item.downloadable = safeGetBool(data, 'downloadable', true);
+    item.shareableExternally = safeGetBool(data, 'shareableExternally', true);
+    item.fingerprint = safeGetString(data, 'fingerprint');
+    item.hashTxId = safeGetString(data, 'hashTxId');
+    return item;
+  }
+}
+
+export class ComplianceDashboardData {
+  totalChecks: number = 0;
+  matchRate: number = 0;
+  mismatchRate: number = 0;
+  matched: number = 0;
+  mismatched: number = 0;
+  partial: number = 0;
+  recentMismatches: ComplianceCheckItem[] = [];
+  static fromJson(data: Record<string, Object>): ComplianceDashboardData {
+    const d: ComplianceDashboardData = new ComplianceDashboardData();
+    d.totalChecks = safeGetNumber(data, 'totalChecks');
+    d.matchRate = safeGetNumber(data, 'matchRate');
+    d.mismatchRate = safeGetNumber(data, 'mismatchRate');
+    d.matched = safeGetNumber(data, 'matched');
+    d.mismatched = safeGetNumber(data, 'mismatched');
+    d.partial = safeGetNumber(data, 'partial');
+    d.recentMismatches = ComplianceCheckList.fromJsonArr(safeGetRecordArray(data, 'recentMismatches'));
+    return d;
+  }
+}
+
+export class ComplianceCheckItem {
+  checkId: string = '';
+  bizHash: string = '';
+  ecnyFlowId: string = '';
+  invoiceId: string = '';
+  bizAmount: number = 0;
+  flowAmount: number = 0;
+  invoiceAmount: number = 0;
+  matchStatus: string = 'pending';
+  mismatchDetail: string = '';
+  checkTime: string = '';
+  autoCheck: boolean = false;
+  static fromJson(data: Record<string, Object>): ComplianceCheckItem {
+    const c: ComplianceCheckItem = new ComplianceCheckItem();
+    c.checkId = safeGetString(data, 'checkId');
+    c.bizHash = safeGetString(data, 'bizHash');
+    c.ecnyFlowId = safeGetString(data, 'ecnyFlowId');
+    c.invoiceId = safeGetString(data, 'invoiceId');
+    c.bizAmount = safeGetNumber(data, 'bizAmount');
+    c.flowAmount = safeGetNumber(data, 'flowAmount');
+    c.invoiceAmount = safeGetNumber(data, 'invoiceAmount');
+    c.matchStatus = safeGetString(data, 'matchStatus');
+    c.mismatchDetail = safeGetString(data, 'mismatchDetail');
+    c.checkTime = safeGetString(data, 'checkTime');
+    c.autoCheck = safeGetBool(data, 'autoCheck');
+    return c;
+  }
+}
+
+export class ComplianceCheckList {
+  list: ComplianceCheckItem[] = [];
+  total: number = 0;
+  static fromJson(data: Record<string, Object>): ComplianceCheckList {
+    const l: ComplianceCheckList = new ComplianceCheckList();
+    l.list = ComplianceCheckList.fromJsonArr(safeGetRecordArray(data, 'list'));
+    l.total = safeGetNumber(data, 'total');
+    return l;
+  }
+  static fromJsonArr(arr: Record<string, Object>[]): ComplianceCheckItem[] {
+    const result: ComplianceCheckItem[] = [];
+    for (let i = 0; i < arr.length; i++) {
+      result.push(ComplianceCheckItem.fromJson(arr[i]));
+    }
+    return result;
+  }
+}
+
+export class KolTrackData {
+  track: string = 'B';
+  taxType: string = '';
+  withholdingRate: number = 0;
+  selfInvoicing: boolean = false;
+  autoClassified: boolean = true;
+  static fromJson(data: Record<string, Object>): KolTrackData {
+    const t: KolTrackData = new KolTrackData();
+    t.track = safeGetString(data, 'track');
+    t.taxType = safeGetString(data, 'taxType');
+    t.withholdingRate = safeGetNumber(data, 'withholdingRate');
+    t.selfInvoicing = safeGetBool(data, 'selfInvoicing');
+    t.autoClassified = safeGetBool(data, 'autoClassified');
+    return t;
+  }
+}
+
+export class KolTrackDistribution {
+  A: number = 0;
+  B: number = 0;
+  C: number = 0;
+  static fromJson(data: Record<string, Object>): KolTrackDistribution {
+    const d: KolTrackDistribution = new KolTrackDistribution();
+    d.A = safeGetNumber(data, 'A');
+    d.B = safeGetNumber(data, 'B');
+    d.C = safeGetNumber(data, 'C');
+    return d;
+  }
+}
+
+export class ContractParamItem {
+  paramKey: string = '';
+  paramValue: number = 0;
+  defaultValue: number = 0;
+  scope: string = 'global';
+  description: string = '';
+  static fromJson(data: Record<string, Object>): ContractParamItem {
+    const p: ContractParamItem = new ContractParamItem();
+    p.paramKey = safeGetString(data, 'paramKey');
+    p.paramValue = safeGetNumber(data, 'paramValue');
+    p.defaultValue = safeGetNumber(data, 'defaultValue');
+    p.scope = safeGetString(data, 'scope');
+    p.description = safeGetString(data, 'description');
+    return p;
+  }
+}
+
+export class EcnyWalletData {
+  walletId: string = '';
+  walletType: string = 'personal';
+  balance: number = 0;
+  status: string = 'active';
+  static fromJson(data: Record<string, Object>): EcnyWalletData {
+    const w: EcnyWalletData = new EcnyWalletData();
+    w.walletId = safeGetString(data, 'walletId');
+    w.walletType = safeGetString(data, 'walletType');
+    w.balance = safeGetNumber(data, 'balance');
+    w.status = safeGetString(data, 'status');
+    return w;
+  }
+}
+
+export class EcnyFlowItem {
+  flowId: string = '';
+  amount: number = 0;
+  direction: string = '';
+  bizType: string = '';
+  status: string = '';
+  createdAt: string = '';
+  static fromJson(data: Record<string, Object>): EcnyFlowItem {
+    const f: EcnyFlowItem = new EcnyFlowItem();
+    f.flowId = safeGetString(data, 'flowId');
+    f.amount = safeGetNumber(data, 'amount');
+    f.direction = safeGetString(data, 'direction');
+    f.bizType = safeGetString(data, 'bizType');
+    f.status = safeGetString(data, 'status');
+    f.createdAt = safeGetString(data, 'createdAt');
+    return f;
+  }
+}
+
+export class InvoiceItem {
+  invoiceId: string = '';
+  invoiceNo: string = '';
+  invoiceType: string = '';
+  recipientTrack: string = 'B';
+  amount: number = 0;
+  taxAmount: number = 0;
+  totalAmount: number = 0;
+  status: string = 'draft';
+  createdAt: string = '';
+  static fromJson(data: Record<string, Object>): InvoiceItem {
+    const i: InvoiceItem = new InvoiceItem();
+    i.invoiceId = safeGetString(data, 'invoiceId');
+    i.invoiceNo = safeGetString(data, 'invoiceNo');
+    i.invoiceType = safeGetString(data, 'invoiceType');
+    i.recipientTrack = safeGetString(data, 'recipientTrack');
+    i.amount = safeGetNumber(data, 'amount');
+    i.taxAmount = safeGetNumber(data, 'taxAmount');
+    i.totalAmount = safeGetNumber(data, 'totalAmount');
+    i.status = safeGetString(data, 'status');
+    i.createdAt = safeGetString(data, 'createdAt');
+    return i;
+  }
+}
+
+export class RegulatoryOverview {
+  tipsEnabled: boolean = false;
+  tipsAccountId: string = '';
+  ecnyTraceable: boolean = false;
+  goldenTaxLinked: boolean = false;
+  goldenTaxSyncCount: number = 0;
+  lastSyncTime: string = '';
+  fourFlowMatchRate: number = 0;
+  whitelistStatus: string = '';
+  riskLevel: string = '';
+  totalVerifiedTransactions: number = 0;
+  totalVerifiedAmount: number = 0;
+  pendingAlerts: number = 0;
+
+  static fromJson(data: Record<string, Object>): RegulatoryOverview {
+    const r: RegulatoryOverview = new RegulatoryOverview();
+    r.tipsEnabled = safeGetBool(data, 'tipsEnabled');
+    r.tipsAccountId = safeGetString(data, 'tipsAccountId');
+    r.ecnyTraceable = safeGetBool(data, 'ecnyTraceable');
+    r.goldenTaxLinked = safeGetBool(data, 'goldenTaxLinked');
+    r.goldenTaxSyncCount = safeGetNumber(data, 'goldenTaxSyncCount');
+    r.lastSyncTime = safeGetString(data, 'lastSyncTime');
+    r.fourFlowMatchRate = safeGetNumber(data, 'fourFlowMatchRate');
+    r.whitelistStatus = safeGetString(data, 'whitelistStatus');
+    r.riskLevel = safeGetString(data, 'riskLevel');
+    r.totalVerifiedTransactions = safeGetNumber(data, 'totalVerifiedTransactions');
+    r.totalVerifiedAmount = safeGetNumber(data, 'totalVerifiedAmount');
+    r.pendingAlerts = safeGetNumber(data, 'pendingAlerts');
+    return r;
+  }
+}
+
+export class RegulatoryAlert {
+  id: string = '';
+  type: string = '';
+  severity: string = '';
+  title: string = '';
+  detail: string = '';
+  relatedFlowId: string = '';
+  relatedHash: string = '';
+  timestamp: string = '';
+  resolved: boolean = false;
+
+  static fromJson(data: Record<string, Object>): RegulatoryAlert {
+    const a: RegulatoryAlert = new RegulatoryAlert();
+    a.id = safeGetString(data, 'id');
+    a.type = safeGetString(data, 'type');
+    a.severity = safeGetString(data, 'severity');
+    a.title = safeGetString(data, 'title');
+    a.detail = safeGetString(data, 'detail');
+    a.relatedFlowId = safeGetString(data, 'relatedFlowId');
+    a.relatedHash = safeGetString(data, 'relatedHash');
+    a.timestamp = safeGetString(data, 'timestamp');
+    a.resolved = safeGetBool(data, 'resolved');
+    return a;
+  }
+}
+
+export class TipsAccountInfo {
+  accountId: string = '';
+  bankName: string = '';
+  taxOffice: string = '';
+  agreementStatus: string = '';
+  autoDeductEnabled: boolean = false;
+  lastDeductTime: string = '';
+  totalDeducted: number = 0;
+
+  static fromJson(data: Record<string, Object>): TipsAccountInfo {
+    const t: TipsAccountInfo = new TipsAccountInfo();
+    t.accountId = safeGetString(data, 'accountId');
+    t.bankName = safeGetString(data, 'bankName');
+    t.taxOffice = safeGetString(data, 'taxOffice');
+    t.agreementStatus = safeGetString(data, 'agreementStatus');
+    t.autoDeductEnabled = safeGetBool(data, 'autoDeductEnabled');
+    t.lastDeductTime = safeGetString(data, 'lastDeductTime');
+    t.totalDeducted = safeGetNumber(data, 'totalDeducted');
+    return t;
+  }
+}
+
+export class EcnyTraceRecord {
+  flowId: string = '';
+  umbrellaTopId: string = '';
+  umbrellaBottomId: string = '';
+  direction: string = '';
+  amount: number = 0;
+  purpose: string = '';
+  hashProof: string = '';
+  taxDeducted: boolean = false;
+  invoiceIssued: boolean = false;
+  bizHash: string = '';
+  timestamp: string = '';
+
+  static fromJson(data: Record<string, Object>): EcnyTraceRecord {
+    const r: EcnyTraceRecord = new EcnyTraceRecord();
+    r.flowId = safeGetString(data, 'flowId');
+    r.umbrellaTopId = safeGetString(data, 'umbrellaTopId');
+    r.umbrellaBottomId = safeGetString(data, 'umbrellaBottomId');
+    r.direction = safeGetString(data, 'direction');
+    r.amount = safeGetNumber(data, 'amount');
+    r.purpose = safeGetString(data, 'purpose');
+    r.hashProof = safeGetString(data, 'hashProof');
+    r.taxDeducted = safeGetBool(data, 'taxDeducted');
+    r.invoiceIssued = safeGetBool(data, 'invoiceIssued');
+    r.bizHash = safeGetString(data, 'bizHash');
+    r.timestamp = safeGetString(data, 'timestamp');
+    return r;
+  }
+}
+
+export class FourFlowCheckResult {
+  bizHash: string = '';
+  ecnyFlowId: string = '';
+  invoiceId: string = '';
+  contractId: string = '';
+  bizAmount: number = 0;
+  flowAmount: number = 0;
+  invoiceAmount: number = 0;
+  contractAmount: number = 0;
+  matchStatus: string = '';
+  checkTime: string = '';
+
+  static fromJson(data: Record<string, Object>): FourFlowCheckResult {
+    const c: FourFlowCheckResult = new FourFlowCheckResult();
+    c.bizHash = safeGetString(data, 'bizHash');
+    c.ecnyFlowId = safeGetString(data, 'ecnyFlowId');
+    c.invoiceId = safeGetString(data, 'invoiceId');
+    c.contractId = safeGetString(data, 'contractId');
+    c.bizAmount = safeGetNumber(data, 'bizAmount');
+    c.flowAmount = safeGetNumber(data, 'flowAmount');
+    c.invoiceAmount = safeGetNumber(data, 'invoiceAmount');
+    c.contractAmount = safeGetNumber(data, 'contractAmount');
+    c.matchStatus = safeGetString(data, 'matchStatus');
+    c.checkTime = safeGetString(data, 'checkTime');
+    return c;
+  }
+}
+
+export class WeightedScoreDetail {
+  computePower: number = 0;
+  visitFrequency: number = 0;
+  duration: number = 0;
+  contentDepth: number = 0;
+  interaction: number = 0;
+  platformDepth: number = 0;
+  shareTracking: number = 0;
+  crossProject: number = 0;
+
+  static fromJson(data: Record<string, Object>): WeightedScoreDetail {
+    const item: WeightedScoreDetail = new WeightedScoreDetail();
+    item.computePower = safeGetNumber(data, 'computePower');
+    item.visitFrequency = safeGetNumber(data, 'visitFrequency');
+    item.duration = safeGetNumber(data, 'duration');
+    item.contentDepth = safeGetNumber(data, 'contentDepth');
+    item.interaction = safeGetNumber(data, 'interaction');
+    item.platformDepth = safeGetNumber(data, 'platformDepth');
+    item.shareTracking = safeGetNumber(data, 'shareTracking');
+    item.crossProject = safeGetNumber(data, 'crossProject');
+    return item;
+  }
+}
+
+export class SplitDetail {
+  platform: number = 0;
+  contributor: number = 0;
+  notary: number = 0;
+  crossProject: number = 0;
+  reserve: number = 0;
+
+  static fromJson(data: Record<string, Object>): SplitDetail {
+    const item: SplitDetail = new SplitDetail();
+    item.platform = safeGetNumber(data, 'platform');
+    item.contributor = safeGetNumber(data, 'contributor');
+    item.notary = safeGetNumber(data, 'notary');
+    item.crossProject = safeGetNumber(data, 'crossProject');
+    item.reserve = safeGetNumber(data, 'reserve');
+    return item;
+  }
+}
+
+export class PageWeightedSettlement {
+  id: string = '';
+  userId: string = '';
+  contributorId: string = '';
+  project: string = '';
+  totalScore: number = 0;
+  scores: WeightedScoreDetail = new WeightedScoreDetail();
+  settleAmount: number = 0;
+  splits: SplitDetail = new SplitDetail();
+  budgetId: string = '';
+  budgetRemaining: number = 0;
+  hashProof: string = '';
+  notarized: boolean = false;
+  x402PaymentId: string = '';
+  status: string = '';
+  createdAt: string = '';
+
+  static fromJson(data: Record<string, Object>): PageWeightedSettlement {
+    const item: PageWeightedSettlement = new PageWeightedSettlement();
+    item.id = safeGetString(data, 'id');
+    item.userId = safeGetString(data, 'userId');
+    item.contributorId = safeGetString(data, 'contributorId');
+    item.project = safeGetString(data, 'project');
+    item.totalScore = safeGetNumber(data, 'totalScore');
+    const scoresObj: Record<string, Object> | null = safeGetRecord(data, 'scores');
+    if (scoresObj !== null) {
+      item.scores = WeightedScoreDetail.fromJson(scoresObj);
+    }
+    item.settleAmount = safeGetNumber(data, 'settleAmount');
+    const splitsObj: Record<string, Object> | null = safeGetRecord(data, 'splits');
+    if (splitsObj !== null) {
+      item.splits = SplitDetail.fromJson(splitsObj);
+    }
+    item.budgetId = safeGetString(data, 'budgetId');
+    item.budgetRemaining = safeGetNumber(data, 'budgetRemaining');
+    item.hashProof = safeGetString(data, 'hashProof');
+    const notarVal: number = safeGetNumber(data, 'notarized');
+    item.notarized = notarVal === 1 || data['notarized'] === true;
+    item.x402PaymentId = safeGetString(data, 'x402PaymentId');
+    item.status = safeGetString(data, 'status');
+    item.createdAt = safeGetString(data, 'createdAt');
+    return item;
+  }
+}
+
+export class PageWeightedSettlementList {
+  items: PageWeightedSettlement[] = [];
+  total: number = 0;
+  page: number = 0;
+  pageSize: number = 0;
+
+  static fromJson(data: Record<string, Object>): PageWeightedSettlementList {
+    const item: PageWeightedSettlementList = new PageWeightedSettlementList();
+    const arr: Record<string, Object>[] = safeGetRecordArray(data, 'items');
+    for (let i = 0; i < arr.length; i++) {
+      item.items.push(PageWeightedSettlement.fromJson(arr[i]));
+    }
+    item.total = safeGetNumber(data, 'total');
+    item.page = safeGetNumber(data, 'page');
+    item.pageSize = safeGetNumber(data, 'pageSize');
+    return item;
+  }
+}
+
+export class BudgetPoolItem {
+  id: string = '';
+  project: string = '';
+  projectName: string = '';
+  totalBudget: number = 0;
+  usedBudget: number = 0;
+  remaining: number = 0;
+  usageRate: number = 0;
+  status: string = '';
+  alertThreshold: number = 0;
+  alertTriggered: boolean = false;
+
+  static fromJson(data: Record<string, Object>): BudgetPoolItem {
+    const item: BudgetPoolItem = new BudgetPoolItem();
+    item.id = safeGetString(data, 'id');
+    item.project = safeGetString(data, 'project');
+    item.projectName = safeGetString(data, 'projectName');
+    item.totalBudget = safeGetNumber(data, 'totalBudget');
+    item.usedBudget = safeGetNumber(data, 'usedBudget');
+    item.remaining = safeGetNumber(data, 'remaining');
+    item.usageRate = safeGetNumber(data, 'usageRate');
+    item.status = safeGetString(data, 'status');
+    item.alertThreshold = safeGetNumber(data, 'alertThreshold');
+    const alertVal: number = safeGetNumber(data, 'alertTriggered');
+    item.alertTriggered = alertVal === 1 || data['alertTriggered'] === true;
+    return item;
+  }
+}
+
+export class WeightedSettleStats {
+  totalSettlements: number = 0;
+  totalAmount: number = 0;
+  totalPlatformFee: number = 0;
+  totalContributorEarnings: number = 0;
+  totalNotaryFee: number = 0;
+  totalCrossProjectFee: number = 0;
+  avgScore: number = 0;
+  notarizedCount: number = 0;
+  budgetPools: BudgetPoolItem[] = [];
+
+  static fromJson(data: Record<string, Object>): WeightedSettleStats {
+    const item: WeightedSettleStats = new WeightedSettleStats();
+    item.totalSettlements = safeGetNumber(data, 'totalSettlements');
+    item.totalAmount = safeGetNumber(data, 'totalAmount');
+    item.totalPlatformFee = safeGetNumber(data, 'totalPlatformFee');
+    item.totalContributorEarnings = safeGetNumber(data, 'totalContributorEarnings');
+    item.totalNotaryFee = safeGetNumber(data, 'totalNotaryFee');
+    item.totalCrossProjectFee = safeGetNumber(data, 'totalCrossProjectFee');
+    item.avgScore = safeGetNumber(data, 'avgScore');
+    item.notarizedCount = safeGetNumber(data, 'notarizedCount');
+    const poolArr: Record<string, Object>[] = safeGetRecordArray(data, 'budgetPools');
+    for (let i = 0; i < poolArr.length; i++) {
+      item.budgetPools.push(BudgetPoolItem.fromJson(poolArr[i]));
+    }
+    return item;
+  }
+}
+
+export class ContractVerifyResult {
+  verified: boolean = false;
+  contractId: string = '';
+  contractType: string = '';
+  commissionRate: number = 0;
+  reason: string = '';
+  message: string = '';
+
+  static fromJson(data: Record<string, Object>): ContractVerifyResult {
+    const item: ContractVerifyResult = new ContractVerifyResult();
+    item.verified = safeGetBool(data, 'verified');
+    item.contractId = safeGetString(data, 'contractId');
+    item.contractType = safeGetString(data, 'contractType');
+    item.commissionRate = safeGetNumber(data, 'commissionRate');
+    item.reason = safeGetString(data, 'reason');
+    item.message = safeGetString(data, 'message');
+    return item;
+  }
+}
+
+export class ContractSettleBreakdown {
+  kolShare: number = 0;
+  merchantShare: number = 0;
+  platformFee: number = 0;
+  taxReserve: number = 0;
+
+  static fromJson(data: Record<string, Object>): ContractSettleBreakdown {
+    const item: ContractSettleBreakdown = new ContractSettleBreakdown();
+    item.kolShare = safeGetNumber(data, 'kolShare');
+    item.merchantShare = safeGetNumber(data, 'merchantShare');
+    item.platformFee = safeGetNumber(data, 'platformFee');
+    item.taxReserve = safeGetNumber(data, 'taxReserve');
+    return item;
+  }
+}
+
+export class WeightUpdate {
+  oldWeight: number = 0;
+  newWeight: number = 0;
+  direction: string = '';
+
+  static fromJson(data: Record<string, Object>): WeightUpdate {
+    const item: WeightUpdate = new WeightUpdate();
+    item.oldWeight = safeGetNumber(data, 'oldWeight');
+    item.newWeight = safeGetNumber(data, 'newWeight');
+    item.direction = safeGetString(data, 'direction');
+    return item;
+  }
+}
+
+export class ContractSettleResult {
+  id: string = '';
+  merchantId: string = '';
+  kolUserId: string = '';
+  amount: number = 0;
+  breakdown: ContractSettleBreakdown = new ContractSettleBreakdown();
+  weightUpdate: WeightUpdate | null = null;
+  status: string = '';
+
+  static fromJson(data: Record<string, Object>): ContractSettleResult {
+    const item: ContractSettleResult = new ContractSettleResult();
+    item.id = safeGetString(data, 'id');
+    item.merchantId = safeGetString(data, 'merchantId');
+    item.kolUserId = safeGetString(data, 'kolUserId');
+    item.amount = safeGetNumber(data, 'amount');
+    const bd: Record<string, Object> | null = safeGetRecord(data, 'breakdown');
+    if (bd !== null) { item.breakdown = ContractSettleBreakdown.fromJson(bd); }
+    const wu: Record<string, Object> | null = safeGetRecord(data, 'weightUpdate');
+    if (wu !== null) { item.weightUpdate = WeightUpdate.fromJson(wu); }
+    item.status = safeGetString(data, 'status');
+    return item;
+  }
+}
+
+export class KolWeightAdjustResult {
+  kolUserId: string = '';
+  oldWeight: number = 0;
+  newWeight: number = 0;
+  level: number = 0;
+  direction: string = '';
+
+  static fromJson(data: Record<string, Object>): KolWeightAdjustResult {
+    const item: KolWeightAdjustResult = new KolWeightAdjustResult();
+    item.kolUserId = safeGetString(data, 'kolUserId');
+    item.oldWeight = safeGetNumber(data, 'oldWeight');
+    item.newWeight = safeGetNumber(data, 'newWeight');
+    item.level = safeGetNumber(data, 'level');
+    item.direction = safeGetString(data, 'direction');
+    return item;
+  }
+}
+
+export class DimensionItem {
+  key: string = '';
+  value: number = 0;
+
+  static fromJson(key: string, value: Object): DimensionItem {
+    const item: DimensionItem = new DimensionItem();
+    item.key = key;
+    item.value = Number(value);
+    return item;
+  }
+}
+
+export class ValuationResult {
+  totalWeight: number = 0;
+  estimatedValue: number = 0;
+  qualityGrade: string = '';
+  dimensions: DimensionItem[] = [];
+
+  static fromJson(data: Record<string, Object>): ValuationResult {
+    const item: ValuationResult = new ValuationResult();
+    item.totalWeight = safeGetNumber(data, 'totalWeight');
+    item.estimatedValue = safeGetNumber(data, 'estimatedValue');
+    item.qualityGrade = safeGetString(data, 'qualityGrade');
+    const dimObj: Record<string, Object> | null = safeGetRecord(data, 'dimensions');
+    if (dimObj !== null) {
+      const keys: string[] = Object.keys(dimObj);
+      for (let i = 0; i < keys.length; i++) {
+        item.dimensions.push(DimensionItem.fromJson(keys[i], dimObj[keys[i]]));
+      }
+    }
+    return item;
+  }
+}
+
+export class WeightedValuationResult {
+  id: string = '';
+  evidenceId: string = '';
+  valuation: ValuationResult = new ValuationResult();
+
+  static fromJson(data: Record<string, Object>): WeightedValuationResult {
+    const item: WeightedValuationResult = new WeightedValuationResult();
+    item.id = safeGetString(data, 'id');
+    item.evidenceId = safeGetString(data, 'evidenceId');
+    const val: Record<string, Object> | null = safeGetRecord(data, 'valuation');
+    if (val !== null) { item.valuation = ValuationResult.fromJson(val); }
+    return item;
+  }
+}
+
+export class TestPaymentResult {
+  id: string = '';
+  evidenceId: string = '';
+  amount: number = 0;
+  channel: string = '';
+  type: string = '';
+  status: string = '';
+
+  static fromJson(data: Record<string, Object>): TestPaymentResult {
+    const item: TestPaymentResult = new TestPaymentResult();
+    item.id = safeGetString(data, 'id');
+    item.evidenceId = safeGetString(data, 'evidenceId');
+    item.amount = safeGetNumber(data, 'amount');
+    item.channel = safeGetString(data, 'channel');
+    item.type = safeGetString(data, 'type');
+    item.status = safeGetString(data, 'status');
+    return item;
+  }
+}
+
+export class EarningsReminderResult {
+  hasEarnings: boolean = false;
+  totalPending: number = 0;
+
+  static fromJson(data: Record<string, Object>): EarningsReminderResult {
+    const item: EarningsReminderResult = new EarningsReminderResult();
+    item.hasEarnings = safeGetBool(data, 'hasEarnings');
+    item.totalPending = safeGetNumber(data, 'totalPending');
     return item;
   }
 }

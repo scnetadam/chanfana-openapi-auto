@@ -1,0 +1,34 @@
+[
+  {
+    "id": "pay_transfer_mrwq2cce",
+    "payerId": "u_1784763430107_wm9eqc",
+    "payeeId": "u_1784763430135_7g4rp8",
+    "amount": 50,
+    "subject": "测试转账",
+    "channel": "balance",
+    "status": "completed",
+    "createdAt": "2026-07-22T23:37:10.142Z"
+  },
+  {
+    "id": "pay_transfer_mrwq5e46",
+    "payerId": "u_1784763572368_alsko4",
+    "payeeId": "u_1784763430135_7g4rp8",
+    "amount": 50,
+    "subject": "测试",
+    "channel": "balance",
+    "status": "completed",
+    "createdAt": "2026-07-22T23:39:32.406Z"
+  },
+  {
+    "id": "ap_1784765763412_ukf8e1",
+    "agentId": "test",
+    "payerId": "nonexistent",
+    "payeeId": "test2",
+    "amount": 99999,
+    "subject": "Agent 支付: test",
+    "authCode": "auto",
+    "status": "failed",
+    "createdAt": "2026-07-23T00:16:03.412Z",
+    "failReason": "扣款失败"
+  }
+]

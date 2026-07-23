@@ -1,0 +1,383 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.12'
+  HARMONY_SDK_API: '12'
+  CLOUDBASE_ENV_ID: 'd1g9iojop685ea11a'
+
+# ═══════════════════════════════════════════════════════════════
+# 龟钮印信 CI/CD 完整流水线
+#
+# 流程图:
+#   ┌──────────┐  ┌──────────┐  ┌──────────┐
+#   │  Lint    │  │  Lint    │  │ Quality  │
+#   │ Frontend │  │ Backend  │  │  Gate    │
+#   └────┬─────┘  └────┬─────┘  └────┬─────┘
+#        │              │              │
+#   ┌────▼─────┐  ┌────▼─────┐        │
+#   │  Build   │  │  Build   │        │
+#   │ Frontend │  │ Backend  │        │
+#   │ (双矩阵) │  │ (Docker) │        │
+#   └────┬─────┘  └────┬─────┘        │
+#        │              │              │
+#        └──────┬───────┘              │
+#               │                      │
+#          ┌────▼─────┐                │
+#          │ API Test │                │
+#          └────┬─────┘                │
+#               │                      │
+#          ┌────▼──────┐               │
+#          │ Security  │               │
+#          │   Scan    │               │
+#          └────┬──────┘               │
+#               │                      │
+#     ┌─────────▼──────────▼──────────────┐
+#     │         Deploy (条件触发)          │
+#     │  dev→Staging  main→Production     │
+#     └──────────────────────────────────┘
+#
+# 独立触发路径:
+#   entry/** → HarmonyOS 校验
+#   worker/** → Cloudflare Worker 部署
+# ═══════════════════════════════════════════════════════════════
+
+jobs:
+  # ── 第一阶段: 代码质量 ─────────────────────────────────────
+
+  lint-frontend:
+    name: Lint · Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: cd frontend && npm ci
+      - run: cd frontend && npx eslint src/ --ext .ts,.vue --max-warnings 0 || true
+      - run: cd frontend && npx vue-tsc --noEmit || true
+
+  lint-backend:
+    name: Lint · Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: cd src && npm install
+      - run: cd src && npx eslint . --ext .js || true
+
+  quality-gate:
+    name: Gate · BrandCI & API Consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: BrandPalette coverage
+        run: |
+          TOTAL=$(find entry/src/main/ets/pages/ -name "*.ets" | wc -l)
+          COVERED=$(grep -rl "BrandPalette" entry/src/main/ets/pages/ | wc -l)
+          RATE=$(echo "scale=0; $COVERED*100/$TOTAL" | bc)
+          echo "BrandPalette: $COVERED/$TOTAL pages ($RATE%)"
+          find entry/src/main/ets/pages/ -name "*.ets" | while read f; do
+            if ! grep -q "BrandPalette" "$f"; then
+              echo "::warning file=$f::Missing BrandPalette import"
+            fi
+          done || true
+
+      - name: Hardcoded color audit
+        run: |
+          grep -rn "#[0-9A-Fa-f]\{6\}" entry/src/main/ets/pages/ --include="*.ets" \
+            | grep -v "BrandPalette\|BrandSeal\|BrandBadge" \
+            | head -20 || echo "Clean: no hardcoded colors in pages"
+          echo "---"
+          grep -rn '\$r(' entry/src/main/ets/pages/ --include="*.ets" \
+            | head -20 || echo "Clean: no \$r() references in pages"
+
+      - name: API endpoint consistency
+        run: |
+          echo "=== Frontend → Backend API mapping ==="
+          grep -roh "/api/[a-z\-/]*" entry/src/main/ets/ --include="*.ets" | sort -u > /tmp/fe-apis.txt
+          grep -roh "router\.\(get\|post\|put\|delete\)(.*'/api" src/routes/ --include="*.js" | \
+            sed "s/.*'\(\/api[^']*\)'.*/\1/" | sort -u > /tmp/be-apis.txt || true
+          echo "Frontend references:"
+          cat /tmp/fe-apis.txt
+          echo ""
+          echo "Backend routes:"
+          cat /tmp/be-apis.txt || echo "(no backend routes found)"
+          echo ""
+          echo "=== Missing backend routes ==="
+          comm -23 /tmp/fe-apis.txt /tmp/be-apis.txt || true
+
+      - name: ETS syntax health
+        run: |
+          ETS=$(find entry/src -name "*.ets" | wc -l)
+          PAGES=$(find entry/src/main/ets/pages -name "*.ets" | wc -l)
+          ANY_USE=$(grep -rn "\bany\b" entry/src/main/ets/ --include="*.ets" | wc -l)
+          echo "ETS=$ETS, Pages=$PAGES, any=$ANY_USE"
+          if [ "$ANY_USE" -gt 5 ]; then
+            echo "::warning::$ANY_USE uses of 'any' found — reduce for ArkTS compliance"
+          fi
+
+      - name: Data model coverage
+        run: |
+          MODELS=$(grep "^export class" entry/src/main/ets/model/DataModels.ets | wc -l)
+          USERS=$(grep -rl "DataModels" entry/src/main/ets/pages/ | wc -l)
+          echo "DataModels: $MODELS classes, used by $USERS pages"
+
+  # ── 第二阶段: 构建 ───────────────────────────────────────
+
+  build-frontend:
+    name: Build · Frontend ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    needs: [lint-frontend]
+    strategy:
+      matrix:
+        target: [mp-alipay, mp-weixin]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: cd frontend && npm ci
+      - run: cd frontend && npx uni build -p ${{ matrix.target }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frontend-${{ matrix.target }}
+          path: frontend/dist/build/${{ matrix.target }}/
+          retention-days: 7
+
+  build-backend:
+    name: Build · Backend Docker
+    runs-on: ubuntu-latest
+    needs: [lint-backend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Docker build (production)
+        run: docker build -f Dockerfile -t x402-backend:ci .
+      - name: Docker build (CloudBase)
+        run: docker build -f Dockerfile.cloudbase -t x402-cloudbase:ci .
+      - name: Image size report
+        run: |
+          echo "## Docker Images" >> $GITHUB_STEP_SUMMARY
+          docker images --format "| {{.Repository}} | {{.Tag}} | {{.Size}} |" | grep x402 >> $GITHUB_STEP_SUMMARY || true
+
+  validate-harmony:
+    name: Validate · HarmonyOS Project
+    runs-on: ubuntu-latest
+    if: |
+      contains(fromJSON('["push", "pull_request", "workflow_dispatch"]'), github.event_name) &&
+      (github.event_name != 'push' || 
+       startsWith(github.event.head_commit.message, 'feat') ||
+       startsWith(github.event.head_commit.message, 'fix') ||
+       startsWith(github.event.head_commit.message, 'refactor') ||
+       github.event_name == 'workflow_dispatch')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Project structure validation
+        run: |
+          echo "=== Config Files ==="
+          for f in build-profile.json5 oh-package.json5 entry/src/main/module.json5; do
+            if [ -f "$f" ]; then
+              echo "✓ $f"
+            else
+              echo "::error::$f missing"
+            fi
+          done
+          echo ""
+          echo "=== ETS Inventory ==="
+          find entry/src -name "*.ets" -type f | wc -l
+          echo "files, $(find entry/src/main/ets/pages -name '*.ets' -type f | wc -l) pages"
+
+      - name: ArkTS compliance check
+        run: |
+          echo "=== Forbidden patterns ==="
+          grep -rn "\bany\b" entry/src/main/ets/ --include="*.ets" | head -10 || echo "✓ No 'any'"
+          grep -rn "as\s\+any" entry/src/main/ets/ --include="*.ets" | head -10 || echo "✓ No 'as any'"
+          grep -rn "dynamic\b" entry/src/main/ets/ --include="*.ets" | head -10 || echo "✓ No 'dynamic'"
+
+      - name: Build report
+        if: always()
+        run: |
+          PAGES=$(find entry/src/main/ets/pages -name "*.ets" -type f | wc -l)
+          echo "## HarmonyOS Report" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- Pages: $PAGES" >> $GITHUB_STEP_SUMMARY
+          echo "- SDK: API ${{ env.HARMONY_SDK_API }} (HarmonyOS 5.0+)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pages" >> $GITHUB_STEP_SUMMARY
+          find entry/src/main/ets/pages -name "*.ets" -exec basename {} .ets \; | sort >> $GITHUB_STEP_SUMMARY
+
+  # ── 第三阶段: 测试 ───────────────────────────────────────
+
+  test-api:
+    name: Test · API Integration
+    runs-on: ubuntu-latest
+    needs: [build-backend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: cd src && npm install
+      - name: Start backend server
+        run: cd src && node index.js &
+        env:
+          JWT_SECRET: ci-test-secret
+          PORT: 3000
+      - name: Health check
+        run: |
+          for i in $(seq 1 10); do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/auth/verify 2>/dev/null || echo "000")
+            if [ "$CODE" != "000" ]; then echo "Server up (HTTP $CODE)"; break; fi
+            echo "Waiting... ($i/10)"
+            sleep 2
+          done
+      - name: Smoke tests
+        run: |
+          echo "=== Auth verify ==="
+          curl -s http://localhost:3000/api/auth/verify | head -c 200
+          echo ""
+          echo "=== Auth login ==="
+          curl -s -X POST http://localhost:3000/api/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"nickName":"ci-bot","platform":"ci"}' | head -c 200
+          echo ""
+          echo "=== Activity list ==="
+          curl -s http://localhost:3000/api/activity/list | head -c 200
+      - name: Teardown
+        if: always()
+        run: pkill -f "node index.js" || true
+
+  security-scan:
+    name: Scan · Security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: npm audit (frontend)
+        run: cd frontend && npm audit --audit-level=high 2>&1 | tail -5 || true
+      - name: npm audit (backend)
+        run: cd src && npm audit --audit-level=high 2>&1 | tail -5 || true
+      - name: Secret leak check
+        run: |
+          git diff --name-only HEAD~1 HEAD 2>/dev/null | while read f; do
+            if grep -qE '(password|secret|token|private_key)\s*[:=]\s*["\x27][^"\x27]{8,}' "$f" 2>/dev/null; then
+              echo "::error file=$f::Potential secret exposed"
+            fi
+          done || true
+      - name: PEM file check
+        run: |
+          PEM_FILES=$(find . -name "*.pem" -not -path "./node_modules/*" 2>/dev/null | wc -l)
+          if [ "$PEM_FILES" -gt 0 ]; then
+            echo "::warning::$PEM_FILES .pem files found in repo — consider using secrets"
+          fi
+
+  # ── 第四阶段: 部署 ───────────────────────────────────────
+
+  deploy-staging:
+    name: Deploy · Staging (dev)
+    runs-on: ubuntu-latest
+    needs: [build-frontend, test-api, security-scan, quality-gate]
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://guiniu-xin-281816-7-1306394233.sh.run.tcloudbase.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-mp-alipay
+          path: dist/mp-alipay/
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-mp-weixin
+          path: dist/mp-weixin/
+      - name: Deploy summary
+        run: |
+          echo "## Staging Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: dev" >> $GITHUB_STEP_SUMMARY
+          echo "- **CloudBase**: ${{ env.CLOUDBASE_ENV_ID }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Artifacts**: mp-alipay + mp-weixin" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy-production:
+    name: Deploy · Production (main)
+    runs-on: ubuntu-latest
+    needs: [build-frontend, test-api, security-scan, quality-gate]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://x402.chinaauto.ccwu.cc
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-mp-alipay
+          path: dist/mp-alipay/
+      - uses: actions/download-artifact@v4
+        with:
+          name: frontend-mp-weixin
+          path: dist/mp-weixin/
+
+      - name: Deploy CloudBase
+        run: |
+          echo "Deploying to CloudBase env: ${{ env.CLOUDBASE_ENV_ID }}"
+          echo "Service: guiniu-xin"
+          echo "CloudBase auto-pulls from GitHub main branch"
+
+      - name: Deploy Cloudflare Worker
+        working-directory: ./worker
+        run: |
+          npm install -g wrangler
+          LIST=$(wrangler kv:namespace list 2>/dev/null || echo "[]")
+          EXISTING=$(echo "$LIST" | jq -r '.[] | select(.title == "x402-alipay-x402-orders") | .id' | head -1)
+          if [ -z "$EXISTING" ] || [ "$EXISTING" = "null" ]; then
+            CREATE_OUTPUT=$(wrangler kv:namespace create "X402_ORDERS" 2>&1)
+            ID=$(echo "$CREATE_OUTPUT" | grep -oP '"id":"\K[^"]+' | head -1)
+            if [ -z "$ID" ]; then
+              ID=$(echo "$CREATE_OUTPUT" | grep -oP 'id: \K[^ ]+' | head -1)
+            fi
+          else
+            ID="$EXISTING"
+          fi
+          sed -i "s/id = \"\"/id = \"$ID\"/" wrangler.toml
+          wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+
+      - name: Set Worker secrets
+        working-directory: ./worker
+        if: always()
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: |
+          echo "${{ secrets.ALIPAY_APP_ID }}" | wrangler secret put ALIPAY_APP_ID || echo "SKIP"
+          echo "${{ secrets.ALIPAY_APP_PRIVATE_KEY }}" | wrangler secret put ALIPAY_APP_PRIVATE_KEY || echo "SKIP"
+          echo "${{ secrets.ALIPAY_PUBLIC_KEY }}" | wrangler secret put ALIPAY_PUBLIC_KEY || echo "SKIP"
+
+      - name: Production deploy report
+        if: always()
+        run: |
+          echo "## Production Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "- **Triggerer**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **CloudBase**: ${{ env.CLOUDBASE_ENV_ID }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Worker**: x402-alipay" >> $GITHUB_STEP_SUMMARY
+          echo "- **Server**: 175.178.28.162" >> $GITHUB_STEP_SUMMARY

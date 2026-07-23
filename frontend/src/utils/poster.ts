@@ -1,110 +1,138 @@
 /**
- * X402 分享海报生成器（平台通用）
- * 微信/支付宝/H5 均可使用
+ * 分享海报生成工具
+ * 使用 Canvas 绘制分享海报
  */
 
-/**
- * 生成分享海报
- * 返回 base64 dataURL（通用）
- */
-export async function generatePoster(options: {
-  carModel: string;
-  text: string;
-  shareUrl: string;
-  trackId: string;
-  nickName: string;
-  platform?: string;
-}): Promise<string> {
-  const width = 600;
-  const height = 900;
+export interface PosterConfig {
+  title: string;
+  desc: string;
+  brand?: string;
+  model?: string;
+  reward?: string;
+  qrCode?: string;
+  inviteCode?: string;
+  bgImage?: string;
+}
 
-  // 使用平台 canvas（uni-app 跨端）
+export async function generateSharePoster(config: PosterConfig): Promise<string> {
   return new Promise((resolve, reject) => {
-    // 在 uni-app 小程序环境使用 API 创建 canvas
-    // H5 环境中 fallback 为文字版海报
-    if (typeof uni !== 'undefined' && uni.createOffscreenCanvas) {
-      // 小程序环境
-      try {
-        const canvas = uni.createOffscreenCanvas({ type: '2d', width, height });
-        const ctx = canvas.getContext('2d');
+    const ctx = uni.createCanvasContext('sharePoster');
+    const width = 750;
+    const height = 1334;
 
-        // 背景渐变
-        const grad = ctx.createLinearGradient(0, 0, 0, height);
-        grad.addColorStop(0, '#1e40af');
-        grad.addColorStop(1, '#3b82f6');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, width, height);
+    ctx.setFillStyle('#ffffff');
+    ctx.fillRect(0, 0, width, height);
 
-        // 白色内容卡片
-        ctx.fillStyle = '#ffffff';
-        roundRect(ctx, 30, 80, 540, 600, 20);
-        ctx.fill();
+    const gradient = ctx.createLinearGradient(0, 0, width, 400);
+    gradient.addColorStop(0, '#0A1628');
+    gradient.addColorStop(1, '#1A2D4A');
+    ctx.setFillStyle(gradient);
+    ctx.fillRect(0, 0, width, 400);
 
-        ctx.fillStyle = '#1e40af';
-        ctx.font = 'bold 36px sans-serif';
-        ctx.fillText('🚗 X402 推荐', 60, 140);
+    ctx.setFillStyle('#C9A84C');
+    ctx.setFontSize(48);
+    ctx.setTextAlign('center');
+    ctx.fillText(config.brand || '龟钮自驭', width / 2, 100);
 
-        ctx.fillStyle = '#1f2937';
-        ctx.font = 'bold 44px sans-serif';
-        ctx.fillText(options.carModel, 60, 200);
+    ctx.setFontSize(64);
+    ctx.fillText(config.model || '汽车资讯 AI', width / 2, 200);
 
-        ctx.fillStyle = '#555';
-        ctx.font = '28px sans-serif';
-        const truncated = options.text.length > 80
-          ? options.text.slice(0, 80) + '...'
-          : options.text;
-        wrapText(ctx, truncated, 60, 260, 500, 44, 4);
+    ctx.setFontSize(28);
+    ctx.setFillStyle('rgba(255,255,255,0.9)');
+    ctx.fillText(config.desc || '道法自驭 · 价值自主流转', width / 2, 280);
 
-        ctx.fillStyle = '#999';
-        ctx.font = '24px sans-serif';
-        ctx.fillText(`@${options.nickName}`, 60, 440);
+    ctx.setFillStyle('#1f2937');
+    ctx.setFontSize(36);
+    ctx.setTextAlign('left');
+    ctx.fillText(config.title, 60, 500);
 
-        ctx.fillStyle = '#bbb';
-        ctx.font = '20px sans-serif';
-        ctx.fillText(`追踪码: ${options.trackId}`, 60, 480);
-
-        resolve(canvas.toDataURL('image/png'));
-      } catch (e) {
-        reject(e);
-      }
-    } else {
-      // H5 降级：返回文字描述，由后端生成海报
-      reject(new Error('not_supported'));
+    if (config.reward) {
+      ctx.setFillStyle('#f59e0b');
+      ctx.setFontSize(32);
+      ctx.fillText(`💰 ${config.reward}`, 60, 560);
     }
+
+    if (config.inviteCode) {
+      ctx.setFillStyle('#f3f4f6');
+      ctx.fillRect(60, 620, width - 120, 100);
+      ctx.setFillStyle('#6b7280');
+      ctx.setFontSize(24);
+      ctx.fillText('邀请码', 80, 660);
+      ctx.setFillStyle('#C9A84C');
+      ctx.setFontSize(40);
+      ctx.fillText(config.inviteCode, 80, 700);
+    }
+
+    ctx.setFillStyle('#f9fafb');
+    ctx.fillRect(60, 780, width - 120, 300);
+
+    ctx.setFillStyle('#6b7280');
+    ctx.setFontSize(24);
+    ctx.setTextAlign('center');
+    ctx.fillText('扫码参与活动', width / 2, 820);
+
+    ctx.setFillStyle('#d1d5db');
+    ctx.fillRect(width / 2 - 100, 850, 200, 200);
+    ctx.setFillStyle('#9ca3af');
+    ctx.setFontSize(20);
+    ctx.fillText('二维码', width / 2, 960);
+
+    ctx.setFillStyle('#9ca3af');
+    ctx.setFontSize(24);
+    ctx.fillText('龟钮自驭 · 汽车资讯自主价值引擎', width / 2, height - 100);
+
+    ctx.draw(false, () => {
+      uni.canvasToTempFilePath({
+        canvasId: 'sharePoster',
+        success: (res) => {
+          resolve(res.tempFilePath);
+        },
+        fail: (err) => {
+          reject(err);
+        },
+      });
+    });
   });
 }
 
-function roundRect(ctx: any, x: number, y: number, w: number, h: number, r: number) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
+export async function savePosterToAlbum(tempFilePath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    uni.saveImageToPhotosAlbum({
+      filePath: tempFilePath,
+      success: () => {
+        uni.showToast({ title: '已保存到相册', icon: 'success' });
+        resolve();
+      },
+      fail: (err) => {
+        if (err.errMsg.includes('auth deny')) {
+          uni.showModal({
+            title: '提示',
+            content: '需要授权保存图片到相册',
+            confirmText: '去授权',
+            success: (res) => {
+              if (res.confirm) {
+                uni.openSetting({});
+              }
+            },
+          });
+        } else {
+          uni.showToast({ title: '保存失败', icon: 'none' });
+        }
+        reject(err);
+      },
+    });
+  });
 }
 
-function wrapText(ctx: any, text: string, x: number, y: number, maxWidth: number, lineHeight: number, maxLines: number) {
-  const chars = text.split('');
-  let line = '';
-  let lineNum = 0;
-  for (const char of chars) {
-    const testLine = line + char;
-    if (ctx.measureText(testLine).width > maxWidth && line) {
-      ctx.fillText(line, x, y + lineNum * lineHeight);
-      line = char;
-      lineNum++;
-      if (lineNum >= maxLines) {
-        ctx.fillText('...', x, y + lineNum * lineHeight);
-        return;
+export function sharePoster(tempFilePath: string) {
+  uni.showActionSheet({
+    itemList: ['保存到相册', '分享到微信'],
+    success: (res) => {
+      if (res.tapIndex === 0) {
+        savePosterToAlbum(tempFilePath);
+      } else if (res.tapIndex === 1) {
+        uni.showToast({ title: '请在微信中分享', icon: 'none' });
       }
-    } else {
-      line = testLine;
-    }
-  }
-  ctx.fillText(line, x, y + lineNum * lineHeight);
+    },
+  });
 }

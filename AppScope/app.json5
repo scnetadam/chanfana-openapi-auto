@@ -1,9 +1,9 @@
 {
   "app": {
-    "bundleName": "com.x402.promodrive",
-    "vendor": "x402",
-    "versionCode": 1000000,
-    "versionName": "1.0.0",
+    "bundleName": "com.guiniu.ziyu",
+    "vendor": "guiniu",
+    "versionCode": 3600000,
+    "versionName": "3.6.0",
     "icon": "$media:layered_image",
     "label": "$string:Module_Entry_label"
   }

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue';
 import { onLoad, onShareAppMessage } from '@dcloudio/uni-app';
 import { contentApi, bookingApi, aiApi } from '@/api';
 import { useUserStore } from '@/stores';
+import { generateSharePoster, sharePoster } from '@/utils/poster';
 
 const userStore = useUserStore();
 
@@ -10,6 +11,7 @@ const contentId = ref('');
 const content = ref<any>(null);
 const loading = ref(true);
 const spreadRef = ref('');
+const posterImage = ref('');
 
 const bookingName = ref('');
 const bookingPhone = ref('');
@@ -169,6 +171,28 @@ function copyLink() {
   uni.setClipboardData({ data: shareUrl.value, showToast: true });
   showShareSheet.value = false;
 }
+
+async function generatePoster() {
+  if (!content.value) return;
+  try {
+    uni.showLoading({ title: '生成中...' });
+    const tempFilePath = await generateSharePoster({
+      title: content.value.text?.slice(0, 30) || '汽车推广',
+      desc: content.value.carModel || '',
+      brand: content.value.activity?.brand,
+      model: content.value.activity?.model,
+      reward: `试驾奖励 ¥${content.value.activity?.rewardPerBooking || 0}`,
+      inviteCode: userStore.userId ? userStore.userId.slice(-6).toUpperCase() : undefined,
+    });
+    posterImage.value = tempFilePath;
+    uni.hideLoading();
+    sharePoster(tempFilePath);
+  } catch (err: any) {
+    uni.hideLoading();
+    uni.showToast({ title: '生成失败', icon: 'none' });
+    console.error('[Poster] error:', err);
+  }
+}
 </script>
 
 <template>
@@ -229,6 +253,7 @@ function copyLink() {
       <view class="action-bar">
         <button class="action-btn share" @tap="onShare"><text>🔗 分享</text></button>
         <button class="action-btn copy" @tap="copyLink"><text>📎 复制链接</text></button>
+        <button class="action-btn poster" @tap="generatePoster"><text>🖼️ 海报</text></button>
       </view>
     </template>
 
@@ -319,7 +344,7 @@ function copyLink() {
 .success-title { font-size: 34rpx; font-weight: 700; color: #1f2937; margin-bottom: 12rpx; }
 .success-desc { font-size: 26rpx; color: #6b7280; }
 .action-bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; gap: 16rpx; padding: 20rpx 24rpx; background: #fff; box-shadow: 0 -4rpx 24rpx rgba(0,0,0,0.05); z-index: 50; }
-.action-btn { flex: 1; height: 88rpx; line-height: 88rpx; font-size: 30rpx; font-weight: 600; border-radius: 44rpx; text-align: center; &.share { color: #fff; background: linear-gradient(135deg,#2563eb,#1d4ed8); } &.copy { color: #2563eb; background: #eff6ff; } }
+.action-btn { flex: 1; height: 88rpx; line-height: 88rpx; font-size: 30rpx; font-weight: 600; border-radius: 44rpx; text-align: center; &.share { color: #fff; background: linear-gradient(135deg,#2563eb,#1d4ed8); } &.copy { color: #2563eb; background: #eff6ff; } &.poster { color: #10b981; background: #ecfdf5; } }
 
 /* AI FAB */
 .ai-fab {

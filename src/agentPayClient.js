@@ -1,6 +1,6 @@
 /**
  * 龟钮印证 — Agent 微交易 API 客户端
- * 供龟钮印信及其他项目调用龟钮印证的 Agent 支付服务
+ * 供龟钮自驭及其他项目调用龟钮印证的 Agent 支付服务
  *
  * 使用方式:
  *   const agentPay = require('./agentPayClient');
@@ -33,7 +33,7 @@ const client = axios.create({
 /**
  * 执行 Agent 微交易支付（决策 + 自动扣款 + 存证）
  * @param {object} params
- * @param {string} params.userId - 用户 ID（龟钮印信用户 ID 需映射到龟钮印证用户 ID）
+ * @param {string} params.userId - 用户 ID（龟钮自驭用户 ID 需映射到龟钮印证用户 ID）
  * @param {number} params.amount - 金额
  * @param {string} params.subject - 交易说明
  * @param {string} params.payeeId - 收款方 ID

@@ -1,4 +1,5 @@
 import { HttpClient, ApiResponse } from '../../common/HttpClient';
+import { BrandPalette, BrandTypography, BrandRadius, BrandSeal, BrandSlogan, BrandIcon } from '../../common/BrandCI';
 import { router } from '@kit.ArkUI';
 
 class LoginResult {
@@ -42,6 +43,7 @@ struct LoginPage {
   @State nickName: string = '';
   @State logging: boolean = false;
   @State errorMsg: string = '';
+  @State sealPulse: number = 1.0;
 
   private async doLogin() {
     if (this.nickName.trim().length === 0) {
@@ -69,79 +71,169 @@ struct LoginPage {
     }
   }
 
+  @Builder
+  SealStamp() {
+    Stack() {
+      Column()
+        .width(BrandSeal.STAMP_SIZE)
+        .height(BrandSeal.STAMP_SIZE)
+        .borderRadius(BrandRadius.SEAL)
+        .border({
+          width: BrandSeal.STAMP_BORDER_WIDTH,
+          color: BrandSeal.SEAL_BORDER,
+          style: BorderStyle.Solid
+        })
+        .backgroundColor(BrandSeal.SEAL_BG)
+
+      Text(BrandIcon.SEAL_GLYPH)
+        .fontSize(28)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(BrandSeal.SEAL_TEXT)
+
+      Row() {
+        Circle()
+          .width(8)
+          .height(8)
+          .fill(BrandSeal.KNOB_HIGHLIGHT)
+        Circle()
+          .width(4)
+          .height(4)
+          .fill(BrandSeal.KNOB_SHADOW)
+          .margin({ left: 2 })
+      }
+      .offset({ y: -38 })
+    }
+    .scale({ x: this.sealPulse, y: this.sealPulse })
+    .shadow({
+      radius: 24,
+      color: '#0A162844',
+      offsetX: 0,
+      offsetY: 4
+    })
+  }
+
+  @Builder
+  BrandHeader() {
+    Column() {
+      this.SealStamp()
+
+      Text('龟钮自驭')
+        .fontSize(BrandTypography.HERO_TITLE)
+        .fontWeight(FontWeight.Bold)
+        .fontColor(BrandPalette.TEXT_PRIMARY)
+        .letterSpacing(BrandTypography.LETTER_SPACING_HERO)
+        .margin({ top: 24 })
+
+      Row() {
+        Column()
+          .width(28)
+          .height(1)
+          .backgroundColor('#0A162866')
+        Text('X402')
+          .fontSize(12)
+          .fontColor(BrandPalette.SEAL_RED)
+          .letterSpacing(4)
+          .margin({ left: 10, right: 10 })
+        Column()
+          .width(28)
+          .height(1)
+          .backgroundColor('#0A162866')
+      }
+      .margin({ top: 14 })
+
+      Text(BrandSlogan.PRIMARY)
+        .fontSize(13)
+        .fontColor(BrandPalette.TEXT_SECONDARY)
+        .letterSpacing(3)
+        .margin({ top: 10 })
+
+      Text(BrandSlogan.SECONDARY)
+        .fontSize(10)
+        .fontColor(BrandPalette.TEXT_MUTED)
+        .letterSpacing(2)
+        .margin({ top: 4 })
+    }
+    .width('100%')
+    .height(360)
+    .justifyContent(FlexAlign.Center)
+    .linearGradient({
+      direction: GradientDirection.Bottom,
+      colors: [['#0A0E1A', 0.0], ['#0D0A1A', 0.3], ['#1A0D0D', 0.7], ['#131929', 1.0]]
+    })
+  }
+
   build() {
     Column() {
-      Column() {
-        Text('龟钮印信')
-          .fontSize(32)
-          .fontWeight(FontWeight.Bold)
-          .fontColor(Color.White)
-          .letterSpacing(4)
-        Text('车讯传天下，印信通四方')
-          .fontSize(14)
-          .fontColor(Color.White)
-          .opacity(0.8)
-          .margin({ top: 8 })
-      }
-      .width('100%')
-      .height(240)
-      .justifyContent(FlexAlign.Center)
-      .linearGradient({
-        direction: GradientDirection.Right,
-        colors: [['#1E40AF', 0.0], ['#3B82F6', 1.0]]
-      })
+      this.BrandHeader()
 
       Column() {
-        Text('欢迎登录')
-          .fontSize(24)
-          .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.text_primary'))
-          .margin({ top: 32, bottom: 24 })
-
         Column() {
-          TextInput({ placeholder: '输入您的昵称' })
+          TextInput({ placeholder: '\u8F93\u5165\u60A8\u7684\u6635\u79F0' })
             .width('100%')
-            .height(48)
+            .height(50)
             .fontSize(16)
+            .fontColor(BrandPalette.TEXT_PRIMARY)
+            .placeholderColor(BrandPalette.TEXT_MUTED)
+            .backgroundColor(BrandPalette.SURFACE)
+            .borderRadius(BrandRadius.LG)
+            .padding({ left: 16, right: 16 })
             .onChange((value: string) => {
               this.nickName = value;
               this.errorMsg = '';
             })
         }
         .width('100%')
-        .padding({ left: 16, right: 16 })
+        .padding({ left: 24, right: 24 })
 
         if (this.errorMsg.length > 0) {
           Text(this.errorMsg)
             .fontSize(13)
-            .fontColor($r('app.color.price_color'))
+            .fontColor(BrandPalette.CYBER_RED)
             .margin({ top: 8 })
         }
 
-        Button(this.logging ? '登录中...' : '立即登录')
+        Button(this.logging ? '\u767B\u5F55\u4E2D...' : '\u94AE\u5370\u767B\u5F55')
           .width('80%')
-          .height(48)
+          .height(52)
           .fontSize(18)
           .fontWeight(FontWeight.Bold)
-          .backgroundColor($r('app.color.primary_color'))
-          .fontColor(Color.White)
-          .borderRadius(24)
-          .margin({ top: 32 })
+          .fontColor(BrandPalette.DEEP_BG)
+          .backgroundColor(BrandPalette.PRIMARY)
+          .borderRadius(26)
+          .margin({ top: 28 })
+          .shadow({ radius: 20, color: '#00E5A044', offsetX: 0, offsetY: 4 })
           .enabled(!this.logging)
           .onClick(() => this.doLogin())
 
-        Text('登录即表示同意《用户协议》和《隐私政策》')
-          .fontSize(12)
-          .fontColor($r('app.color.text_secondary'))
-          .margin({ top: 24 })
-          .textAlign(TextAlign.Center)
+        Row() {
+          Column()
+            .width(32)
+            .height(1)
+            .backgroundColor(BrandPalette.DIVIDER)
+          Text('BLOCKCHAIN VERIFIED')
+            .fontSize(9)
+            .fontColor(BrandPalette.TEXT_MUTED)
+            .letterSpacing(3)
+            .margin({ left: 10, right: 10 })
+          Column()
+            .width(32)
+            .height(1)
+            .backgroundColor(BrandPalette.DIVIDER)
+        }
+        .margin({ top: 24 })
+
+        Text('\u767B\u5F55\u5373\u8868\u793A\u540C\u610F\u300A\u7528\u6237\u534F\u8BAE\u300B\u548C\u300A\u9690\u79C1\u653F\u7B56\u300B')
+          .fontSize(11)
+          .fontColor(BrandPalette.TEXT_MUTED)
+          .margin({ top: 12 })
       }
       .width('100%')
       .layoutWeight(1)
       .alignItems(HorizontalAlign.Center)
+      .backgroundColor(BrandPalette.DEEP_BG)
     }
     .width('100%')
     .height('100%')
-    .backgroundColor($r('app.color.page_background_color'))
+    .backgroundColor(BrandPalette.DEEP_BG)
   }
 }

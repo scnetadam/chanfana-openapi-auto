@@ -1,0 +1,104 @@
+[
+  {
+    "id": "tpl-earnings-claim-login",
+    "category": "earnings_claim",
+    "channel": "login",
+    "title": "您有未领取的收益",
+    "body": "尊敬的龟钮自驭用户，您有 ¥{amount} 待领取收益，请前往钱包查看。",
+    "priority": "high",
+    "actionUrl": "/pages/wallet/index",
+    "actionText": "立即查看"
+  },
+  {
+    "id": "tpl-earnings-claim-sms",
+    "category": "earnings_claim",
+    "channel": "sms",
+    "title": "龟钮自驭收益提醒",
+    "body": "【龟钮自驭】您有¥{amount}待领取收益，请登录领取。退订回T",
+    "priority": "high"
+  },
+  {
+    "id": "tpl-earnings-claim-email",
+    "category": "earnings_claim",
+    "channel": "email",
+    "title": "龟钮自驭 — 您有未领取的收益",
+    "body": "尊敬的用户，\n\n您在龟钮自驭平台有 ¥{amount} 待领取收益。\n\n来源：{source}\n时间：{date}\n\n请登录龟钮自驭小程序领取您的收益。\n\n龟钮自驭团队",
+    "priority": "high"
+  },
+  {
+    "id": "tpl-earnings-settled",
+    "category": "earnings_settled",
+    "channel": "login",
+    "title": "收益已到账",
+    "body": "您的 ¥{amount} 收益已结算到账，来自{source}。",
+    "priority": "high",
+    "actionUrl": "/pages/wallet/index"
+  },
+  {
+    "id": "tpl-earnings-settled-sms",
+    "category": "earnings_settled",
+    "channel": "sms",
+    "title": "龟钮自驭收益到账",
+    "body": "【龟钮自驭】您¥{amount}收益已到账，来源{source}。退订回T",
+    "priority": "high"
+  },
+  {
+    "id": "tpl-data-lock",
+    "category": "data_lock",
+    "channel": "in_app",
+    "title": "数据已锁定存证",
+    "body": "您的{sourceLabel}数据已成功锁定存证，Hash: {hash}",
+    "priority": "medium",
+    "actionUrl": "/pages/dataLock/index"
+  },
+  {
+    "id": "tpl-payment-received",
+    "category": "payment_received",
+    "channel": "login",
+    "title": "收到款项",
+    "body": "您收到 ¥{amount} 款项，来自{source}。",
+    "priority": "high",
+    "actionUrl": "/pages/wallet/index"
+  },
+  {
+    "id": "tpl-git-sync",
+    "category": "git_sync",
+    "channel": "in_app",
+    "title": "仓库数据已同步",
+    "body": "guiniu-seal 仓库数据已同步：stars={stars} forks={forks}",
+    "priority": "low"
+  },
+  {
+    "id": "tpl-daily-earnings-sms",
+    "category": "earnings_claim",
+    "channel": "sms",
+    "title": "龟钮自驭每日收益提醒",
+    "body": "【龟钮自驭】您有¥{amount}待领取收益，请登录查看。退订回T",
+    "priority": "high"
+  },
+  {
+    "id": "tpl-daily-earnings-email",
+    "category": "earnings_claim",
+    "channel": "email",
+    "title": "龟钮自驭每日收益提醒",
+    "body": "尊敬的用户，\n\n截至{date}，您在龟钮自驭有 ¥{amount} 待领取收益。\n\n请登录领取。\n\n龟钮自驭团队",
+    "priority": "high"
+  },
+  {
+    "id": "tpl-tax-compliance",
+    "category": "tax_compliance",
+    "channel": "email",
+    "title": "龟钮自驭税务合规提醒",
+    "body": "尊敬的用户，您有待申报的税务记录，请及时在个税APP完成清税。合规可获加权奖励。",
+    "priority": "high"
+  },
+  {
+    "id": "tpl-threshold-trigger",
+    "category": "threshold_trigger",
+    "channel": "login",
+    "title": "龟钮点已触发分账",
+    "body": "您的龟钮点累计已达阀值，¥{amount}分账订单已触发。",
+    "priority": "high",
+    "actionUrl": "/pages/wallet/index"
+  }
+]

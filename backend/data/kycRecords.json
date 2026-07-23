@@ -1,0 +1,20 @@
+[
+  {
+    "id": "kyc_1784603450127_98496d19",
+    "userId": "u_1784603450073_00c70fba",
+    "documentType": "id_card",
+    "documentData": {
+      "realName": "??KOL",
+      "idNumber": "110101199001011234"
+    },
+    "realName": "??KOL",
+    "status": "pending_review",
+    "riskAssessment": {
+      "score": 0.85,
+      "level": "low"
+    },
+    "riskTags": [],
+    "submittedAt": "2026-07-21T03:10:50.127Z",
+    "reviewedAt": null
+  }
+]

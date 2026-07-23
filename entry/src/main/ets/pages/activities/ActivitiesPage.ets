@@ -1,5 +1,6 @@
 import { HttpClient, ApiResponse } from '../../common/HttpClient';
 import { ActivityItem, ActivityItemList } from '../../model/DataModels';
+import { BrandPalette, BrandTypography, BrandRadius, BrandBadge, BrandSeal, BrandIcon } from '../../common/BrandCI';
 import { router } from '@kit.ArkUI';
 
 @Component
@@ -27,62 +28,55 @@ export struct ActivitiesPage {
   build() {
     Column() {
       Row() {
-        Text('推广活动')
-          .fontSize(24)
+        Text('\u63A8\u5E7F\u6D3B\u52A8')
+          .fontSize(BrandTypography.PAGE_TITLE)
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.text_primary'))
+          .fontColor(BrandPalette.TEXT_PRIMARY)
+        Blank()
+        Row() {
+          Text(BrandIcon.SEAL_GLYPH)
+            .fontSize(14)
+            .fontColor(BrandPalette.SEAL_RED)
+            .opacity(0.6)
+          Text('PROMO')
+            .fontSize(10)
+            .fontColor(BrandPalette.PRIMARY)
+            .letterSpacing(2)
+            .margin({ left: 4 })
+        }
       }
       .width('100%')
       .padding({ left: 16, right: 16, top: 12, bottom: 8 })
 
       if (this.loading) {
         Column() {
-          LoadingProgress()
-            .width(48)
-            .height(48)
-            .color($r('app.color.primary_color'))
-          Text('加载中...')
-            .fontSize(14)
-            .fontColor($r('app.color.text_secondary'))
-            .margin({ top: 12 })
-        }
-        .width('100%')
-        .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
+          LoadingProgress().width(48).height(48).color(BrandPalette.PRIMARY)
+          Text('LOADING...')
+            .fontSize(12).fontColor(BrandPalette.TEXT_MUTED).letterSpacing(2).margin({ top: 12 })
+        }.width('100%').layoutWeight(1).justifyContent(FlexAlign.Center)
       } else if (this.activities.length === 0) {
         Column() {
           Text('暂无活动')
-            .fontSize(16)
-            .fontColor($r('app.color.text_secondary'))
-        }
-        .width('100%')
-        .layoutWeight(1)
-        .justifyContent(FlexAlign.Center)
+            .fontSize(16).fontColor(BrandPalette.TEXT_MUTED)
+        }.width('100%').layoutWeight(1).justifyContent(FlexAlign.Center)
       } else {
         Refresh({ refreshing: $refreshing }) {
           List({ space: 12 }) {
             ForEach(this.activities, (item: ActivityItem) => {
               ListItem() {
                 this.ActivityCard(item)
-              }
-              .onClick(() => {
+              }.onClick(() => {
                 const routeParams: Record<string, Object> = { 'id': item.id };
                 router.pushUrl({ url: 'pages/activitydetail/ActivityDetailPage', params: routeParams });
               })
             }, (item: ActivityItem) => item.id)
-          }
-          .width('100%')
-          .layoutWeight(1)
-          .padding({ left: 16, right: 16, top: 4 })
-        }
-        .onRefreshing(() => {
-          this.loadActivities();
-        })
+          }.width('100%').layoutWeight(1).padding({ left: 16, right: 16, top: 4 })
+        }.onRefreshing(() => { this.loadActivities(); })
       }
     }
     .width('100%')
     .height('100%')
-    .backgroundColor($r('app.color.page_background_color'))
+    .backgroundColor(BrandPalette.DEEP_BG)
   }
 
   @Builder
@@ -91,56 +85,34 @@ export struct ActivitiesPage {
       Row() {
         Column() {
           Text(item.brand)
-            .fontSize(12)
-            .fontColor($r('app.color.primary_color'))
-            .fontWeight(FontWeight.Medium)
+            .fontSize(11).fontColor(BrandPalette.PRIMARY).fontWeight(FontWeight.Medium).letterSpacing(1)
           Text(item.title)
-            .fontSize(18)
-            .fontWeight(FontWeight.Bold)
-            .fontColor($r('app.color.text_primary'))
-            .maxLines(2)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-            .margin({ top: 4 })
+            .fontSize(18).fontWeight(FontWeight.Bold).fontColor(BrandPalette.TEXT_PRIMARY)
+            .maxLines(2).textOverflow({ overflow: TextOverflow.Ellipsis }).margin({ top: 4 })
           Text(item.description)
-            .fontSize(13)
-            .fontColor($r('app.color.text_secondary'))
-            .maxLines(2)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-            .margin({ top: 6 })
-        }
-        .layoutWeight(1)
-        .alignItems(HorizontalAlign.Start)
+            .fontSize(13).fontColor(BrandPalette.TEXT_SECONDARY)
+            .maxLines(2).textOverflow({ overflow: TextOverflow.Ellipsis }).margin({ top: 6 })
+        }.layoutWeight(1).alignItems(HorizontalAlign.Start)
 
         Column() {
-          Text('¥' + item.rewardPerBooking.toFixed(0))
-            .fontSize(22)
-            .fontWeight(FontWeight.Bold)
-            .fontColor($r('app.color.price_color'))
+          Text('\u00A5' + item.rewardPerBooking.toFixed(0))
+            .fontSize(22).fontWeight(FontWeight.Bold).fontColor(BrandPalette.GOLD)
           Text('每笔试驾')
-            .fontSize(11)
-            .fontColor($r('app.color.text_secondary'))
-        }
-        .alignItems(HorizontalAlign.End)
-        .margin({ left: 12 })
-      }
-      .width('100%')
-      .padding(16)
+            .fontSize(11).fontColor(BrandPalette.TEXT_MUTED)
+        }.alignItems(HorizontalAlign.End).margin({ left: 12 })
+      }.width('100%').padding(16)
 
       Row() {
         Text(item.model)
-          .fontSize(12)
-          .fontColor($r('app.color.text_secondary'))
+          .fontSize(12).fontColor(BrandPalette.TEXT_MUTED)
         Blank()
         Text(item.startDate + ' ~ ' + item.endDate)
-          .fontSize(11)
-          .fontColor($r('app.color.text_secondary'))
-      }
-      .width('100%')
-      .padding({ left: 16, right: 16, bottom: 12 })
+          .fontSize(11).fontColor(BrandPalette.TEXT_MUTED)
+      }.width('100%').padding({ left: 16, right: 16, bottom: 12 })
     }
-    .width('100%')
-    .borderRadius(12)
-    .backgroundColor($r('app.color.card_background'))
-    .shadow({ radius: 4, color: '#1A000000', offsetX: 0, offsetY: 2 })
+    .width('100%').borderRadius(BrandRadius.CARD)
+    .backgroundColor(BrandPalette.CARD_BG)
+    .border({ width: 0.5, color: BrandPalette.DIVIDER, style: BorderStyle.Solid })
+    .shadow({ radius: 8, color: '#0A0E1A66', offsetX: 0, offsetY: 2 })
   }
 }

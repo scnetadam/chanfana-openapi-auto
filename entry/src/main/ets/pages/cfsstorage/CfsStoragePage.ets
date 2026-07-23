@@ -1,211 +1,226 @@
-import { HttpClient } from '../common/HttpClient';
-import { CfsStorage } from '../model/DataModels';
-import { router } from '@kit.ArkUI';
+import { HttpClient, ApiResponse, toPostBody } from '../../common/HttpClient';
+import { CfsStorage } from '../../model/DataModels';
+import { router, promptAction } from '@kit.ArkUI';
 
 @Entry
 @Component
 struct CfsStoragePage {
-  @State storage: CfsStorage | null = null
-  @State hasStorage: boolean = false
-  @State loading: boolean = true
-  @State applying: boolean = false
+  @State storage: CfsStorage | null = null;
+  @State hasStorage: boolean = false;
+  @State loading: boolean = true;
+  @State applying: boolean = false;
+  @StorageProp('userId') userId: string = '';
 
-  async aboutToAppear(): Promise<void> {
-    await this.loadStorageStatus()
+  aboutToAppear() {
+    this.loadStorageStatus();
   }
 
-  async loadStorageStatus(): Promise<void> {
-    this.loading = true
-    try {
-      const response = await HttpClient.get('/api/cfs/status')
-      if (response.success) {
-        this.hasStorage = response.data.hasStorage
-        if (this.hasStorage && response.data.storage) {
-          this.storage = CfsStorage.fromJson(response.data.storage)
-        }
-      }
-    } catch (e) {
-      console.error('加载CFS存储状态失败', e)
-    } finally {
-      this.loading = false
+  private async loadStorageStatus() {
+    this.loading = true;
+    const uid: string = this.userId;
+    if (uid.length === 0) {
+      this.loading = false;
+      return;
     }
+    const resp: ApiResponse<CfsStorage> = await HttpClient.get<CfsStorage>(
+      '/api/cfs/status?userId=' + uid,
+      (data: Record<string, Object>): CfsStorage => {
+        const storageObj: Record<string, Object> | null =
+          data['storage'] !== null && data['storage'] !== undefined ?
+            data['storage'] as Record<string, Object> : null;
+        if (storageObj !== null) {
+          return CfsStorage.fromJson(storageObj);
+        }
+        return new CfsStorage();
+      });
+    if (resp.success && resp.data !== null) {
+      this.hasStorage = resp.data.id.length > 0;
+      if (this.hasStorage) {
+        this.storage = resp.data;
+      }
+    }
+    this.loading = false;
   }
 
-  async applyStorage(): Promise<void> {
-    this.applying = true
-    try {
-      const response = await HttpClient.post('/api/cfs/apply', { region: 'ap-guangzhou' })
-      if (response.success) {
-        this.storage = CfsStorage.fromJson(response.data)
-        this.hasStorage = true
-        AlertDialog.show({ message: 'CFS存储申请成功！' })
-      } else {
-        AlertDialog.show({ message: response.error || '申请失败' })
-      }
-    } catch (e) {
-      AlertDialog.show({ message: '申请失败：' + e })
-    } finally {
-      this.applying = false
+  private async applyStorage() {
+    this.applying = true;
+    const body: Record<string, Object> = {
+      'userId': this.userId,
+      'region': 'ap-guangzhou',
+    };
+    const resp: ApiResponse<CfsStorage> = await HttpClient.post<CfsStorage>(
+      '/api/cfs/apply', toPostBody(body),
+      (data: Record<string, Object>): CfsStorage => {
+        return CfsStorage.fromJson(data);
+      });
+    this.applying = false;
+    if (resp.success && resp.data !== null) {
+      this.storage = resp.data;
+      this.hasStorage = true;
+      promptAction.showToast({ message: 'CFS存储申请成功！' });
+    } else {
+      promptAction.showToast({ message: resp.error || '申请失败' });
     }
   }
 
   build() {
     Column() {
       Row() {
-        Button('返回')
-          .onClick(() => {
-            router.back()
-          })
-        Text('腾讯CFS数据存储')
+        Row() {
+          Text('<')
+            .fontSize(22)
+            .fontColor($r('app.color.text_primary'))
+            .onClick(() => router.back())
+        }
+        .width(40)
+        .height(40)
+        .justifyContent(FlexAlign.Center)
+
+        Text('CFS数据存储')
           .fontSize(20)
           .fontWeight(FontWeight.Bold)
+          .fontColor($r('app.color.text_primary'))
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
-        Blank().width(60)
+
+        Row().width(40)
       }
       .width('100%')
-      .padding(16)
+      .height(56)
+      .padding({ left: 8, right: 8 })
 
       if (this.loading) {
         Column() {
           LoadingProgress()
-            .width(60)
-            .height(60)
-          Text('加载中...')
-            .margin({ top: 16 })
+            .width(48)
+            .height(48)
+            .color($r('app.color.primary_color'))
         }
+        .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
       } else if (!this.hasStorage) {
-        Column() {
-          Text('申请免费CFS存储')
-            .fontSize(24)
-            .fontWeight(FontWeight.Bold)
-          
-          Text('为KOL提供免费的数据存储服务')
-            .fontSize(14)
-            .fontColor('#666666')
-            .margin({ top: 8 })
-
+        Scroll() {
           Column() {
-            Text('免费额度')
-              .fontSize(16)
-              .fontWeight(FontWeight.Medium)
-            
-            Row() {
-              Text('存储空间：')
-              Text('10GB')
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#1890ff')
-            }
-            .margin({ top: 8 })
+            Text('申请免费CFS存储')
+              .fontSize(22)
+              .fontWeight(FontWeight.Bold)
+              .fontColor($r('app.color.text_primary'))
+              .width('100%')
 
-            Row() {
-              Text('最大文件数：')
-              Text('10,000')
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#1890ff')
-            }
-            .margin({ top: 4 })
+            Text('为KOL提供免费的数据存储服务')
+              .fontSize(14)
+              .fontColor($r('app.color.text_secondary'))
+              .margin({ top: 8 })
+              .width('100%')
 
-            Row() {
-              Text('月流量：')
-              Text('100GB')
+            Column() {
+              Text('免费额度')
+                .fontSize(16)
                 .fontWeight(FontWeight.Bold)
-                .fontColor('#1890ff')
+                .fontColor($r('app.color.text_primary'))
+                .width('100%')
+
+              this.QuotaRow('存储空间', '10GB')
+              this.QuotaRow('最大文件数', '10,000')
+              this.QuotaRow('月流量', '100GB')
             }
-            .margin({ top: 4 })
+            .width('100%')
+            .padding(16)
+            .borderRadius(12)
+            .backgroundColor($r('app.color.card_background'))
+            .margin({ top: 16 })
+
+            Button(this.applying ? '申请中...' : '立即申请')
+              .width('90%')
+              .height(48)
+              .fontSize(18)
+              .fontWeight(FontWeight.Bold)
+              .backgroundColor($r('app.color.primary_color'))
+              .fontColor(Color.White)
+              .borderRadius(24)
+              .margin({ top: 24 })
+              .enabled(!this.applying)
+              .onClick(() => this.applyStorage())
           }
-          .padding(16)
-          .backgroundColor('#f5f5f5')
-          .borderRadius(8)
-          .margin({ top: 24 })
-
-          Button(this.applying ? '申请中...' : '立即申请')
-            .width('80%')
-            .height(48)
-            .backgroundColor('#1890ff')
-            .margin({ top: 32 })
-            .enabled(!this.applying)
-            .onClick(() => {
-              this.applyStorage()
-            })
+          .padding({ left: 20, right: 20, top: 8 })
         }
         .layoutWeight(1)
-        .padding(24)
-      } else if (this.storage) {
-        Column() {
-          Text('存储信息')
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .width('100%')
-
-          Column() {
-            Row() {
-              Text('存储桶：')
-                .width(80)
-              Text(this.storage.bucketName)
-                .layoutWeight(1)
-            }
-            .width('100%')
-            .margin({ bottom: 12 })
-
-            Row() {
-              Text('区域：')
-                .width(80)
-              Text(this.storage.region)
-                .layoutWeight(1)
-            }
-            .width('100%')
-            .margin({ bottom: 12 })
-
-            Row() {
-              Text('总空间：')
-                .width(80)
-              Text(this.storage.freeSpace)
-                .layoutWeight(1)
-            }
-            .width('100%')
-            .margin({ bottom: 12 })
-
-            Row() {
-              Text('已使用：')
-                .width(80)
-              Text(this.storage.usedSpace)
-                .layoutWeight(1)
-            }
-            .width('100%')
-            .margin({ bottom: 12 })
-
-            Row() {
-              Text('状态：')
-                .width(80)
-              Text(this.storage.status === 'active' ? '正常' : this.storage.status)
-                .fontColor(this.storage.status === 'active' ? '#52c41a' : '#ff4d4f')
-                .layoutWeight(1)
-            }
-            .width('100%')
-          }
-          .padding(16)
-          .backgroundColor('#f5f5f5')
-          .borderRadius(8)
-          .margin({ top: 16 })
-
-          Button('管理文件')
-            .width('100%')
-            .height(48)
-            .backgroundColor('#1890ff')
-            .margin({ top: 24 })
-            .onClick(() => {
-              router.pushUrl({ url: 'pages/cfsfiles/CfsFilesPage' })
-            })
-        }
-        .layoutWeight(1)
-        .padding(24)
+      } else if (this.storage !== null) {
+        this.StorageInfoView()
       }
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#ffffff')
+    .backgroundColor($r('app.color.page_background_color'))
+  }
+
+  @Builder
+  QuotaRow(label: string, value: string) {
+    Row() {
+      Text(label)
+        .fontSize(14)
+        .fontColor($r('app.color.text_secondary'))
+        .width(100)
+      Text(value)
+        .fontSize(14)
+        .fontWeight(FontWeight.Bold)
+        .fontColor($r('app.color.primary_color'))
+        .layoutWeight(1)
+    }
+    .width('100%')
+    .height(36)
+  }
+
+  @Builder
+  StorageInfoView() {
+    Scroll() {
+      Column() {
+        Text('存储信息')
+          .fontSize(22)
+          .fontWeight(FontWeight.Bold)
+          .fontColor($r('app.color.text_primary'))
+          .width('100%')
+
+        Column() {
+          this.InfoRow('存储桶', this.storage.bucketName)
+          this.InfoRow('区域', this.storage.region)
+          this.InfoRow('总空间', this.storage.freeSpace)
+          this.InfoRow('已使用', this.storage.usedSpace)
+          this.InfoRow('状态', this.storage.status === 'active' ? '正常' : this.storage.status)
+        }
+        .width('100%')
+        .padding(16)
+        .borderRadius(12)
+        .backgroundColor($r('app.color.card_background'))
+        .margin({ top: 16 })
+
+        if (this.storage.status === 'active') {
+          Text('存储服务运行正常，文件通过API接口管理')
+            .fontSize(13)
+            .fontColor($r('app.color.text_secondary'))
+            .margin({ top: 12 })
+            .width('100%')
+        }
+      }
+      .padding({ left: 20, right: 20, top: 8 })
+    }
+    .layoutWeight(1)
+  }
+
+  @Builder
+  InfoRow(label: string, value: string) {
+    Row() {
+      Text(label)
+        .fontSize(14)
+        .fontColor($r('app.color.text_secondary'))
+        .width(80)
+      Text(value)
+        .fontSize(14)
+        .fontColor($r('app.color.text_primary'))
+        .layoutWeight(1)
+    }
+    .width('100%')
+    .height(40)
   }
 }

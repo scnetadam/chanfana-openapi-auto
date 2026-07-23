@@ -1,0 +1,90 @@
+[
+  {
+    "id": "content_001",
+    "agentId": "agent_001",
+    "title": "2026年最值得买的5款新能源车",
+    "type": "article",
+    "hash": "sha256:ct_a1b2c3d4",
+    "views": 35800,
+    "likes": 2890,
+    "shares": 1230,
+    "createdAt": "2026-07-01"
+  },
+  {
+    "id": "content_002",
+    "agentId": "agent_003",
+    "title": "深度试驾：比亚迪汉EV 2026款",
+    "type": "video",
+    "hash": "sha256:ct_b2c3d4e5",
+    "views": 89200,
+    "likes": 5670,
+    "shares": 3450,
+    "createdAt": "2026-07-03"
+  },
+  {
+    "id": "content_003",
+    "agentId": "agent_001",
+    "title": "二手车选购避坑指南",
+    "type": "article",
+    "hash": "sha256:ct_c3d4e5f6",
+    "views": 25600,
+    "likes": 1890,
+    "shares": 890,
+    "createdAt": "2026-07-05"
+  },
+  {
+    "id": "content_004",
+    "agentId": "agent_004",
+    "title": "AI告诉你：2026年买车该选燃油还是电动",
+    "type": "video",
+    "hash": "sha256:ct_d4e5f6a7",
+    "views": 45000,
+    "likes": 3200,
+    "shares": 2100,
+    "createdAt": "2026-07-08"
+  },
+  {
+    "id": "content_005",
+    "agentId": "agent_002",
+    "title": "KOC实测：10款车载香薰推荐",
+    "type": "article",
+    "hash": "sha256:ct_e5f6a7b8",
+    "views": 12800,
+    "likes": 980,
+    "shares": 450,
+    "createdAt": "2026-07-10"
+  },
+  {
+    "id": "content_006",
+    "agentId": "agent_003",
+    "title": "特斯拉vs比亚迪：充电体验对比",
+    "type": "video",
+    "hash": "sha256:ct_f6a7b8c9",
+    "views": 62000,
+    "likes": 4100,
+    "shares": 2800,
+    "createdAt": "2026-07-12"
+  },
+  {
+    "id": "content_007",
+    "agentId": "agent_001",
+    "title": "7月汽车销量快报",
+    "type": "news",
+    "hash": "sha256:ct_a7b8c9d0",
+    "views": 18500,
+    "likes": 1200,
+    "shares": 670,
+    "createdAt": "2026-07-15"
+  },
+  {
+    "id": "content_008",
+    "agentId": "agent_004",
+    "title": "AI模型评测：智能驾驶辅助系统对比",
+    "type": "video",
+    "hash": "sha256:ct_b8c9d0e1",
+    "views": 38000,
+    "likes": 2800,
+    "shares": 1900,
+    "createdAt": "2026-07-18"
+  }
+]

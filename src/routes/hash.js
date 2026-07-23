@@ -1,14 +1,7 @@
-/**
- * 龟钮印信 — IP 数据存证路由
- *
- * 独立于龟钮印证的支付数据存证
- * 存证类型: kol_identity/kol_ip/content_publish/content_share/commission/opc_identity/booking_convert/biz_product
- */
-
 const express = require('express');
 const router = express.Router();
 const hashEngine = require('../hashEngine');
-const { hashStore } = require('../models/dataStore');
+const { hashStore, walletStore } = require('../models/dataStore');
 
 router.post('/create', (req, res) => {
   const { txId, data, dataType, metadata, nonce } = req.body;
@@ -26,6 +19,135 @@ router.post('/create', (req, res) => {
   }
   const record = hashStore.create({ txId, hash, dataDigest, dataType: dataType || 'kol_ip', metadata: metadata || {}, source: 'local' });
   res.json({ success: true, data: record });
+});
+
+router.post('/chain', async (req, res) => {
+  const { hash, txId, dataType, metadata } = req.body;
+  if (!hash) {
+    return res.status(400).json({ success: false, error: 'hash 为必填' });
+  }
+
+  const chainResult = await hashEngine.submitToAntChain(hash, { txId, dataType, ...metadata });
+
+  if (chainResult.success || chainResult.simulated) {
+    const updated = hashStore.updateChain(hash, {
+      chainTxId: chainResult.chainTxId,
+      chainTimestamp: chainResult.chainTimestamp,
+      chainBlock: chainResult.chainBlock || '',
+      chainExplorer: chainResult.chainExplorer || '',
+      chainSource: chainResult.simulated ? 'antchain-sim' : 'antchain',
+    });
+
+    res.json({
+      success: true,
+      data: {
+        hash,
+        chainTxId: chainResult.chainTxId,
+        chainTimestamp: chainResult.chainTimestamp,
+        chainBlock: chainResult.chainBlock || '',
+        chainExplorer: chainResult.chainExplorer || '',
+        record: updated,
+        simulated: chainResult.simulated || false,
+        warning: chainResult.simulated ? '蚂蚁链API未配置，已模拟上链' : undefined,
+      },
+      message: chainResult.simulated ? '模拟上链成功(需配置蚂蚁链API)' : '蚂蚁链存证成功'
+    });
+  } else {
+    res.status(500).json({
+      success: false,
+      error: chainResult.error || '蚂蚁链存证失败'
+    });
+  }
+});
+
+router.post('/notary', async (req, res) => {
+  const userId = req.user?.userId || 'anonymous';
+  const { hash, txId, dataType, metadata } = req.body;
+  if (!hash) {
+    return res.status(400).json({ success: false, error: 'hash 为必填' });
+  }
+
+  const price = hashEngine.getNotaryPrice();
+  const wallet = walletStore.get(userId);
+  if (wallet && wallet.balance < price) {
+    return res.status(400).json({
+      success: false,
+      error: '余额不足，公证云存证需 ' + price + ' 元',
+      required: price,
+      current: wallet.balance
+    });
+  }
+
+  const notaryResult = await hashEngine.submitToNotaryCloud(hash, { txId, dataType, userId, ...metadata });
+
+  if (notaryResult.success || notaryResult.simulated) {
+    if (wallet && !notaryResult.simulated) {
+      walletStore.withdraw(userId, price, '公证云存证费用');
+    }
+
+    const updated = hashStore.updateNotary(hash, {
+      notaryId: notaryResult.notaryId,
+      notaryUrl: notaryResult.notaryUrl,
+      notaryTimestamp: notaryResult.notaryTimestamp,
+      notarySource: notaryResult.simulated ? 'gongzhengyun-sim' : 'gongzhengyun',
+      notaryPrice: price,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        hash,
+        notaryId: notaryResult.notaryId,
+        notaryUrl: notaryResult.notaryUrl,
+        notaryTimestamp: notaryResult.notaryTimestamp,
+        price: price,
+        record: updated,
+        simulated: notaryResult.simulated || false,
+        warning: notaryResult.simulated ? '公证云API未配置，已模拟存证(未扣费)' : undefined,
+      },
+      message: notaryResult.simulated ? '模拟公证存证成功(需配置公证云API)' : '公证云存证成功，已扣费 ' + price + ' 元'
+    });
+  } else {
+    res.status(500).json({
+      success: false,
+      error: notaryResult.error || '公证云存证失败'
+    });
+  }
+});
+
+router.get('/notary-price', (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      price: hashEngine.getNotaryPrice(),
+      currency: 'CNY',
+      description: '公证云司法存证费用'
+    }
+  });
+});
+
+router.get('/chain-status/:hash', (req, res) => {
+  const { hash } = req.params;
+  const record = hashStore.getByHash(hash);
+  if (!record) {
+    return res.status(404).json({ success: false, error: '存证不存在' });
+  }
+  res.json({
+    success: true,
+    data: {
+      hash: record.hash,
+      chainTxId: record.chainTxId || '',
+      chainTimestamp: record.chainTimestamp || '',
+      chainSource: record.chainSource || '',
+      chainExplorer: record.chainExplorer || '',
+      notaryId: record.notaryId || '',
+      notaryUrl: record.notaryUrl || '',
+      notaryTimestamp: record.notaryTimestamp || '',
+      notarySource: record.notarySource || '',
+      isChained: !!(record.chainTxId),
+      isNotarized: !!(record.notaryId),
+    }
+  });
 });
 
 router.get('/query', (req, res) => {

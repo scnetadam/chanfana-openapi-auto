@@ -1,0 +1,82 @@
+[
+  {
+    "id": "wr_001",
+    "agentId": "agent_001",
+    "period": "2026-07-W1",
+    "visitCount": 12500,
+    "avgDuration": 245,
+    "interactionDepth": 0.32,
+    "weightedScore": 0.85,
+    "calculatedAt": "2026-07-07"
+  },
+  {
+    "id": "wr_002",
+    "agentId": "agent_003",
+    "period": "2026-07-W1",
+    "visitCount": 18200,
+    "avgDuration": 312,
+    "interactionDepth": 0.41,
+    "weightedScore": 0.91,
+    "calculatedAt": "2026-07-07"
+  },
+  {
+    "id": "wr_003",
+    "agentId": "agent_002",
+    "period": "2026-07-W1",
+    "visitCount": 5800,
+    "avgDuration": 178,
+    "interactionDepth": 0.25,
+    "weightedScore": 0.72,
+    "calculatedAt": "2026-07-07"
+  },
+  {
+    "id": "wr_004",
+    "agentId": "agent_001",
+    "period": "2026-07-W2",
+    "visitCount": 14800,
+    "avgDuration": 260,
+    "interactionDepth": 0.35,
+    "weightedScore": 0.87,
+    "calculatedAt": "2026-07-14"
+  },
+  {
+    "id": "wr_005",
+    "agentId": "agent_003",
+    "period": "2026-07-W2",
+    "visitCount": 20500,
+    "avgDuration": 328,
+    "interactionDepth": 0.43,
+    "weightedScore": 0.92,
+    "calculatedAt": "2026-07-14"
+  },
+  {
+    "id": "wr_006",
+    "agentId": "agent_004",
+    "period": "2026-07-W2",
+    "visitCount": 9200,
+    "avgDuration": 198,
+    "interactionDepth": 0.28,
+    "weightedScore": 0.78,
+    "calculatedAt": "2026-07-14"
+  },
+  {
+    "id": "wr_007",
+    "agentId": "agent_001",
+    "period": "2026-07-W3",
+    "visitCount": 16200,
+    "avgDuration": 275,
+    "interactionDepth": 0.38,
+    "weightedScore": 0.88,
+    "calculatedAt": "2026-07-21"
+  },
+  {
+    "id": "wr_008",
+    "agentId": "agent_003",
+    "period": "2026-07-W3",
+    "visitCount": 23100,
+    "avgDuration": 340,
+    "interactionDepth": 0.45,
+    "weightedScore": 0.93,
+    "calculatedAt": "2026-07-21"
+  }
+]

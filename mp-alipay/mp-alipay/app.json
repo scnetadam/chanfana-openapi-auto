@@ -1,58 +1,89 @@
 {
   "pages": [
+    "pages/guide/index",
     "pages/login/index",
     "pages/activity/index",
     "pages/activity/detail",
+    "pages/video/index",
+    "pages/video/detail",
+    "pages/aivideo/index",
+    "pages/ai/index",
+    "pages/ai/assistant",
+    "pages/ai/content",
+    "pages/ai/value",
+    "pages/ai/insight",
+    "pages/ai/recommend",
+    "pages/ai/voice",
     "pages/koltask/index",
     "pages/aidashboard/index",
     "pages/settlement/index",
     "pages/bizcert/index",
+    "pages/biz/index",
+    "pages/biz/cert",
+    "pages/biz/activity",
+    "pages/biz/task",
+    "pages/biz/stats",
+    "pages/biz/settlement",
+    "pages/biz/products",
     "pages/publish/index",
     "pages/dashboard/index",
     "pages/share/index",
     "pages/booking/result",
-    "pages/wallet/index"
+    "pages/wallet/index",
+    "pages/opc/index",
+    "pages/opc/city",
+    "pages/opc/policy",
+    "pages/opc/subsidy",
+    "pages/opc/project",
+    "pages/opc/apply",
+    "pages/compliance/index",
+    "pages/threeflows/index",
+    "pages/regulatory/index",
+    "pages/ecny/index",
+    "pages/invoice/index",
+    "pages/contractparams/index",
+    "pages/koltrack/index"
   ],
   "window": {
-    "defaultTitle": "龟钮印信",
+    "defaultTitle": "龟钮自驭",
     "navigationBarFrontColor": "black",
     "titleBarColor": "#ffffff",
     "backgroundColor": "#f0f2f5"
   },
   "tabBar": {
     "textColor": "#9ca3af",
-    "selectedColor": "#10b981",
+    "selectedColor": "#C9A84C",
     "backgroundColor": "#ffffff",
     "items": [
       {
         "pagePath": "pages/activity/index",
-        "name": "活动",
-        "icon": "src/static/images/tab-activity.png",
-        "activeIcon": "src/static/images/tab-activity-active.png"
+        "name": "资讯",
+        "icon": "static/images/tab-activity.png",
+        "activeIcon": "static/images/tab-activity-active.png"
       },
       {
-        "pagePath": "pages/koltask/index",
-        "name": "任务",
-        "icon": "src/static/images/tab-koltask.png",
-        "activeIcon": "src/static/images/tab-koltask-active.png"
+        "pagePath": "pages/video/index",
+        "name": "视频",
+        "icon": "static/images/tab-video.png",
+        "activeIcon": "static/images/tab-video-active.png"
       },
       {
         "pagePath": "pages/aidashboard/index",
-        "name": "AI评估",
-        "icon": "src/static/images/tab-aidashboard.png",
-        "activeIcon": "src/static/images/tab-aidashboard-active.png"
+        "name": "AI",
+        "icon": "static/images/tab-aidashboard.png",
+        "activeIcon": "static/images/tab-aidashboard-active.png"
       },
       {
         "pagePath": "pages/settlement/index",
-        "name": "结算",
-        "icon": "src/static/images/tab-settlement.png",
-        "activeIcon": "src/static/images/tab-settlement-active.png"
+        "name": "收付",
+        "icon": "static/images/tab-settlement.png",
+        "activeIcon": "static/images/tab-settlement-active.png"
       },
       {
         "pagePath": "pages/wallet/index",
         "name": "我的",
-        "icon": "src/static/images/tab-wallet.png",
-        "activeIcon": "src/static/images/tab-wallet-active.png"
+        "icon": "static/images/tab-wallet.png",
+        "activeIcon": "static/images/tab-wallet-active.png"
       }
     ]
   },

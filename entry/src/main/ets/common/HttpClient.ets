@@ -1,6 +1,6 @@
 import { http } from '@kit.NetworkKit';
 
-const BASE_URL: string = 'http://10.0.2.2:3000';
+const BASE_URL: string = 'http://10.0.2.2:3003';
 
 export class ApiResponse<T> {
   success: boolean = false;

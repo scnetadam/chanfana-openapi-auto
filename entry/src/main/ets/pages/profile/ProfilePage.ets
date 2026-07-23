@@ -125,7 +125,7 @@ struct ProfilePage {
                 .fontWeight(FontWeight.Bold)
                 .fontColor($r('app.color.text_primary'))
                 .margin({ top: 12 })
-              Text('推广员 · 龟钮印信')
+              Text('推广员 · 龟钮自驭')
                 .fontSize(13)
                 .fontColor($r('app.color.text_secondary'))
                 .margin({ top: 4 })
@@ -184,10 +184,10 @@ struct ProfilePage {
                 router.pushUrl({ url: 'pages/notifications/NotificationsPage' });
               })
 
-              Divider().color('#1A182431')
+              Divider().color($r('app.color.divider_color'))
 
               Row() {
-                Text('关于龟钮印信')
+                Text('关于龟钮自驭')
                   .fontSize(15)
                   .fontColor($r('app.color.text_primary'))
                   .layoutWeight(1)

@@ -1,7 +1,7 @@
 {
-  "name": "x402-api",
-  "version": "3.0.0",
-  "description": "龟钮印信 API — 汽车资讯KOL/KOC价值评估与微交易平台",
+  "name": "guiniu-ziyu-api",
+  "version": "3.7.0",
+  "description": "龟钮自驭 API — 汽车资讯AI·自主价值引擎",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

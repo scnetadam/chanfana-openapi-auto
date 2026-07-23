@@ -1,0 +1,24 @@
+[
+  {
+    "productId": "gse_001",
+    "title": "汽车KOL行为数据（华南）",
+    "category": "KOL行为",
+    "description": "覆盖华南50+汽车KOL",
+    "price": 2999,
+    "hash": "0xdf9ecf4c79e5ad77",
+    "status": "listed",
+    "exchangeCode": "GSE-2026-001",
+    "createdAt": "2026-07-20T15:57:23.660Z"
+  },
+  {
+    "productId": "gse_002",
+    "title": "KOL权重评分数据集",
+    "category": "KOL权重",
+    "description": "汽车垂类KOL权重评分模型训练数据",
+    "price": 8999,
+    "hash": "0x35b0fad16758b581",
+    "status": "registered",
+    "exchangeCode": "",
+    "createdAt": "2026-07-20T15:57:23.660Z"
+  }
+]

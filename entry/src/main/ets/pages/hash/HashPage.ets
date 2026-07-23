@@ -1,6 +1,7 @@
-import { HttpClient, ApiResponse } from '../../common/HttpClient';
+import { HttpClient, ApiResponse, toPostBody } from '../../common/HttpClient';
 import { HashRecord, HashRecordList, HashStats } from '../../model/DataModels';
 import { router, promptAction } from '@kit.ArkUI';
+import { ContentFingerprint } from '../../common/ContentFingerprint';
 
 @Entry
 @Component
@@ -13,13 +14,16 @@ struct HashPage {
   @State verifyHash: string = '';
   @State verifyResult: string = '';
   @State verifyChecked: boolean = false;
+  @State chaining: boolean = false;
+  @State notarizing: boolean = false;
   @StorageProp('userId') userId: string = '';
 
-  private typeFilters: string[] = ['全部', 'KOL身份', 'KOL/IP', '内容', '分佣', 'OPC', '预约', '商家'];
+  private typeFilters: string[] = ['全部', 'KOL身份', 'KOL/IP', '内容', '内容指纹', '分佣', 'OPC', '预约', '商家'];
   private typeMap: Record<string, string> = {
     'KOL身份': 'kol_identity',
     'KOL/IP': 'kol_ip',
     '内容': 'content_publish',
+    '内容指纹': 'content_fingerprint',
     '分佣': 'commission',
     'OPC': 'opc_identity',
     '预约': 'booking_convert',
@@ -83,6 +87,7 @@ struct HashPage {
       'kol_identity': 'KOL身份',
       'kol_ip': 'KOL/IP',
       'content_publish': '内容发布',
+      'content_fingerprint': '内容指纹',
       'content_share': '内容传播',
       'commission': '分佣',
       'opc_identity': 'OPC',
@@ -98,6 +103,7 @@ struct HashPage {
       'kol_identity': '#FF6B35',
       'kol_ip': '#E91E63',
       'content_publish': '#4CAF50',
+      'content_fingerprint': '#7C3AED',
       'content_share': '#8BC34A',
       'commission': '#FF9800',
       'opc_identity': '#9C27B0',
@@ -184,6 +190,30 @@ struct HashPage {
             .fontWeight(FontWeight.Bold)
             .fontColor('#FF9800')
           Text('分佣存证')
+            .fontSize(12)
+            .fontColor($r('app.color.text_secondary'))
+            .margin({ top: 2 })
+        }
+        .layoutWeight(1)
+
+        Column() {
+          Text(this.stats.chainCount.toString())
+            .fontSize(24)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#00BCD4')
+          Text('链上存证')
+            .fontSize(12)
+            .fontColor($r('app.color.text_secondary'))
+            .margin({ top: 2 })
+        }
+        .layoutWeight(1)
+
+        Column() {
+          Text(this.stats.notaryCount.toString())
+            .fontSize(24)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#E91E63')
+          Text('公证云')
             .fontSize(12)
             .fontColor($r('app.color.text_secondary'))
             .margin({ top: 2 })
@@ -332,6 +362,26 @@ struct HashPage {
           .fontColor($r('app.color.text_secondary'))
           .margin({ left: 8 })
 
+        if (item.chainTxId.length > 0) {
+          Text('链上')
+            .fontSize(10)
+            .fontColor(Color.White)
+            .padding({ left: 4, right: 4, top: 1, bottom: 1 })
+            .borderRadius(3)
+            .backgroundColor('#00BCD4')
+            .margin({ left: 4 })
+        }
+
+        if (item.notaryId.length > 0) {
+          Text('公证')
+            .fontSize(10)
+            .fontColor(Color.White)
+            .padding({ left: 4, right: 4, top: 1, bottom: 1 })
+            .borderRadius(3)
+            .backgroundColor('#E91E63')
+            .margin({ left: 4 })
+        }
+
         Blank()
 
         Text(item.createdAt.slice(0, 10))
@@ -365,11 +415,157 @@ struct HashPage {
       }
       .width('100%')
       .margin({ top: 4 })
+
+      if (item.dataType === 'content_fingerprint' || item.dataType === 'content_publish') {
+        Row() {
+          Text('指纹:')
+            .fontSize(12)
+            .fontColor($r('app.color.text_secondary'))
+          Text(ContentFingerprint.computeFingerprint(item.hash, 'content'))
+            .fontSize(11)
+            .fontColor('#7C3AED')
+            .margin({ left: 4 })
+        }
+        .width('100%')
+        .margin({ top: 4 })
+      }
+
+      if (item.chainTxId.length > 0) {
+        Row() {
+          Text('链上TxID:')
+            .fontSize(11)
+            .fontColor($r('app.color.text_secondary'))
+          Text(item.chainTxId)
+            .fontSize(11)
+            .fontColor('#00BCD4')
+            .margin({ left: 4 })
+        }
+        .width('100%')
+        .margin({ top: 4 })
+      }
+
+      if (item.notaryId.length > 0) {
+        Row() {
+          Text('公证ID:')
+            .fontSize(11)
+            .fontColor($r('app.color.text_secondary'))
+          Text(item.notaryId)
+            .fontSize(11)
+            .fontColor('#E91E63')
+            .margin({ left: 4 })
+        }
+        .width('100%')
+        .margin({ top: 4 })
+      }
+
+      Row() {
+        if (item.chainTxId.length === 0) {
+          Button('上蚂蚁链')
+            .height(28)
+            .fontSize(12)
+            .backgroundColor('#00BCD4')
+            .fontColor(Color.White)
+            .borderRadius(6)
+            .margin({ right: 8 })
+            .onClick(() => this.submitToChain(item))
+        } else {
+          Button('查看链上')
+            .height(28)
+            .fontSize(12)
+            .backgroundColor('#00BCD4')
+            .fontColor(Color.White)
+            .borderRadius(6)
+            .margin({ right: 8 })
+            .onClick(() => {
+              if (item.chainExplorer.length > 0) {
+                promptAction.showToast({ message: '浏览器查看: ' + item.chainExplorer });
+              } else {
+                promptAction.showToast({ message: '链上TxID: ' + item.chainTxId });
+              }
+            })
+        }
+
+        if (item.notaryId.length === 0) {
+          Button('存公证云')
+            .height(28)
+            .fontSize(12)
+            .backgroundColor('#E91E63')
+            .fontColor(Color.White)
+            .borderRadius(6)
+            .onClick(() => this.submitToNotary(item))
+        } else {
+          Button('查看公证')
+            .height(28)
+            .fontSize(12)
+            .backgroundColor('#E91E63')
+            .fontColor(Color.White)
+            .borderRadius(6)
+            .onClick(() => {
+              if (item.notaryUrl.length > 0) {
+                promptAction.showToast({ message: '公证查询: ' + item.notaryUrl });
+              } else {
+                promptAction.showToast({ message: '公证ID: ' + item.notaryId });
+              }
+            })
+        }
+      }
+      .width('100%')
+      .margin({ top: 8 })
+      .justifyContent(FlexAlign.End)
     }
     .width('100%')
     .padding(14)
     .borderRadius(10)
     .backgroundColor($r('app.color.card_background'))
-    .shadow({ radius: 2, color: '#1A000000', offsetX: 0, offsetY: 1 })
+    .shadow({ radius: 2, color: $r('app.color.divider_color'), offsetX: 0, offsetY: 1 })
+  }
+
+  private async submitToChain(item: HashRecord) {
+    this.chaining = true;
+    try {
+      const body: Record<string, Object> = {
+        'hash': item.hash,
+        'txId': item.txId,
+        'dataType': item.dataType,
+      };
+      const resp: ApiResponse<Record<string, Object>> = await HttpClient.post<Record<string, Object>>(
+        '/api/hash/chain', toPostBody(body),
+        (data: Record<string, Object>): Record<string, Object> => { return data; });
+      if (resp.success) {
+        const chainTxId: Object | undefined = resp.data !== null ? resp.data['chainTxId'] : undefined;
+        promptAction.showToast({ message: '上链成功！TxID: ' + (chainTxId !== null && chainTxId !== undefined ? String(chainTxId) : '') });
+        this.loadData();
+      } else {
+        promptAction.showToast({ message: resp.error || '上链失败' });
+      }
+    } catch (e) {
+      promptAction.showToast({ message: '上链失败: ' + String(e) });
+    } finally {
+      this.chaining = false;
+    }
+  }
+
+  private async submitToNotary(item: HashRecord) {
+    this.notarizing = true;
+    try {
+      const body: Record<string, Object> = {
+        'hash': item.hash,
+        'txId': item.txId,
+        'dataType': item.dataType,
+      };
+      const resp: ApiResponse<Record<string, Object>> = await HttpClient.post<Record<string, Object>>(
+        '/api/hash/notary', toPostBody(body),
+        (data: Record<string, Object>): Record<string, Object> => { return data; });
+      if (resp.success) {
+        promptAction.showToast({ message: '公证存证成功！' });
+        this.loadData();
+      } else {
+        promptAction.showToast({ message: resp.error || '公证存证失败' });
+      }
+    } catch (e) {
+      promptAction.showToast({ message: '公证存证失败: ' + String(e) });
+    } finally {
+      this.notarizing = false;
+    }
   }
 }

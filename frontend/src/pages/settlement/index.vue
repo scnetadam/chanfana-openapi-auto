@@ -77,6 +77,21 @@ function getStatusColor(status: string): string {
       <text class="header-sub">龟钮印证微交易结算</text>
     </view>
 
+    <view class="quick-nav">
+      <view class="nav-item" @tap="() => uni.navigateTo({ url: '/pages/settlement/weighted' })">
+        <text class="nav-icon">📊</text>
+        <text class="nav-label">加权结算</text>
+      </view>
+      <view class="nav-item" @tap="() => uni.navigateTo({ url: '/pages/settlement/valuation' })">
+        <text class="nav-icon">💎</text>
+        <text class="nav-label">存证估值</text>
+      </view>
+      <view class="nav-item" @tap="() => uni.navigateTo({ url: '/pages/kol/contract-verify' })">
+        <text class="nav-icon">📜</text>
+        <text class="nav-label">合同验证</text>
+      </view>
+    </view>
+
     <view v-if="stats" class="stats-grid">
       <view class="stat-card income">
         <text class="stat-val">¥{{ stats.totalIncome.toFixed(2) }}</text>
@@ -171,4 +186,9 @@ function getStatusColor(status: string): string {
 .ai-badge { font-size: 20rpx; color: #2563eb; background: #eff6ff; padding: 4rpx 12rpx; border-radius: 8rpx; }
 .status-badge { font-size: 22rpx; padding: 4rpx 12rpx; border-radius: 8rpx; border-width: 2rpx; border-style: solid; }
 .exec-btn { font-size: 24rpx; font-weight: 600; background: #10b981; color: #fff; padding: 4rpx 20rpx; border-radius: 20rpx; line-height: 1.6; &::after { border: none; } }
+
+.quick-nav { display: flex; gap: 12rpx; padding: 0 24rpx; margin-bottom: 16rpx; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6rpx; background: #fff; border-radius: 16rpx; padding: 20rpx 12rpx; box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.02); }
+.nav-icon { font-size: 36rpx; }
+.nav-label { font-size: 22rpx; color: #4b5563; font-weight: 500; }
 </style>

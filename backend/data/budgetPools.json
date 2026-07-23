@@ -1,0 +1,15 @@
+[
+  {
+    "id": "bg_mru2tq630qkh",
+    "merchantId": "biz_001",
+    "totalAmount": 50000,
+    "usedAmount": 0,
+    "frozenAmount": 0,
+    "remainingAmount": 50000,
+    "description": "",
+    "status": "active",
+    "startedAt": "2026-07-21T03:11:04.635Z",
+    "expiredAt": "2026-08-20T03:11:04.635Z",
+    "createdAt": "2026-07-21T03:11:04.635Z"
+  }
+]

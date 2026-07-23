@@ -1,5 +1,6 @@
 import { HttpClient, ApiResponse } from '../../common/HttpClient';
 import { ContentItem, ContentItemList } from '../../model/DataModels';
+import { BrandPalette, BrandTypography, BrandRadius, BrandSeal, BrandIcon, BrandSlogan } from '../../common/BrandCI';
 import { router } from '@kit.ArkUI';
 
 @Component
@@ -32,10 +33,22 @@ export struct DashboardPage {
   build() {
     Column() {
       Row() {
-        Text('推广看板')
-          .fontSize(24)
+        Text('\u63A8\u5E7F\u770B\u677F')
+          .fontSize(BrandTypography.PAGE_TITLE)
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.text_primary'))
+          .fontColor(BrandPalette.TEXT_PRIMARY)
+        Blank()
+        Row() {
+          Text(BrandIcon.SEAL_GLYPH)
+            .fontSize(14)
+            .fontColor(BrandPalette.SEAL_RED)
+            .opacity(0.6)
+          Text('DASHBOARD')
+            .fontSize(10)
+            .fontColor(BrandPalette.NEON_BLUE)
+            .letterSpacing(2)
+            .margin({ left: 4 })
+        }
       }
       .width('100%')
       .padding({ left: 16, right: 16, top: 12, bottom: 8 })
@@ -45,19 +58,32 @@ export struct DashboardPage {
           LoadingProgress()
             .width(48)
             .height(48)
-            .color($r('app.color.primary_color'))
+            .color(BrandPalette.PRIMARY)
         }
         .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
       } else if (this.contents.length === 0) {
         Column() {
-          Text('暂无推广内容')
+          Column()
+            .width(80)
+            .height(80)
+            .borderRadius(BrandRadius.SEAL)
+            .border({ width: 2, color: BrandSeal.SEAL_BORDER, style: BorderStyle.Solid })
+            .backgroundColor(BrandSeal.SEAL_BG)
+            .justifyContent(FlexAlign.Center)
+          Text(BrandIcon.SEAL_GLYPH)
+            .fontSize(36)
+            .fontWeight(FontWeight.Bold)
+            .fontColor(BrandSeal.SEAL_TEXT)
+            .margin({ top: -52 })
+          Text('\u6682\u65E0\u63A8\u5E7F\u5185\u5BB9')
             .fontSize(16)
-            .fontColor($r('app.color.text_secondary'))
-          Text('去发布第一篇推广吧')
+            .fontColor(BrandPalette.TEXT_MUTED)
+            .margin({ top: 20 })
+          Text('\u53BB\u53D1\u5E03\u7B2C\u4E00\u7BC7\u63A8\u5E7F\u5427')
             .fontSize(14)
-            .fontColor($r('app.color.primary_color'))
+            .fontColor(BrandPalette.PRIMARY)
             .margin({ top: 8 })
             .onClick(() => {
               router.pushUrl({ url: 'pages/activities/ActivitiesPage' });
@@ -66,6 +92,7 @@ export struct DashboardPage {
         .width('100%')
         .layoutWeight(1)
         .justifyContent(FlexAlign.Center)
+        .alignItems(HorizontalAlign.Center)
       } else {
         Refresh({ refreshing: $refreshing }) {
           List({ space: 12 }) {
@@ -90,7 +117,7 @@ export struct DashboardPage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor($r('app.color.page_background_color'))
+    .backgroundColor(BrandPalette.DEEP_BG)
   }
 
   @Builder
@@ -98,21 +125,21 @@ export struct DashboardPage {
     Column() {
       Row() {
         Text(item.carModel)
-          .fontSize(16)
+          .fontSize(BrandTypography.CARD_TITLE)
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.text_primary'))
+          .fontColor(BrandPalette.TEXT_PRIMARY)
           .layoutWeight(1)
-        Text('¥' + item.stats.estimatedEarnings.toFixed(2))
-          .fontSize(16)
+        Text('\u00A5' + item.stats.estimatedEarnings.toFixed(2))
+          .fontSize(BrandTypography.CARD_TITLE)
           .fontWeight(FontWeight.Bold)
-          .fontColor($r('app.color.price_color'))
+          .fontColor(BrandPalette.GOLD)
       }
       .width('100%')
 
-      if (item.text) {
+      if (item.text.length > 0) {
         Text(item.text)
           .fontSize(13)
-          .fontColor($r('app.color.text_secondary'))
+          .fontColor(BrandPalette.TEXT_SECONDARY)
           .maxLines(2)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .margin({ top: 6 })
@@ -120,9 +147,9 @@ export struct DashboardPage {
       }
 
       Row() {
-        this.StatBadge('阅读', item.stats.views.toString())
-        this.StatBadge('预约', item.stats.bookings.toString())
-        this.StatBadge('分享', item.stats.shares.toString())
+        this.StatBadge('\u9605\u8BFB', item.stats.views.toString())
+        this.StatBadge('\u9884\u7EA6', item.stats.bookings.toString())
+        this.StatBadge('\u5206\u4EAB', item.stats.shares.toString())
       }
       .width('100%')
       .margin({ top: 12 })
@@ -130,24 +157,26 @@ export struct DashboardPage {
 
       Row() {
         Column() {
-          Text('阅读')
+          Text('\u9605\u8BFB')
             .fontSize(10)
-            .fontColor($r('app.color.text_secondary'))
+            .fontColor(BrandPalette.TEXT_SECONDARY)
           Progress({ value: item.stats.views, total: Math.max(item.stats.views, 100), type: ProgressType.Linear })
             .width(80)
             .height(6)
-            .color($r('app.color.primary_color'))
+            .color(BrandPalette.PRIMARY)
+            .backgroundColor('#00E5A015')
             .margin({ top: 2 })
         }
 
         Column() {
-          Text('预约')
+          Text('\u9884\u7EA6')
             .fontSize(10)
-            .fontColor($r('app.color.text_secondary'))
+            .fontColor(BrandPalette.TEXT_SECONDARY)
           Progress({ value: item.stats.bookings, total: Math.max(item.stats.bookings, 10), type: ProgressType.Linear })
             .width(80)
             .height(6)
-            .color($r('app.color.price_color'))
+            .color(BrandPalette.CYBER_RED)
+            .backgroundColor('#FF3D7115')
             .margin({ top: 2 })
         }
       }
@@ -156,22 +185,33 @@ export struct DashboardPage {
       .justifyContent(FlexAlign.SpaceAround)
 
       Row() {
-        Text('转化漏斗: 阅读→预约')
+        Text('\u8F6C\u5316\u6F0F\u6597: \u9605\u8BFB\u2192\u9884\u7EA6')
           .fontSize(11)
-          .fontColor($r('app.color.text_secondary'))
+          .fontColor(BrandPalette.TEXT_SECONDARY)
         Blank()
+        if (item.trackId.length > 0) {
+          Text('HASH')
+            .fontSize(9)
+            .fontColor(BrandPalette.PRIMARY)
+            .letterSpacing(1)
+            .padding({ left: 4, right: 4, top: 1, bottom: 1 })
+            .borderRadius(3)
+            .backgroundColor('#00E5A018')
+            .margin({ right: 6 })
+        }
         Text(item.createdAt.slice(0, 10))
           .fontSize(11)
-          .fontColor($r('app.color.text_secondary'))
+          .fontColor(BrandPalette.TEXT_MUTED)
       }
       .width('100%')
       .margin({ top: 8 })
     }
     .width('100%')
     .padding(16)
-    .borderRadius(12)
-    .backgroundColor($r('app.color.card_background'))
-    .shadow({ radius: 4, color: '#1A000000', offsetX: 0, offsetY: 2 })
+    .borderRadius(BrandRadius.CARD)
+    .backgroundColor(BrandPalette.CARD_BG)
+    .border({ width: 0.5, color: BrandPalette.DIVIDER, style: BorderStyle.Solid })
+    .shadow({ radius: 8, color: '#0A0E1A66', offsetX: 0, offsetY: 2 })
   }
 
   @Builder
@@ -180,10 +220,10 @@ export struct DashboardPage {
       Text(value)
         .fontSize(18)
         .fontWeight(FontWeight.Bold)
-        .fontColor($r('app.color.text_primary'))
+        .fontColor(BrandPalette.TEXT_PRIMARY)
       Text(label)
         .fontSize(11)
-        .fontColor($r('app.color.text_secondary'))
+        .fontColor(BrandPalette.TEXT_SECONDARY)
         .margin({ top: 2 })
     }
     .alignItems(HorizontalAlign.Center)

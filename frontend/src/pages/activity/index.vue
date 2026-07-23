@@ -14,6 +14,33 @@ const aiRecommendations = ref<any[]>([]);
 const aiRecommendLoading = ref(false);
 const aiRecommendLoaded = ref(false);
 
+const banners = ref([
+  {
+    id: 1,
+    title: '新人专享福利',
+    desc: '首次发布内容即送10元推广金',
+    bg: 'linear-gradient(135deg, #667eea, #764ba2)',
+    icon: '🎁',
+    action: '/pages/publish/index',
+  },
+  {
+    id: 2,
+    title: 'KOL招募计划',
+    desc: '成为认证KOL，享受专属权益',
+    bg: 'linear-gradient(135deg, #f093fb, #f5576c)',
+    icon: '⭐',
+    action: '/pages/koltask/index',
+  },
+  {
+    id: 3,
+    title: 'AI智能创作',
+    desc: '一键生成专业汽车评测文案',
+    bg: 'linear-gradient(135deg, #4facfe, #00f2fe)',
+    icon: '🤖',
+    action: '/pages/publish/index',
+  },
+]);
+
 onShow(async () => {
   await checkLogin();
   await loadActivities();
@@ -78,18 +105,76 @@ function getBudgetColor(pct: number) {
   if (pct > 50) return '#f59e0b';
   return '#10b981';
 }
+
+function handleBannerTap(banner: any) {
+  if (banner.action) {
+    uni.navigateTo({ url: banner.action });
+  }
+}
 </script>
 
 <template>
   <view class="activity-page">
     <view class="hero">
       <view class="hero-content">
-        <text class="hero-title">🚗 推广活动</text>
-        <text class="hero-desc">分享真实体验，让每一次传播都产生价值</text>
+        <text class="hero-title">🚗 汽车资讯</text>
+        <text class="hero-desc">执信购万物，分享真实体验让每次传播产生价值</text>
       </view>
       <view class="hero-illustration">
         <text class="hero-emoji">🏎️</text>
       </view>
+    </view>
+
+    <view class="quick-entry">
+      <view class="entry-item" @tap="() => uni.navigateTo({ url: '/pages/biz/index' })">
+        <view class="entry-icon" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+          <text>🏢</text>
+        </view>
+        <text class="entry-text">商家后台</text>
+      </view>
+      <view class="entry-item" @tap="() => uni.navigateTo({ url: '/pages/ai/index' })">
+        <view class="entry-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+          <text>🤖</text>
+        </view>
+        <text class="entry-text">AI应用</text>
+      </view>
+      <view class="entry-item" @tap="() => uni.navigateTo({ url: '/pages/aivideo/index' })">
+        <view class="entry-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);">
+          <text>🎬</text>
+        </view>
+        <text class="entry-text">AI视频</text>
+      </view>
+      <view class="entry-item" @tap="() => uni.navigateTo({ url: '/pages/publish/index' })">
+        <view class="entry-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+          <text>📝</text>
+        </view>
+        <text class="entry-text">发布内容</text>
+      </view>
+    </view>
+
+    <view class="banner-section">
+      <swiper
+        class="banner-swiper"
+        indicator-dots
+        autoplay
+        circular
+        interval="4000"
+        duration="500"
+        indicator-color="rgba(255,255,255,0.5)"
+        indicator-active-color="#fff"
+      >
+        <swiper-item v-for="banner in banners" :key="banner.id" @tap="handleBannerTap(banner)">
+          <view class="banner-item" :style="{ background: banner.bg }">
+            <view class="banner-content">
+              <text class="banner-icon">{{ banner.icon }}</text>
+              <view class="banner-text">
+                <text class="banner-title">{{ banner.title }}</text>
+                <text class="banner-desc">{{ banner.desc }}</text>
+              </view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
     </view>
 
     <view v-if="loading" class="skeleton-list">
@@ -210,7 +295,7 @@ function getBudgetColor(pct: number) {
   align-items: center;
   justify-content: space-between;
   padding: 48rpx 32rpx 40rpx;
-  background: linear-gradient(135deg, #1e40af, #2563eb, #3b82f6);
+  background: linear-gradient(135deg, #060D18, #0A1628, #1A2D4A);
   color: #fff;
   position: relative;
   overflow: hidden;
@@ -238,6 +323,89 @@ function getBudgetColor(pct: number) {
   display: block;
   margin-bottom: 12rpx;
 }
+
+.quick-entry {
+  display: flex;
+  gap: 20rpx;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  margin-bottom: 20rpx;
+}
+
+.entry-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.entry-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  font-size: 36rpx;
+  margin-bottom: 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+.entry-text {
+  font-size: 24rpx;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+.banner-section {
+  padding: 20rpx 24rpx;
+}
+
+.banner-swiper {
+  height: 240rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+}
+
+.banner-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 40rpx;
+}
+
+.banner-content {
+  display: flex;
+  align-items: center;
+  gap: 30rpx;
+}
+
+.banner-icon {
+  font-size: 80rpx;
+  filter: drop-shadow(0 4rpx 12rpx rgba(0, 0, 0, 0.2));
+}
+
+.banner-text {
+  flex: 1;
+}
+
+.banner-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8rpx;
+  text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+
+.banner-desc {
+  display: block;
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+}
+
 
 .hero-desc {
   font-size: 26rpx;

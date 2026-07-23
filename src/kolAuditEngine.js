@@ -56,7 +56,7 @@ async function _aiAuditCheck(data) {
   const userContents = contentStore.getByUser(userId);
   const wallet = walletStore.get(userId);
 
-  const systemPrompt = `你是龟钮印信KOL审核引擎。根据提交的审核信息判断是否通过KOL审核。
+  const systemPrompt = `你是龟钮自驭KOL审核引擎。根据提交的审核信息判断是否通过KOL审核。
 
 审核规则:
 - 标准审核: 粉丝>2000

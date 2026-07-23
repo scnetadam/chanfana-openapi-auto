@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { onShow } from '@dcloudio/uni-app';
-import { walletApi } from '@/api';
+import { walletApi, notificationApi } from '@/api';
 import { useUserStore } from '@/stores';
 import { usePayStore } from '@/stores/pay';
 
@@ -12,13 +12,18 @@ const balance = ref(0);
 const reputationScore = ref(0);
 const txList = ref<any[]>([]);
 const loading = ref(true);
+const myInviteCode = ref('');
+const hasEarningsReminder = ref(false);
+const earningsPending = ref(0);
 
 onShow(async () => {
   if (!userStore.isLoggedIn) {
     uni.navigateTo({ url: '/pages/login/index' });
     return;
   }
+  myInviteCode.value = userStore.userId.slice(-6).toUpperCase();
   await loadWallet();
+  await checkReminders();
 });
 
 async function loadWallet() {
@@ -51,7 +56,6 @@ function handleWithdraw() {
   uni.showModal({
     title: '提现',
     content: `可提现 ¥${balance.value.toFixed(2)}（v1.0 暂为演示，结算后提现到支付宝）`,
-    confirmText: '知道了',
     showCancel: false,
   });
 }
@@ -62,10 +66,62 @@ async function tryX402Pay() {
     uni.showModal({ title: '支付已确认', content: JSON.stringify(result), showCancel: false });
   }
 }
+
+function copyInviteCode() {
+  uni.setClipboardData({
+    data: myInviteCode.value,
+    showToast: true,
+  });
+}
+
+function shareInviteCode() {
+  uni.showActionSheet({
+    itemList: ['复制邀请码', '分享到微信', '生成邀请海报'],
+    success: (res) => {
+      if (res.tapIndex === 0) {
+        copyInviteCode();
+      } else if (res.tapIndex === 1) {
+        uni.showToast({ title: '请在微信中分享', icon: 'none' });
+      } else if (res.tapIndex === 2) {
+        uni.showToast({ title: '海报功能开发中', icon: 'none' });
+      }
+    },
+  });
+}
+
+async function checkReminders() {
+  try {
+    const res = await notificationApi.loginReminders(userStore.userId);
+    if (res.success && res.data.hasEarningsReminder) {
+      hasEarningsReminder.value = true;
+      earningsPending.value = 0;
+      try {
+        const er = await notificationApi.earningsReminder({ userId: userStore.userId });
+        if (er.success) earningsPending.value = er.data.totalPending;
+      } catch (_) {}
+    }
+  } catch (_) {}
+}
+
+function dismissEarningsReminder() {
+  hasEarningsReminder.value = false;
+}
 </script>
 
 <template>
   <view class="wallet-page">
+    <!-- Earnings Reminder Popup -->
+    <view v-if="hasEarningsReminder" class="earnings-popup">
+      <view class="popup-card">
+        <text class="popup-title">收益提醒</text>
+        <text class="popup-msg">您有 ¥{{ earningsPending.toFixed(2) }} 待结算收益</text>
+        <view class="popup-actions">
+          <button class="popup-btn" @tap="() => { hasEarningsReminder = false; uni.navigateTo({ url: '/pages/settlement/index' }) }">查看结算</button>
+          <button class="popup-btn dismiss" @tap="dismissEarningsReminder">稍后</button>
+        </view>
+      </view>
+    </view>
+
     <!-- 余额卡片 -->
     <view class="balance-card">
       <view class="bc-bg-pattern"></view>
@@ -77,13 +133,56 @@ async function tryX402Pay() {
             <text class="bc-meta-icon">⭐</text>
             <text class="bc-meta-val">{{ reputationScore }}</text>
             <text class="bc-meta-lbl">口碑值</text>
-          </view>
-          <view class="bc-meta-divider"></view>
-          <view class="bc-meta-item">
-            <text class="bc-meta-icon">📊</text>
-            <text class="bc-meta-val">{{ txList.length }}</text>
-            <text class="bc-meta-lbl">交易笔数</text>
-          </view>
+    </view>
+
+    <view class="invite-section">
+      <view class="invite-header">
+        <text class="invite-title">🎁 邀请好友</text>
+        <text class="invite-subtitle">邀请好友注册，双方各得5元推广金</text>
+      </view>
+      <view class="invite-code-wrap">
+        <view class="invite-code-box">
+          <text class="invite-label">我的邀请码</text>
+          <text class="invite-code">{{ myInviteCode }}</text>
+        </view>
+        <button class="invite-share-btn" @tap="shareInviteCode">
+          <text class="btn-icon">📤</text>
+          <text>分享邀请</text>
+        </button>
+      </view>
+    </view>
+
+    <view class="biz-entry" @tap="() => uni.navigateTo({ url: '/pages/biz/index' })">
+      <view class="biz-icon">🏢</view>
+      <view class="biz-info">
+        <text class="biz-title">商家工作台</text>
+        <text class="biz-desc">管理活动、任务、结算</text>
+      </view>
+      <text class="biz-arrow">›</text>
+    </view>
+
+    <view class="quick-nav-row">
+      <view class="quick-nav-item" @tap="() => uni.navigateTo({ url: '/pages/settlement/weighted' })">
+        <text class="qn-icon">📊</text>
+        <text class="qn-label">加权结算</text>
+      </view>
+      <view class="quick-nav-item" @tap="() => uni.navigateTo({ url: '/pages/settlement/valuation' })">
+        <text class="qn-icon">💎</text>
+        <text class="qn-label">存证估值</text>
+      </view>
+      <view class="quick-nav-item" @tap="() => uni.navigateTo({ url: '/pages/kol/contract-verify' })">
+        <text class="qn-icon">📜</text>
+        <text class="qn-label">合同验证</text>
+      </view>
+      <view class="quick-nav-item" @tap="() => uni.navigateTo({ url: '/pages/compliance/dashboard' })">
+        <text class="qn-icon">🛡️</text>
+        <text class="qn-label">合规看板</text>
+      </view>
+    </view>
+
+    <view class="section-header">
+      <text class="section-title">交易明细</text>
+    </view>
         </view>
       </view>
       <button class="withdraw-btn" @tap="handleWithdraw">
@@ -173,7 +272,7 @@ async function tryX402Pay() {
   align-items: center;
   padding: 50rpx 40rpx 30rpx;
   margin-bottom: 24rpx;
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e3a8a 100%);
+  background: linear-gradient(135deg, #0A1628 0%, #1A2D4A 50%, #0A1628 100%);
   border-radius: 24rpx;
   color: #fff;
   overflow: hidden;
@@ -240,6 +339,117 @@ async function tryX402Pay() {
   background: rgba(255,255,255,0.2);
 }
 
+.invite-section {
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.03);
+}
+
+.invite-header {
+  margin-bottom: 24rpx;
+}
+
+.invite-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8rpx;
+}
+
+.invite-subtitle {
+  display: block;
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.invite-code-wrap {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.invite-code-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20rpx;
+  background: #f9fafb;
+  border-radius: 12rpx;
+}
+
+.invite-label {
+  font-size: 22rpx;
+  color: #9ca3af;
+  margin-bottom: 8rpx;
+}
+
+.invite-code {
+  font-size: 40rpx;
+  font-weight: 700;
+  color: #2563eb;
+  letter-spacing: 4rpx;
+}
+
+.invite-share-btn {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 0 30rpx;
+  height: 88rpx;
+  background: linear-gradient(135deg, #0A1628, #1A2D4A);
+  border-radius: 12rpx;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 600;
+
+  &::after {
+    border: none;
+  }
+
+  .btn-icon {
+    font-size: 28rpx;
+  }
+}
+
+.biz-entry {
+  display: flex;
+  align-items: center;
+  padding: 30rpx;
+  margin-bottom: 24rpx;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-radius: 20rpx;
+}
+
+.biz-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+}
+
+.biz-info {
+  flex: 1;
+}
+
+.biz-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #1e40af;
+  margin-bottom: 6rpx;
+}
+
+.biz-desc {
+  font-size: 24rpx;
+  color: #6b7280;
+}
+
+.biz-arrow {
+  font-size: 40rpx;
+  color: #2563eb;
+}
+
 .withdraw-btn {
   position: relative;
   z-index: 1;
@@ -302,7 +512,7 @@ async function tryX402Pay() {
   font-size: 28rpx;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, #0A1628, #1A2D4A);
   border-radius: 40rpx;
 
   &::after { border: none; }
@@ -450,4 +660,17 @@ async function tryX402Pay() {
 
   .empty-icon { font-size: 60rpx; }
 }
+
+.earnings-popup { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; display: flex; align-items: center; justify-content: center; }
+.popup-card { background: #fff; border-radius: 24rpx; padding: 40rpx; width: 600rpx; text-align: center; }
+.popup-title { display: block; font-size: 34rpx; font-weight: 700; color: #1f2937; margin-bottom: 16rpx; }
+.popup-msg { display: block; font-size: 28rpx; color: #C9A84C; font-weight: 600; margin-bottom: 32rpx; }
+.popup-actions { display: flex; gap: 16rpx; }
+.popup-btn { flex: 1; height: 72rpx; line-height: 72rpx; font-size: 28rpx; font-weight: 600; background: #0A1628; color: #C9A84C; border-radius: 12rpx; &::after { border: none; } }
+.popup-btn.dismiss { background: #f3f4f6; color: #6b7280; }
+
+.quick-nav-row { display: flex; gap: 12rpx; margin-bottom: 24rpx; }
+.quick-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6rpx; background: #fff; border-radius: 16rpx; padding: 20rpx 8rpx; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.03); }
+.qn-icon { font-size: 36rpx; }
+.qn-label { font-size: 20rpx; color: #4b5563; font-weight: 500; }
 </style>

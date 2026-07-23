@@ -2,6 +2,9 @@ import { HttpClient, ApiResponse, toPostBody } from '../../common/HttpClient';
 import { BookingItem, BookingItemList, BookingResult } from '../../model/DataModels';
 import { RouterParams } from '../../model/RouterParams';
 import { router } from '@kit.ArkUI';
+import { AiContentService } from '../../common/AiContentService';
+import { AiBookingSuggestion } from '../../model/DataModels';
+import { VoiceService } from '../../common/AiVoiceService';
 
 @Entry
 @Component
@@ -10,6 +13,10 @@ struct BookingPage {
   @State booking: BookingItem | null = null;
   @State loading: boolean = true;
   @State checkInResult: string = '';
+  @State aiSuggestion: AiBookingSuggestion | null = null;
+  @State loadingSuggestion: boolean = false;
+  private contentService: AiContentService = AiContentService.getInstance();
+  private voiceService: VoiceService = VoiceService.getInstance();
 
   aboutToAppear() {
     const rawParams: Object | null = router.getParams();
@@ -18,6 +25,7 @@ struct BookingPage {
     if (rp.bookingId) {
       this.bookingId = rp.bookingId;
       this.loadBooking();
+      this.loadAiSuggestion();
     }
   }
 
@@ -29,6 +37,22 @@ struct BookingPage {
       this.booking = resp.data[0];
     }
     this.loading = false;
+  }
+
+  private async loadAiSuggestion() {
+    if (this.bookingId.length === 0) return;
+    this.loadingSuggestion = true;
+    const resp = await this.contentService.optimizeBooking(this.userId, this.bookingId);
+    if (resp.success && resp.data !== null) {
+      this.aiSuggestion = resp.data;
+    }
+    this.loadingSuggestion = false;
+  }
+
+  private playVoiceReminder() {
+    if (this.aiSuggestion !== null) {
+      this.voiceService.speak(this.aiSuggestion.reminderScript);
+    }
   }
 
   private async doCheckIn() {
@@ -144,6 +168,101 @@ struct BookingPage {
               .width('100%')
               .padding(16)
               .alignItems(HorizontalAlign.Center)
+            }
+
+            if (this.aiSuggestion !== null) {
+              Column() {
+                Text('AI智能建议')
+                  .fontSize(15)
+                  .fontWeight(FontWeight.Bold)
+                  .fontColor($r('app.color.purple_color'))
+                  .width('100%')
+                
+                Row() {
+                  Text('推荐时段: ')
+                    .fontSize(13)
+                    .fontColor($r('app.color.text_secondary'))
+                  Text(this.aiSuggestion.bestTimeSlot)
+                    .fontSize(13)
+                    .fontColor($r('app.color.text_primary'))
+                    .fontWeight(FontWeight.Medium)
+                }
+                .width('100%')
+                .margin({ top: 8 })
+
+                Row() {
+                  Text('推荐门店: ')
+                    .fontSize(13)
+                    .fontColor($r('app.color.text_secondary'))
+                  Text(this.aiSuggestion.recommendedDealer)
+                    .fontSize(13)
+                    .fontColor($r('app.color.text_primary'))
+                    .fontWeight(FontWeight.Medium)
+                }
+                .width('100%')
+                .margin({ top: 4 })
+
+                if (this.aiSuggestion.preparationTips.length > 0) {
+                  Text('准备事项:')
+                    .fontSize(13)
+                    .fontColor($r('app.color.text_secondary'))
+                    .margin({ top: 8 })
+                    .width('100%')
+                  Column() {
+                    ForEach(this.aiSuggestion.preparationTips, (tip: string, index: number) => {
+                      Row() {
+                        Text((index + 1).toString() + '.')
+                          .fontSize(12)
+                          .fontColor($r('app.color.primary_color'))
+                          .margin({ right: 4 })
+                        Text(tip)
+                          .fontSize(12)
+                          .fontColor($r('app.color.text_primary'))
+                          .layoutWeight(1)
+                      }
+                      .width('100%')
+                      .margin({ top: 4 })
+                    }, (tip: string, index: number) => tip + '_' + index.toString())
+                  }
+                  .width('100%')
+                }
+
+                if (this.aiSuggestion.voiceReminderEnabled) {
+                  Row() {
+                    Text('语音提醒')
+                      .fontSize(13)
+                      .fontColor($r('app.color.primary_color'))
+                      .margin({ right: 8 })
+                    Text('播放')
+                      .fontSize(13)
+                      .fontColor(Color.White)
+                      .backgroundColor($r('app.color.primary_color'))
+                      .borderRadius(10)
+                      .padding({ left: 8, right: 8, top: 4, bottom: 4 })
+                      .onClick(() => this.playVoiceReminder())
+                  }
+                  .margin({ top: 8 })
+                }
+              }
+              .width('100%')
+              .padding(16)
+              .borderRadius(12)
+              .backgroundColor($r('app.color.card_background'))
+              .margin({ left: 16, right: 16, top: 12 })
+              .alignItems(HorizontalAlign.Start)
+            } else if (this.loadingSuggestion) {
+              Row() {
+                LoadingProgress()
+                  .width(20)
+                  .height(20)
+                  .color($r('app.color.purple_color'))
+                Text('AI建议加载中...')
+                  .fontSize(13)
+                  .fontColor($r('app.color.text_secondary'))
+                  .margin({ left: 8 })
+              }
+              .width('100%')
+              .padding({ left: 16, top: 8, bottom: 8 })
             }
 
             Column() {

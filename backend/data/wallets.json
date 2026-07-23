@@ -1,0 +1,192 @@
+[
+  {
+    "id": "u_1784603450073_00c70fba",
+    "balance": 0,
+    "reservedAmount": 0,
+    "transactions": [],
+    "kycLevel": "none",
+    "createdAt": "2026-07-21T03:10:50.074Z"
+  },
+  {
+    "id": "u_1784763430107_wm9eqc",
+    "balance": 350,
+    "reservedAmount": 0,
+    "transactions": [
+      {
+        "id": "tx_topup_mrwq2cbw0b2d6f",
+        "userId": "u_1784763430107_wm9eqc",
+        "type": "topup",
+        "amount": 500,
+        "subject": "充值",
+        "channel": "alipay",
+        "refId": "TOPUP-1784763430124",
+        "status": "completed",
+        "createdAt": "2026-07-22T23:37:10.125Z"
+      },
+      {
+        "id": "tx_withdraw_mrwq2cc067ff84",
+        "userId": "u_1784763430107_wm9eqc",
+        "type": "withdraw",
+        "amount": -100,
+        "fee": 0.1,
+        "actualAmount": 99.9,
+        "subject": "提现",
+        "channel": "alipay",
+        "bankInfo": null,
+        "refId": "WD-1784763430128",
+        "status": "processing",
+        "createdAt": "2026-07-22T23:37:10.128Z"
+      },
+      {
+        "id": "tx_transfer_mrwq2ccd0b0dfa",
+        "userId": "u_1784763430107_wm9eqc",
+        "type": "transfer_out",
+        "amount": -50,
+        "subject": "测试转账",
+        "toUserId": "u_1784763430135_7g4rp8",
+        "refId": "tx_transfer_mrwq2ccd0b0dfa",
+        "status": "completed",
+        "createdAt": "2026-07-22T23:37:10.142Z"
+      }
+    ],
+    "kycLevel": "none",
+    "createdAt": "2026-07-22T23:37:10.120Z",
+    "_v": 3
+  },
+  {
+    "id": "u_1784763430135_7g4rp8",
+    "balance": 100,
+    "reservedAmount": 0,
+    "transactions": [
+      {
+        "id": "tx_transfer_mrwq2ccd0b0dfa_in",
+        "userId": "u_1784763430135_7g4rp8",
+        "type": "transfer_in",
+        "amount": 50,
+        "subject": "测试转账",
+        "fromUserId": "u_1784763430107_wm9eqc",
+        "refId": "tx_transfer_mrwq2ccd0b0dfa",
+        "status": "completed",
+        "createdAt": "2026-07-22T23:37:10.142Z"
+      },
+      {
+        "id": "tx_transfer_mrwq5e4693269c_in",
+        "userId": "u_1784763430135_7g4rp8",
+        "type": "transfer_in",
+        "amount": 50,
+        "subject": "测试",
+        "fromUserId": "u_1784763572368_alsko4",
+        "refId": "tx_transfer_mrwq5e4693269c",
+        "status": "completed",
+        "createdAt": "2026-07-22T23:39:32.406Z"
+      }
+    ],
+    "kycLevel": "none",
+    "createdAt": "2026-07-22T23:37:10.138Z",
+    "_v": 2
+  },
+  {
+    "id": "u_1784763572368_alsko4",
+    "balance": 350,
+    "reservedAmount": 0,
+    "transactions": [
+      {
+        "id": "tx_topup_mrwq5e3m1a2cbb",
+        "userId": "u_1784763572368_alsko4",
+        "type": "topup",
+        "amount": 500,
+        "subject": "充值",
+        "channel": "alipay",
+        "refId": "TOPUP-1784763572387",
+        "status": "completed",
+        "createdAt": "2026-07-22T23:39:32.387Z"
+      },
+      {
+        "id": "tx_withdraw_mrwq5e3q7c6e1d",
+        "userId": "u_1784763572368_alsko4",
+        "type": "withdraw",
+        "amount": -100,
+        "fee": 0.1,
+        "actualAmount": 99.9,
+        "subject": "提现",
+        "channel": "alipay",
+        "bankInfo": null,
+        "refId": "WD-1784763572390",
+        "status": "processing",
+        "createdAt": "2026-07-22T23:39:32.390Z"
+      },
+      {
+        "id": "tx_transfer_mrwq5e4693269c",
+        "userId": "u_1784763572368_alsko4",
+        "type": "transfer_out",
+        "amount": -50,
+        "subject": "测试",
+        "toUserId": "u_1784763430135_7g4rp8",
+        "refId": "tx_transfer_mrwq5e4693269c",
+        "status": "completed",
+        "createdAt": "2026-07-22T23:39:32.406Z"
+      }
+    ],
+    "kycLevel": "none",
+    "createdAt": "2026-07-22T23:39:32.382Z",
+    "_v": 3
+  },
+  {
+    "id": "u_1784765763387_raab1x",
+    "balance": 0,
+    "reservedAmount": 0,
+    "transactions": [],
+    "kycLevel": "none",
+    "createdAt": "2026-07-23T00:16:03.401Z"
+  },
+  {
+    "id": "u_1784765787847_hiwlre",
+    "balance": 500,
+    "reservedAmount": 0,
+    "transactions": [
+      {
+        "id": "tx_topup_mrwrgvkn50e8fb",
+        "userId": "u_1784765787847_hiwlre",
+        "type": "topup",
+        "amount": 500,
+        "subject": "充值",
+        "channel": "alipay",
+        "refId": "TOPUP-1784765787863",
+        "status": "completed",
+        "createdAt": "2026-07-23T00:16:27.863Z"
+      }
+    ],
+    "kycLevel": "none",
+    "createdAt": "2026-07-23T00:16:27.859Z",
+    "_v": 1
+  },
+  {
+    "id": "u_1784770772463_7j1rhx",
+    "balance": 0,
+    "reservedAmount": 0,
+    "transactions": [],
+    "kycLevel": "none",
+    "createdAt": "2026-07-23T01:39:32.505Z"
+  },
+  {
+    "id": "u_1784771589233_hparzk",
+    "balance": 200,
+    "reservedAmount": 0,
+    "transactions": [
+      {
+        "id": "tx_topup_mrwux7zm6d8b5d",
+        "userId": "u_1784771589233_hparzk",
+        "type": "topup",
+        "amount": 200,
+        "subject": "充值",
+        "channel": "alipay",
+        "refId": "TOPUP-1784771589299",
+        "status": "completed",
+        "createdAt": "2026-07-23T01:53:09.299Z"
+      }
+    ],
+    "kycLevel": "none",
+    "createdAt": "2026-07-23T01:53:09.296Z",
+    "_v": 1
+  }
+]

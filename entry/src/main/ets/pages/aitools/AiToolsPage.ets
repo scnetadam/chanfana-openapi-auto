@@ -243,6 +243,6 @@ struct AiToolsPage {
     .padding(16)
     .borderRadius(12)
     .backgroundColor($r('app.color.card_background'))
-    .shadow({ radius: 4, color: '#1A000000', offsetX: 0, offsetY: 2 })
+    .shadow({ radius: 4, color: $r('app.color.divider_color'), offsetX: 0, offsetY: 2 })
   }
 }

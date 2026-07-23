@@ -6,6 +6,9 @@ import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import { fileIo } from '@kit.CoreFileKit';
 import { http } from '@kit.NetworkKit';
 import { common } from '@kit.AbilityKit';
+import { AiContentService } from '../../common/AiContentService';
+import { AiCopyOptimizeResult, AiCopyAlternative } from '../../model/DataModels';
+import { ContentFingerprint } from '../../common/ContentFingerprint';
 
 @Entry
 @Component
@@ -21,6 +24,14 @@ struct PublishPage {
   @State uploading: boolean = false;
   @StorageProp('userId') userId: string = '';
   @StorageProp('nickName') nickName: string = '';
+  @State showAiOptimize: boolean = false;
+  @State aiOptimizeStyle: number = 0;
+  @State aiOptimizing: boolean = false;
+  @State aiOptimizeResult: AiCopyOptimizeResult | null = null;
+  @State aiGeneratingFromImages: boolean = false;
+  private aiStyles: string[] = ['专业', '轻松', '幽默', '情感', '新闻', '短视频'];
+  private aiStyleKeys: string[] = ['professional', 'casual', 'humorous', 'emotional', 'news', 'short_video'];
+  private contentService: AiContentService = AiContentService.getInstance();
 
   aboutToAppear() {
     this.loadActivities();
@@ -151,12 +162,43 @@ struct PublishPage {
     });
     this.publishing = false;
     if (resp.success && resp.data !== null) {
+      const fp: string = ContentFingerprint.computeFingerprint(this.contentText, this.userId);
+      ContentFingerprint.registerFingerprint(resp.data.id, fp, this.userId);
       promptAction.showToast({ message: '发布成功！' });
       const routeParams: Record<string, Object> = { 'contentId': resp.data.id };
       router.replaceUrl({ url: 'pages/share/SharePage', params: routeParams });
     } else {
       promptAction.showToast({ message: resp.error || '发布失败' });
     }
+  }
+
+  private async aiOptimizeCopy() {
+    if (this.contentText.trim().length === 0 && this.selectedImageUris.length === 0) {
+      promptAction.showToast({ message: '请先输入文案或上传图片' });
+      return;
+    }
+    this.aiOptimizing = true;
+    const styleKey: string = this.aiStyleKeys[this.aiOptimizeStyle];
+    if (this.selectedImageUris.length > 0 && this.contentText.trim().length === 0) {
+      const resp = await this.contentService.generateFromImages(this.selectedImageUris, styleKey, '', '');
+      if (resp.success && resp.data !== null) {
+        this.contentText = resp.data.text;
+      }
+    }
+    const resp = await this.contentService.optimizeCopy(this.contentText, styleKey, '', '', this.userId);
+    this.aiOptimizing = false;
+    if (resp.success && resp.data !== null) {
+      this.aiOptimizeResult = resp.data;
+      this.showAiOptimize = true;
+    } else {
+      promptAction.showToast({ message: resp.message.length > 0 ? resp.message : 'AI优化失败' });
+    }
+  }
+
+  private applyAiCopy(text: string) {
+    this.contentText = text;
+    this.showAiOptimize = false;
+    this.aiOptimizeResult = null;
   }
 
   build() {
@@ -242,6 +284,102 @@ struct PublishPage {
             .width('100%')
             .padding({ left: 16, right: 16, bottom: 8 })
           }
+
+          Column() {
+            Row() {
+              Text('AI文案优化')
+                .fontSize(14)
+                .fontWeight(FontWeight.Medium)
+                .fontColor($r('app.color.text_primary'))
+                .layoutWeight(1)
+              if (this.aiOptimizing) {
+                LoadingProgress()
+                  .width(16)
+                  .height(16)
+                  .color($r('app.color.primary_color'))
+              }
+              Text('优化')
+                .fontSize(13)
+                .fontColor(Color.White)
+                .backgroundColor($r('app.color.purple_color'))
+                .borderRadius(12)
+                .padding({ left: 10, right: 10, top: 4, bottom: 4 })
+                .onClick(() => this.aiOptimizeCopy())
+            }
+            .width('100%')
+
+            Scroll() {
+              Row() {
+                ForEach(this.aiStyles, (style: string, index: number) => {
+                  Text(style)
+                    .fontSize(12)
+                    .fontColor(this.aiOptimizeStyle === index ? Color.White : $r('app.color.text_secondary'))
+                    .backgroundColor(this.aiOptimizeStyle === index ? $r('app.color.primary_color') : $r('app.color.bg_tag_color'))
+                    .borderRadius(10)
+                    .padding({ left: 8, right: 8, top: 4, bottom: 4 })
+                    .margin({ right: 6 })
+                    .onClick(() => { this.aiOptimizeStyle = index; })
+                }, (style: string, index: number) => style + '_' + index.toString())
+              }
+            }
+            .scrollable(ScrollDirection.Horizontal)
+            .scrollBar(BarState.Off)
+            .width('100%')
+            .margin({ top: 8 })
+
+            if (this.aiOptimizeResult !== null) {
+              Column() {
+                Text('AI优化结果')
+                  .fontSize(13)
+                  .fontWeight(FontWeight.Medium)
+                  .fontColor($r('app.color.text_primary'))
+                  .width('100%')
+                Text(this.aiOptimizeResult.optimizedCopy)
+                  .fontSize(14)
+                  .fontColor($r('app.color.text_primary'))
+                  .lineHeight(22)
+                  .margin({ top: 6 })
+                  .width('100%')
+                Row() {
+                  Text('采用')
+                    .fontSize(12)
+                    .fontColor(Color.White)
+                    .backgroundColor($r('app.color.primary_color'))
+                    .borderRadius(10)
+                    .padding({ left: 8, right: 8, top: 4, bottom: 4 })
+                    .onClick(() => this.applyAiCopy(this.aiOptimizeResult.optimizedCopy))
+                }
+                .margin({ top: 6 })
+                .justifyContent(FlexAlign.End)
+                .width('100%')
+              }
+              .width('100%')
+              .padding(10)
+              .borderRadius(8)
+              .backgroundColor($r('app.color.bg_input_color'))
+              .margin({ top: 8 })
+            }
+
+            if (this.selectedImageUris.length > 0) {
+              Text('素材生文')
+                .fontSize(12)
+                .fontColor($r('app.color.primary_color'))
+                .margin({ top: 6 })
+                .onClick(() => {
+                  this.aiGeneratingFromImages = true;
+                  const styleKey: string = this.aiStyleKeys[this.aiOptimizeStyle];
+                  this.contentService.generateFromImages(this.selectedImageUris, styleKey, '', '').then((resp) => {
+                    this.aiGeneratingFromImages = false;
+                    if (resp.success && resp.data !== null) {
+                      this.contentText = resp.data.text;
+                    }
+                  });
+                })
+            }
+          }
+          .width('100%')
+          .padding(16)
+          .alignItems(HorizontalAlign.Start)
 
           Column() {
             Text('推广文案')

@@ -1,0 +1,9 @@
+# 腾讯云凭证 (必填)
+secret_id    = "YOUR_SECRET_ID"
+secret_key   = "YOUR_SECRET_KEY"
+
+# COS 区域
+region       = "ap-guangzhou"
+
+# 用户标识
+user_slug    = "your-user-slug"

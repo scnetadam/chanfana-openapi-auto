@@ -2,23 +2,27 @@
   "string": [
     {
       "name": "start_window_background",
-      "value": "#FFFFFF"
+      "value": "#0A1628"
     },
     {
       "name": "Module_Entry_label",
-      "value": "龟钮印信"
+      "value": "龟钮自驭"
     },
     {
       "name": "EntryAbility_label",
-      "value": "龟钮印信"
+      "value": "龟钮自驭"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "KOL加权评估与微交易平台"
+      "value": "汽车资讯AI·自主价值引擎"
     },
     {
       "name": "Module_Entry_desc",
-      "value": "龟钮印信汽车资讯KOL评估平台"
+      "value": "龟钮自驭·汽车资讯自主价值引擎"
+    },
+    {
+      "name": "microphone_reason",
+      "value": "用于AI语音客服的语音识别功能，将您的语音转换为文字"
     }
   ]
 }

@@ -6,6 +6,16 @@ export default defineConfig({
   server: {
     port: 8080,
     proxy: {
+      '/api/deveco': {
+        target: 'http://localhost:3003',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/deveco/, '/api'),
+      },
+      '/api/x402': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/x402/, '/api'),
+      },
       '/api': {
         target: 'http://localhost:3000',
         changeOrigin: true,
